@@ -20,7 +20,6 @@ The domain `cytogent.com` already points at Vercel through Cloudflare DNS.
 2. Leave **Framework Preset** on *Other*. `vercel.json` already sets the output directory to `site` with no build command.
 3. Deploy.
 4. In **Project → Settings → Domains**, add `cytogent.com` and `www.cytogent.com`, and set `www` to redirect to the apex.
-
 5. Set up the request-access email (see below).
 
 After that, every push to `main` deploys to production and every other branch gets a preview URL.
