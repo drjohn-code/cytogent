@@ -210,12 +210,41 @@
       var bad = [];
       $$('input, select, textarea', stepOf(type)).forEach(function (c) { if (c.type === 'checkbox') { return; } var ok = c.checkValidity(); setInvalid(c, ok ? '' : message(c)); if (!ok) { bad.push(c); } });
       var consent = $('#consent', f), ce = $('#consent-error', f); ce.hidden = consent.checked; if (!consent.checked) { bad.push(consent); }
-      if (bad.length) { bad[0].focus(); $('#form-status', f).textContent = 'Please check the highlighted fields.'; return; }
-      // No endpoint is wired yet. Collect the answers here and POST them to an endpoint owned by WelloWork AB.
-      var data = {}; new FormData(f).forEach(function (v, k) { data[k] = data[k] ? [].concat(data[k], v) : v; });
-      try { console.info('[cytogent] access request (not sent: no endpoint configured)', data); } catch (err) {}
-      f.hidden = true; var ok = $('#access-success', scope); ok.hidden = false; ok.focus();
+      var status = $('#form-status', f);
+      if (bad.length) { bad[0].focus(); status.textContent = 'Please check the highlighted fields.'; return; }
+      if (f._sending) { return; }
+      // only the chosen type's answers are sent; checkbox groups become lists
+      var fields = {};
+      $$('input, select, textarea', stepOf(type)).forEach(function (c) {
+        if (!c.name) { return; }
+        if (c.type === 'checkbox') { fields[c.name] = fields[c.name] || []; if (c.checked) { fields[c.name].push(c.value); } return; }
+        fields[c.name] = c.value;
+      });
+      var hp = $('input[name="website"]', f);
+      var btn = $('button[type="submit"]', f);
+      f._sending = true; btn.disabled = true; f.setAttribute('aria-busy', 'true'); status.textContent = 'Sending your request…';
+      function done(err) {
+        f._sending = false; btn.disabled = false; f.removeAttribute('aria-busy');
+        if (err) { status.textContent = err; return; }
+        f.hidden = true; var ok = $('#access-success', scope); ok.hidden = false; ok.focus();
+      }
+      fetch('/api/request-access', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: type, fields: fields, consent: consent.checked, website: hp ? hp.value : '', elapsed: Date.now() - f._t0 })
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          done(r.ok && j.ok ? '' : (j.error || 'We could not send your request. Please try again, or email request@cytogent.com.'));
+        });
+      }).catch(function () { done('We could not send your request. Check your connection and try again.'); });
     });
+    // spam trap: a field people never see or fill in
+    f._t0 = Date.now();
+    if (!$('input[name="website"]', f)) {
+      var trap = d.createElement('div'); trap.setAttribute('aria-hidden', 'true');
+      trap.style.cssText = 'position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden';
+      trap.innerHTML = '<label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>';
+      f.appendChild(trap);
+    }
     $$('input, select, textarea', f).forEach(function (c) { c.addEventListener('input', function () { if (c.getAttribute('aria-invalid')) { setInvalid(c, c.checkValidity() ? '' : message(c)); } }); });
   }
 
