@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /request-access/success/
+
+Sitemap: https://cytogent.com/sitemap.xml

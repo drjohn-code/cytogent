@@ -1,0 +1,65 @@
+# Cytogent
+
+> Cytogent is an agentic workspace for life science research. Scientists and AI agents work together on literature and evidence, in-silico studies, protein studies and design, CRISPR and genome editing, clinical trials from planning to report, and regulatory and patent documentation — every result with cited, auditable evidence.
+
+Cytogent is operated by WelloWork AB, a company registered in Sweden.
+
+## What it is
+
+Cytogent is an agentic workspace for life science research. Scientists and AI agents work together on literature and evidence, in-silico studies, protein studies and design, CRISPR and genome editing, clinical trials from planning to report, and regulatory and patent documentation — every result with cited, auditable evidence.
+
+Access is by request only. There is no self sign-up, no password and no free trial. Three request types: Individual, Institute, Hospital.
+
+Cytogent is a research tool. It is not a medical device and makes no clinical decisions. Agents draft, search, predict and support; a qualified scientist reviews and decides.
+
+## Who it is for
+
+- Pharma & biotech R&D: Target triage, candidate ranking and design loops with cited sources. (https://cytogent.com/industries/pharma-and-biotech/)
+- CROs & clinical teams: Trial documents drafted from your study data, ready for review. (https://cytogent.com/industries/cro-and-clinical-teams/)
+- Hospitals & academic labs: Analysis and writing with a full audit trail inside your permissions. (https://cytogent.com/industries/hospitals-and-academic-labs/)
+- Regulatory & IP teams: Structured drafts for IND/CTA, IVDR files and patent applications. (https://cytogent.com/industries/regulatory-and-ip-teams/)
+
+## Workflows
+
+- Literature & evidence: Papers, patents, protocols and registries in one query. Every claim points to its source. (https://cytogent.com/solutions/literature-and-evidence/)
+- In-silico studies: Screen, simulate and compare before the bench: docking, ADMET, pathway and PK models. (https://cytogent.com/solutions/in-silico-studies/)
+- Protein studies & design: Structure prediction, binding analysis and sequence design, with validation reports. (https://cytogent.com/solutions/protein-design/)
+- CRISPR & genome editing: Guide design, off-target review and screen analysis, documented for the lab. (https://cytogent.com/solutions/crispr-genome-editing/)
+- Clinical trials, full cycle: Protocol drafts, site feasibility, cohort criteria, CRFs, statistical analysis plans, monitoring summaries and CSR drafts. (https://cytogent.com/solutions/clinical-trials/)
+- Regulatory documentation: IND/CTA modules, IVDR technical files and SOPs, structured for reviewer questions. (https://cytogent.com/solutions/regulatory-documentation/)
+- Patent & IP documentation: Prior-art search, invention disclosures and claim-drafting support from your own results. (https://cytogent.com/solutions/patent-documentation/)
+
+## Key pages
+
+- https://cytogent.com/
+- https://cytogent.com/platform/
+- https://cytogent.com/data-and-models/
+- https://cytogent.com/security/
+- https://cytogent.com/about/
+- https://cytogent.com/resources/
+- https://cytogent.com/resources/faq/
+- https://cytogent.com/resources/glossary/
+- https://cytogent.com/request-access/
+- https://cytogent.com/terms/
+- https://cytogent.com/privacy/
+- https://cytogent.com/solutions/literature-and-evidence/
+- https://cytogent.com/solutions/in-silico-studies/
+- https://cytogent.com/solutions/protein-design/
+- https://cytogent.com/solutions/crispr-genome-editing/
+- https://cytogent.com/solutions/clinical-trials/
+- https://cytogent.com/solutions/regulatory-documentation/
+- https://cytogent.com/solutions/patent-documentation/
+- https://cytogent.com/industries/pharma-and-biotech/
+- https://cytogent.com/industries/cro-and-clinical-teams/
+- https://cytogent.com/industries/hospitals-and-academic-labs/
+- https://cytogent.com/industries/regulatory-and-ip-teams/
+
+## Facts
+
+- Product: Cytogent
+- Operator: WelloWork AB
+- Country: Sweden
+- Data: project data is isolated and never trains shared models
+- EU data residency: in progress
+- Access: by request only
+- Contact: info@cytogent.com

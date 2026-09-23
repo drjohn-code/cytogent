@@ -1,0 +1,20 @@
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Build scratch (source/ writes these; the deployable copy lives in site/)
+source/dist/
+source/_og_pages.json
+source/_og.html
+source/_poster.html
+source/_hero.png
+source/artifact.html
+
+# Vercel
+.vercel/
