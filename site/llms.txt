@@ -8,9 +8,25 @@ Cytogent is operated by WelloWork AB, a company registered in Sweden.
 
 Cytogent is an agentic workspace for life science research. Scientists write what they want to find out; Cytogent turns it into a research brief, and AI agents and people plan and do the work together across literature, in-silico studies, protein design, CRISPR, clinical trials, and regulatory and patent documents. Every result is cited and signed off.
 
-Access is by request only. There is no self sign-up, no password and no free trial. Three request types: Individual, Institute, Hospital.
+Access is by request only. There is no self sign-up and no free trial. Three request types: Individual, Institute, Hospital.
 
 Cytogent is a research tool. It is not a medical device and makes no clinical decisions. Agents draft, search, predict and support; a qualified scientist reviews and decides.
+
+## How it works
+
+1. Write: Your goal in plain language. Attach data or connect your sources.
+2. Brief: Cytogent asks a few questions. You confirm and sign the research brief.
+3. Work: Agents and people do the tasks. Each step goes to the best model and is logged.
+4. Decide: Review cited results, sign off, and export to your notebook, LIMS or report.
+
+## Why teams choose Cytogent
+
+- A signed research brief: Cytogent turns a rough idea into a one-page brief with question, controls, endpoints and rules. Agents plan from it.
+- Tasks for people, not only agents: Agents create lab work, reviews and approvals for people, with the protocol attached. Results return to the record.
+- Science models built in: Structure prediction, docking, protein design and CRISPR guide checks run inside the project.
+- One evidence trail: Every claim links to a source you can open, from the brief to the final file, across all seven workflows.
+- Documents reviewers expect: Protocol, CRF, SAP, CSR, IND/CTA, IVDR and patent claims are built from the same cited results.
+- Scientist sign-off on record: Each checkpoint waits for a named person. The sign-off is saved in the audit log.
 
 ## Who it is for
 
@@ -28,6 +44,13 @@ Cytogent is a research tool. It is not a medical device and makes no clinical de
 - Clinical trials, full cycle: Protocol drafts, site feasibility, cohort criteria, CRFs, statistical analysis plans, monitoring summaries and CSR drafts. (https://cytogent.com/solutions/clinical-trials/)
 - Regulatory documentation: IND/CTA modules, IVDR technical files and SOPs, structured for reviewer questions. (https://cytogent.com/solutions/regulatory-documentation/)
 - Patent & IP documentation: Prior-art search, invention disclosures and claim-drafting support from your own results. (https://cytogent.com/solutions/patent-documentation/)
+
+## Compare
+
+- How Cytogent compares for life science research: https://cytogent.com/compare/
+- Cytogent vs ChatGPT: https://cytogent.com/compare/chatgpt/
+- Cytogent vs Grok Bots: https://cytogent.com/compare/grok/
+- Cytogent vs Dust: https://cytogent.com/compare/dust/
 
 ## Key pages
 

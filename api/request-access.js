@@ -17,6 +17,7 @@ const FORMS = {
     nameField: 'ind-name',
     orgField: 'ind-inst',
     fields: [
+      ['ind-question', 'Research question', true],
       ['ind-name', 'Full name', true],
       ['ind-email', 'Work email', true],
       ['ind-inst', 'Institution', true],
@@ -33,6 +34,7 @@ const FORMS = {
     nameField: 'org-contact',
     orgField: 'org-name',
     fields: [
+      ['org-question', 'Research question', true],
       ['org-name', 'Organization name', true],
       ['org-type', 'Type', true],
       ['org-country', 'Country', true],
@@ -52,6 +54,7 @@ const FORMS = {
     nameField: 'hos-contact',
     orgField: 'hos-name',
     fields: [
+      ['hos-question', 'Research question', true],
       ['hos-name', 'Hospital name', true],
       ['hos-dept', 'Department or unit', true],
       ['hos-country', 'Country', true],

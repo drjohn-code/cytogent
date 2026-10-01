@@ -627,7 +627,8 @@ FOOTER = [
                  ("Security", "/security/"), ("Compare", "/compare/"), ("Request access", "/request-access/")]),
     ("Solutions", [(s["nav"], "/solutions/%s/" % s["slug"]) for s in SOLUTIONS]),
     ("Industries", [(i["nav"], "/industries/%s/" % i["slug"]) for i in INDUSTRIES]),
-    ("Company", [("About", "/about/"), ("Resources", "/resources/"), ("FAQ", "/resources/faq/"),
+    # Customers is shown only when PILOTS_PUBLIC is True
+    ("Company", [("About", "/about/"), ("Customers", "/customers/"), ("Resources", "/resources/"), ("FAQ", "/resources/faq/"),
                  ("Glossary", "/resources/glossary/"), ("Terms", "/terms/"), ("Privacy", "/privacy/"),
                  ("Cookie settings", "/privacy/#cookies")]),
 ]

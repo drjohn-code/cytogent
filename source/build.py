@@ -19,7 +19,8 @@ from content import (SITE, DEFINITION, TAGLINE, FACTS_CHECKED, CONFIRM, SOLUTION
                      DEMO, DEMO_STEPS, DEMO_AGENTS)                  # noqa: E402
 from pages import (SOLUTION_PAGES, INDUSTRY_PAGES, PLATFORM, DATA, SECURITY_PAGE, ABOUT, RESOURCES,  # noqa: E402
                    FAQ_PAGE, FAQ_MORE, GLOSSARY_PAGE, GLOSSARY, REQUEST, LEGAL,
-                   COMPARE_HUB, VS_PAGES, VS_FURTHER)
+                   COMPARE_HUB, VS_PAGES, VS_FURTHER,
+                   CUSTOMERS, BRIEF_STRIP, PLANNER, WHY_SPECIALISED)
 
 read = lambda p: open(p, encoding='utf-8').read()
 ORIGIN = SITE['origin']
@@ -337,7 +338,7 @@ def nav(current=''):
     plain = [('Platform', '/platform/'), ('Compare', '/compare/'), ('Data &amp; models', '/data-and-models/'),
              ('Security', '/security/'), ('About', '/about/')]
     # the phone menu also lists the pages that moved to the footer on desktop
-    more = [('Resources', '/resources/')]
+    more = ([('Customers', '/customers/')] if PILOTS_PUBLIC else []) + [('Resources', '/resources/')]
 
     def within(h):
         # a page under /compare/ keeps Compare marked in the bar
@@ -371,6 +372,7 @@ def nav(current=''):
 def footer():
     cols = ''
     for title, items in FOOTER:
+        items = [it for it in items if it[1] != '/customers/' or PILOTS_PUBLIC]
         rows = ''.join('<li><a href="%s"%s>%s</a></li>' % (h, ' data-cookie-settings' if t == 'Cookie settings' else '', t)
                        for t, h in items)
         cols += '<div><h3>%s</h3><ul>%s</ul></div>' % (title, rows)
@@ -440,7 +442,7 @@ def jsonld(path, title, desc, faq=None, crumbs=None, extra=None):
                                  "item": ORIGIN + u} for i, (n, u) in enumerate(crumbs)],
         })
     if extra:
-        blocks.append(extra)
+        blocks.extend(extra if isinstance(extra, list) else [extra])
     if faq:
         blocks.append({
             "@context": "https://schema.org", "@type": "FAQPage",
@@ -460,12 +462,13 @@ def og_name(path):
     return 'og%s.jpg' % (path.rstrip('/').replace('/', '-') or '-home')
 
 
-def page(path, title, desc, body, faq=None, crumbs=None, extra=None):
+def page(path, title, desc, body, faq=None, crumbs=None, extra=None, noindex=False):
     css = font_face(False) + CSS
     canonical = ORIGIN + path
     head = [
         '<title>%s</title>' % title,
         '<meta name="description" content="%s">' % desc,
+        '<meta name="robots" content="noindex">' if noindex else '',
         '<link rel="canonical" href="%s">' % canonical,
         '<meta property="og:type" content="website">',
         '<meta property="og:site_name" content="Cytogent">',
@@ -847,7 +850,9 @@ def icards(items, cols=3, start=0, cls=''):
 
 
 def ticks(items):
-    return '<ul class="ticks">%s</ul>' % ''.join('<li>%s<span>%s</span></li>' % (TICK, t) for t in items)
+    # an item is its text, or (text, open item)
+    pairs = [it if isinstance(it, tuple) else (it, None) for it in items]
+    return '<ul class="ticks">%s</ul>' % ''.join('%s<li>%s<span>%s</span></li>' % (confirm(k), TICK, t) for t, k in pairs)
 
 
 def split(text_html, media_html, flip=False):
@@ -866,8 +871,10 @@ def steps_list(items, drive=None):
 
 
 def status_rows(items):
+    # a row is (control, text, status), with an open item as an optional fourth value
     return '<ul class="rows" data-stagger>%s</ul>' % ''.join(
-        '<li class="row rv" data-rv-item><b>%s</b><p>%s</p>%s</li>' % (n, d_, pill(st)) for n, d_, st in items)
+        '%s<li class="row rv" data-rv-item><b>%s</b><p>%s</p>%s</li>' % (confirm(r[3] if len(r) > 3 else None), r[0], r[1], pill(r[2]))
+        for r in items)
 
 
 def qa_list(items, first_open=True):
@@ -896,21 +903,30 @@ def solution_page(slug):
                btn('See the platform', '/platform/', 'outline', False))]
     h2, lede, bl = c['intro']
     kind, cap, alt = s['vis']
+    # the strip: every workflow starts with a research brief, shown as one example question
+    question, industry = BRIEF_STRIP[slug]
+    strip_ = ('<div class="bstrip rv"><p class="bstrip__k">Starts with a research brief</p>'
+              '<p class="bstrip__q">“%s”</p>'
+              '<p class="bstrip__t">Cytogent asks about data, success criteria and limits, then agents plan from the signed brief. '
+              '<a href="/#demo">See an example</a></p></div>' % question)
     o.append(band('dark', 'h-what', split(
         '<h2 id="h-what">%s</h2>%s' % (kw(h2), ticks(bl)),
-        dframe(kind, cap, alt))))
+        dframe(kind, cap, alt)) + strip_))
     t = c['team']
     cfg = {'q': t['q'], 'agents': [[a[0], a[1]] for a in t['agents']], 'outs': t['outs']}
-    team_alt = ('You ask: %s. The Reader, the Analyst and the Writer take turns, each with its model, and their work '
-                'lands as %s. You sign off.' % (t['q'], ', '.join(t['outs'])))
+    team_alt = ('You ask: %s. The Planner turns the question into a brief and gives one task to a person on your team. '
+                'The Reader, the Analyst and the Writer take turns, each with its model, and their work lands as %s. '
+                'You sign off.' % (t['q'], ', '.join(t['outs'])))
+    figures = [(PLANNER[0], PLANNER[1], PLANNER[2], PLANNER[3], 4)] + [(a[0], a[1], a[2], a[3], i) for i, a in enumerate(t['agents'])]
     o.append(band('cream', 'h-team',
-                  head2('h-team', 'Three agents, one <kw>result</kw>.',
+                  head2('h-team', 'Four agents, one <kw>result</kw>.',
                         'Each agent does one job, with the model that does it best, and hands its work to the next. You see every step.') +
-                  '<div class="teamgrid">%s%s</div>' % (
-                      '<div class="rv">%s</div>' % dframe('team', 'You ask · agents take turns · results arrive cited · you sign off', team_alt, cfg=cfg),
+                  confirm('planner') + '<div class="teamgrid">%s%s</div>' % (
+                      '<div class="rv">%s</div>' % dframe('team', 'You ask · the Planner splits the work · agents take turns, a person gets a task · you sign off',
+                                                          team_alt, cfg=cfg),
                       '<ul class="agents rv" data-stagger>%s</ul>' % ''.join(
                           '<li class="agentrow" data-rv-item>%s<div><h3>%s <span>%s</span></h3><p>%s</p></div></li>'
-                          % (ico(a[2], [0, 1, 2][i]), a[0], a[1], a[3]) for i, a in enumerate(t['agents'])))))
+                          % (ico(a[2], a[4]), a[0], a[1], a[3]) for a in figures))))
     o.append(band('dark', 'h-out', head2('h-out', 'What you get <kw>back</kw>.',
                                          'Every output carries its sources, its versions and the name of whoever signed it off.') +
                   icards([(a, b, c_) for a, b, c_ in c['outputs']], cols=4)))
@@ -918,7 +934,10 @@ def solution_page(slug):
                   '<div class="faq rv">%s</div>' % qa_list(c['faq'])))
     rel = [(SOL_ICON[r], SOL[r]['title'], SOL[r]['blurb'], '/solutions/%s/' % r, 'See this workflow') for r in c['related']]
     o.append(band('dark', 'h-rel', head2('h-rel', 'Works well <kw>with</kw>.',
-                                         'The same agents, data and rules, so a result here is a source there.') + icards(rel, cols=3, start=2)))
+                                         'The same agents, data and rules, so a result here is a source there.') + icards(rel, cols=3, start=2) +
+                  '<p class="more more--row rv">%s%s</p>' % (
+                      tlink('How Cytogent compares', '/compare/'),
+                      tlink('For %s' % lower_first(IND[industry]['nav']), '/industries/%s/' % industry))))
     o.append(cta('Bring your next <kw>question</kw>.', 'Tell us your field and what you want to do. We set up the workspace around it.'))
     return ''.join(o)
 
@@ -950,6 +969,9 @@ def industry_page(slug):
     o.append(band('cream', 'h-rules', head2('h-rules', 'Inside your data <kw>rules</kw>.', 'Each control says plainly where it stands.') +
                   '<div class="grid grid--3 icards rv" data-stagger>%s</div>' % rules +
                   '<p class="more rv">%s</p>' % tlink('Read the full security page', '/security/')))
+    o.append(band('dark', 'h-spec', confirm('standards' if slug == 'hospitals-and-academic-labs' else None) +
+                  head2('h-spec', 'Why a specialised <kw>workspace</kw>?', WHY_SPECIALISED[slug], show=True) +
+                  '<p class="more rv">%s</p>' % tlink('See how Cytogent compares', '/compare/')))
     o.append(cta('Bring your next <kw>question</kw>.', 'Tell us your field and what you want to do. We set up the workspace around it.', href))
     return ''.join(o)
 
@@ -1001,10 +1023,15 @@ def platform_page():
 
 
 # ---- compare --------------------------------------------------------------
+def lower_first(label):
+    """'Pharma &amp; biotech' -> 'pharma &amp; biotech'; an acronym such as CROs keeps its capitals."""
+    return label if label[:2].isupper() else label[0].lower() + label[1:]
+
+
 def sol_links(slugs, lead='See it in a workflow'):
     """Text links to the solution pages a page should point to."""
     return '<p class="more more--row rv"><span>%s</span>%s</p>' % (
-        lead, ''.join(tlink(strip(SOL[s_]['title']), '/solutions/%s/' % s_) for s_ in slugs))
+        lead, ''.join(tlink(SOL[s_]['title'], '/solutions/%s/' % s_) for s_ in slugs))
 
 
 def tick_list(items):
@@ -1089,8 +1116,9 @@ def data_page():
     h2, lede, items = c['datasets']
     o.append(band('dark', 'h-ds', head2('h-ds', h2, lede) + icards(items, cols=3)))
     h2, lede, items = c['models']
-    o.append(band('cream', 'h-tm', head2('h-tm', h2, lede) +
-                  '<div class="wide rv">%s</div>' % dframe('models', 'Three trained models · validation drawn on each card',
+    o.append(band('cream', 'h-tm', head2('h-tm', h2, lede) + confirm('trained') +
+                  '<div class="legend rv">%s</div>' % pill('progress') +
+                  '<div class="wide wide--tight rv">%s</div>' % dframe('models', 'Three trained models · validation drawn on each card',
                                                           'Three model cards: a variant effect model with a curve above chance, a binding '
                                                           'affinity model with predictions close to measurements, and an assay QC model '
                                                           'scanning a plate and flagging three wells.', cls='frame--wide') +
@@ -1103,6 +1131,8 @@ def data_page():
                                              'and gains a tag at each one.'))))
     h2, lede, items = c['yours']
     o.append(band('cream', 'h-yours', head2('h-yours', h2, lede) + icards(items, cols=3, start=3)))
+    h2, lede, items = c['standards']
+    o.append(band('dark', 'h-std', confirm('standards') + head2('h-std', h2, lede) + icards(items, cols=4, start=1)))
     o.append(cta('Bring your next <kw>question</kw>.', 'Tell us your field and what you want to do. We set up the workspace around it.'))
     return ''.join(o)
 
@@ -1114,7 +1144,7 @@ def security_page():
     legend = ('<div class="legend rv">%s%s%s</div>' % (pill('done'), pill('progress'), pill('planned')))
     h2, lede, rows = c['handling']
     o.append(band('dark', 'h-dh', head2('h-dh', h2, lede) + legend + split(status_rows(rows), dframe(
-        'encrypt', 'In transit through TLS · at rest under managed keys · inside its project',
+        'encrypt', 'In transit through TLS · at rest under managed keys (in progress) · inside its project',
         'Data leaves a person, crosses an encrypted tunnel as scrambled blocks, and is stored inside Project A under a key that turns on a schedule.'))))
     h2, lede, rows = c['access']
     o.append(band('cream', 'h-ac', head2('h-ac', h2, lede) + split(status_rows(rows), dframe(
@@ -1135,25 +1165,72 @@ def security_page():
 
 
 # ---- about ----------------------------------------------------------------
+def team_cards(people):
+    """Person cards: a circle photo when the file is in static/img/team/, initials until then."""
+    out = ''
+    for p_ in people:
+        photo = os.path.join(STATIC, 'img', 'team', p_['photo'])
+        if os.path.exists(photo):
+            face = ('<img class="person__img" src="/img/team/%s" alt="Portrait of %s" width="320" height="320" loading="lazy" decoding="async">'
+                    % (p_['photo'], p_['name']))
+        else:
+            ini = ''.join(w[0] for w in p_['name'].split())[:2].upper()
+            face = '<span class="av person__img" aria-hidden="true">%s</span>' % ini
+        out += ('<div class="card person" data-rv-item>%s<div><h3>%s</h3><p class="person__role">%s</p></div><p class="card__get">%s</p></div>'
+                % (face, p_['name'], p_['role'], p_['text']))
+    return '<div class="grid grid--3 people rv" data-stagger>%s</div>' % out
+
+
 def about_page():
     c = ABOUT
     o = [phero(c['h1'], c['hero'], btn('Request access', '/request-access/', 'primary') + btn('See the platform', '/platform/', 'outline', False))]
     o.append('<section class="band band--dark" aria-labelledby="h-def"><div class="wrap"><div class="def rv">'
              '<h2 id="h-def">What Cytogent <span class="nobr"><span class="kw">is</span>.</span></h2><p>%s</p></div></div></section>' % DEFINITION)
+    h2, lede, people = c['team']
+    o.append(band('cream', 'h-team', confirm('team') + head2('h-team', h2, lede, show=True) + team_cards(people)))
     h2, lede = c['mission']
-    o.append(band('cream', 'h-mis', split('<h2 id="h-mis">%s</h2>' % kw(h2),
-                                          dframe('circle', 'Scientists ask · agents read, compute and draft · scientists judge and decide',
-                                                 'A project in the centre with two people on the left and three agents on the right: '
-                                                 'the people ask, the agents work, and the people review and decide.'))))
+    o.append(band('dark', 'h-mis', split('<h2 id="h-mis">%s</h2>' % kw(h2),
+                                         dframe('circle', 'Scientists ask · agents read, compute and draft · scientists judge and decide',
+                                                'A project in the centre with two people on the left and three agents on the right: '
+                                                'the people ask, the agents work, and the people review and decide.'))))
     h2, lede, items = c['principles']
-    o.append(band('dark', 'h-pr', head2('h-pr', h2, lede) + icards(items, cols=4)))
+    o.append(band('cream', 'h-pr', head2('h-pr', h2, lede) + icards(items, cols=4)))
     h2, p1, url = c['partner']
-    o.append(band('cream', 'h-kg', split('<h2 id="h-kg">%s</h2><p class="body body--lg">%s</p>' % (kw(h2), p1),
-                                         '<a class="kg" href="%s" rel="noopener" aria-label="Kilogent, opens kilogent.com">%s</a>'
-                                         % (url, KILOGENT_MARK))))
+    o.append(band('dark', 'h-kg', split('<h2 id="h-kg">%s</h2><p class="body body--lg">%s</p>' % (kw(h2), p1),
+                                        '<a class="kg" href="%s" rel="noopener" aria-label="Kilogent, opens kilogent.com">%s</a>'
+                                        % (url, KILOGENT_MARK))))
     h2, mail = c['contact']
-    o.append('<section class="band band--dark" aria-labelledby="h-cta"><div class="wrap"><div class="cta contact rv">'
+    o.append('<section class="band band--cream" aria-labelledby="h-cta"><div class="wrap"><div class="cta contact rv">'
              '<h2 id="h-cta">%s</h2><a class="contact__mail" href="mailto:%s">%s</a></div></div></section>' % (kw(h2), mail, mail))
+    return ''.join(o)
+
+
+def people_jsonld():
+    """Person JSON-LD for the team. The founders work for the organization; the advisor is affiliated with it."""
+    out = []
+    for p_ in ABOUT['team'][2]:
+        d = {"@context": "https://schema.org", "@type": "Person", "name": p_['name'], "jobTitle": p_['role'],
+             "description": p_['text'], ("worksFor" if p_['staff'] else "affiliation"): {"@id": ORIGIN + "/#organization"}}
+        if p_['sameAs']:
+            d["sameAs"] = p_['sameAs']
+        out.append(d)
+    return out
+
+
+# ---- customers: the two pilots ----------------------------------------------
+def customers_page():
+    c = CUSTOMERS
+    o = [phero(c['h1'], c['hero'], btn('Request access', '/request-access/', 'primary') + btn('See the workflows', '/#h-flows', 'outline', False),
+               sub=c['sub'])]
+    o.append(confirm('pilots'))
+    for n, p_ in enumerate(c['pilots']):
+        kind, cap, alt = SOL[p_['links'][0]]['vis']
+        text_ = ('<h2 id="%s">%s</h2><p class="body">%s</p>%s<p class="more more--row">%s</p>'
+                 % (p_['id'], kw(p_['h2']), p_['body'], ticks(p_['ticks']),
+                    ''.join(tlink(SOL[s_]['title'], '/solutions/%s/' % s_) for s_ in p_['links'])))
+        o.append(band('dark' if n % 2 == 0 else 'cream', p_['id'], split(text_, dframe(kind, cap, alt), flip=(n % 2 == 1))))
+    h2, lede = c['cta']
+    o.append(cta(h2, lede, kind='dark'))
     return ''.join(o)
 
 
@@ -1234,8 +1311,16 @@ def request_page():
         return ('<select class="input" id="%s" name="%s"%s><option value="">Choose one</option>%s</select>'
                 % (fid, fid, ' required' if req else '', ''.join('<option>%s</option>' % o_ for o_ in opts)))
 
-    def area(fid, ph):
-        return '<textarea class="input" id="%s" name="%s" required placeholder="%s"></textarea>' % (fid, fid, ph)
+    def area(fid, ph, rows=0, hint=False):
+        return ('<textarea class="input" id="%s" name="%s" required placeholder="%s"%s%s></textarea>'
+                % (fid, fid, ph, ' rows="%d"' % rows if rows else '', ' aria-describedby="%s-hint"' % fid if hint else ''))
+
+    def question(key):
+        # the first field of every form: what the visitor wants to find out
+        fid = key + '-question'
+        return field(fid, 'What do you want to find out?',
+                     area(fid, 'Example: Why does our cell line stop responding to the inhibitor after six weeks?', rows=4, hint=True),
+                     'Plain words are fine. We use this to prepare a first research brief for your call.')
 
     def choices(name, opts):
         return '<div class="choices">%s</div>' % ''.join(
@@ -1251,9 +1336,9 @@ def request_page():
     DEFAULT = 'institute'  # chosen when the page opens, so a form is already there
     type_cards = ''.join('<label class="type" for="type-%s"><input type="radio" name="type" value="%s" id="type-%s"%s>%s<b>%s</b><span>%s</span></label>'
                          % (v, v, v, ' checked' if v == DEFAULT else '', ico(i_, n), t, dd) for n, (v, t, dd, i_) in enumerate(types))
-    ind = ('<div class="form-step" id="step-individual" hidden><h2 class="form__title">About you</h2><div class="fgrid">%s%s%s%s</div>%s'
+    ind = ('<div class="form-step" id="step-individual" hidden><h2 class="form__title">About you</h2>%s<div class="fgrid">%s%s%s%s</div>%s'
            '<div class="fgrid">%s%s</div>%s</div>'
-           % (field('ind-name', 'Full name', inp('ind-name', auto='name')),
+           % (question('ind'), field('ind-name', 'Full name', inp('ind-name', auto='name')),
               field('ind-email', 'Work email', inp('ind-email', 'email', 'email', extra=' aria-describedby="ind-email-hint"'), 'An institutional address helps us verify faster.'),
               field('ind-inst', 'Institution', inp('ind-inst', auto='organization')),
               field('ind-role', 'Role', inp('ind-role', auto='organization-title', ph='Postdoc, PI, bioinformatician')),
@@ -1261,9 +1346,9 @@ def request_page():
               field('ind-orcid', 'ORCID', inp('ind-orcid', req=False, ph='0000-0000-0000-0000', extra=r' inputmode="numeric" pattern="\d{4}-\d{4}-\d{4}-\d{3}[\dX]"'), opt=True),
               field('ind-heard', 'How did you hear about us?', sel('ind-heard', ['A colleague', 'A conference', 'A publication', 'Search', 'Social media', 'Other'])),
               field('ind-use', 'Intended use', area('ind-use', 'What would you do with the workspace in the first month?'))))
-    org = ('<div class="form-step" id="step-institute"><h2 class="form__title">About your organization</h2><div class="fgrid">%s%s%s%s%s%s%s%s</div>%s%s'
+    org = ('<div class="form-step" id="step-institute"><h2 class="form__title">About your organization</h2>%s<div class="fgrid">%s%s%s%s%s%s%s%s</div>%s%s'
            '<fieldset class="fs"><legend>Compliance needs</legend>%s</fieldset></div>'
-           % (field('org-name', 'Organization name', inp('org-name', auto='organization')),
+           % (question('org'), field('org-name', 'Organization name', inp('org-name', auto='organization')),
               field('org-type', 'Type', sel('org-type', ['Private company', 'Academic institute', 'CRO', 'Other'])),
               field('org-country', 'Country', inp('org-country', auto='country-name')),
               field('org-web', 'Website', inp('org-web', 'url', 'url', ph='https://', extra=' inputmode="url"')),
@@ -1274,9 +1359,9 @@ def request_page():
               fields_fs('org'),
               field('org-use', 'Intended use', area('org-use', 'Which teams, which questions, which data?')),
               choices('org-compliance', ['GDPR', 'HIPAA', 'ISO 27001', 'SOC 2', 'IVDR / MDR', 'GxP', 'Data residency'])))
-    hos = ('<div class="form-step" id="step-hospital" hidden><h2 class="form__title">About your hospital</h2><div class="fgrid">%s%s%s%s%s%s%s%s%s%s</div>%s%s'
+    hos = ('<div class="form-step" id="step-hospital" hidden><h2 class="form__title">About your hospital</h2>%s<div class="fgrid">%s%s%s%s%s%s%s%s%s%s</div>%s%s'
            '<fieldset class="fs"><legend>Compliance needs</legend>%s</fieldset></div>'
-           % (field('hos-name', 'Hospital name', inp('hos-name', auto='organization')),
+           % (question('hos'), field('hos-name', 'Hospital name', inp('hos-name', auto='organization')),
               field('hos-dept', 'Department or unit', inp('hos-dept', ph='Oncology, clinical genetics, molecular pathology')),
               field('hos-country', 'Country', inp('hos-country', auto='country-name')),
               field('hos-web', 'Website', inp('hos-web', 'url', 'url', req=False, ph='https://', extra=' inputmode="url"'), opt=True),
@@ -1299,8 +1384,9 @@ def request_page():
            '<fieldset class="fs" aria-labelledby="type-title">'
            '<h2 class="form__title rq__title" id="type-title">Select the option that fits you and fill out the request form</h2>'
            '<div class="types">%s</div></fieldset>%s%s%s%s</form>' % (type_cards, ind, org, hos, consent))
-    success = ('<div class="success" id="access-success" hidden tabindex="-1">%s<h2 class="form__title">Request received.</h2>'
-               '<p class="lede">We process every request within 5 working days. You will hear from us by email.</p></div>' % ico('check', 4))
+    success = ('%s<div class="success" id="access-success" hidden tabindex="-1">%s<h2 class="form__title">Request received.</h2>'
+               '<p class="lede">Thanks. We read every request and reply within five working days, with a first draft of your '
+               'research brief.</p></div>' % (confirm('reply'), ico('check', 4)))
     o = [phero(c['h1'], c['hero'], '', short=True, sub=c['sub'])]
     o.append('<section class="band band--dark" aria-label="Request form"><div class="wrap"><div class="rqwrap">%s%s</div></div></section>' % (frm, success))
     return ''.join(o)
@@ -1328,7 +1414,8 @@ def inner_pages():
                   [('Home', '/'), ('Compare', '/compare/'), (v['name'], '/compare/%s/' % k)], None))
     P.append(('/data-and-models/', DATA['title'], DATA['desc'], data_page, None, [('Home', '/'), ('Data and models', '/data-and-models/')], None))
     P.append(('/security/', SECURITY_PAGE['title'], SECURITY_PAGE['desc'], security_page, SECURITY_PAGE['faq'], [('Home', '/'), ('Security', '/security/')], None))
-    P.append(('/about/', ABOUT['title'], ABOUT['desc'], about_page, None, [('Home', '/'), ('About', '/about/')], None))
+    P.append(('/customers/', CUSTOMERS['title'], CUSTOMERS['desc'], customers_page, None, [('Home', '/'), ('Customers', '/customers/')], None))
+    P.append(('/about/', ABOUT['title'], ABOUT['desc'], about_page, None, [('Home', '/'), ('About', '/about/')], people_jsonld()))
     P.append(('/resources/', RESOURCES['title'], RESOURCES['desc'], resources_page, None, [('Home', '/'), ('Resources', '/resources/')], None))
     allfaq = [qa for g in faq_groups() for qa in g[1]]
     P.append(('/resources/faq/', FAQ_PAGE['title'], FAQ_PAGE['desc'], faq_page, allfaq, [('Home', '/'), ('Resources', '/resources/'), ('FAQ', '/resources/faq/')], None))
@@ -1358,6 +1445,7 @@ def hero_of(path):
          '/resources/': RESOURCES, '/resources/faq/': FAQ_PAGE, '/resources/glossary/': GLOSSARY_PAGE,
          '/request-access/': REQUEST, '/terms/': LEGAL['terms'], '/privacy/': LEGAL['privacy']}
     m['/compare/'] = COMPARE_HUB
+    m['/customers/'] = CUSTOMERS
     if path in m:
         return m[path]['hero'], m[path]['h1']
     if path.startswith('/compare/'):
@@ -1372,7 +1460,7 @@ def hero_of(path):
 # ============================================================== SEO files ===
 def seo_files():
     urls = ['/', '/platform/', '/compare/'] + ['/compare/%s/' % k for k in VS_PAGES]
-    urls += ['/data-and-models/', '/security/', '/about/',
+    urls += (['/customers/'] if PILOTS_PUBLIC else []) + ['/data-and-models/', '/security/', '/about/',
              '/resources/', '/resources/faq/', '/resources/glossary/',
              '/request-access/', '/terms/', '/privacy/']
     urls += ['/solutions/%s/' % s['slug'] for s in SOLUTIONS]
@@ -1392,16 +1480,30 @@ def seo_files():
             'Cytogent is operated by WelloWork AB, a company registered in Sweden.', '',
             '## What it is', '',
             strip(DEFINITION), '',
-            'Access is by request only. There is no self sign-up, no password and no free trial. '
+            'Access is by request only. There is no self sign-up and no free trial. '
             'Three request types: Individual, Institute, Hospital.', '',
             'Cytogent is a research tool. It is not a medical device and makes no clinical decisions. '
             'Agents draft, search, predict and support; a qualified scientist reviews and decides.', '',
-            '## Who it is for', '']
+            '## How it works', '']
+    for n, (h, p_) in enumerate(HOW, 1):
+        llms.append('%d. %s: %s' % (n, h, p_))
+    llms += ['', '## Why teams choose Cytogent', '']
+    for _, h, p_, _k in COMPARE_HUB['further'][2]:
+        llms.append('- %s: %s' % (h, p_))
+    llms += ['', '## Who it is for', '']
     for i in INDUSTRIES:
-        llms.append('- %s: %s (%s%s/industries/%s/)' % (strip(i['title']), strip(i['get']), ORIGIN, '', i['slug']))
+        llms.append('- %s: %s (%s/industries/%s/)' % (strip(i['title']), strip(i['get']), ORIGIN, i['slug']))
     llms += ['', '## Workflows', '']
     for s in SOLUTIONS:
         llms.append('- %s: %s (%s/solutions/%s/)' % (strip(s['title']), strip(s['blurb']), ORIGIN, s['slug']))
+    llms += ['', '## Compare', '', '- How Cytogent compares for life science research: %s/compare/' % ORIGIN]
+    for k, v in VS_PAGES.items():
+        llms.append('- Cytogent vs %s: %s/compare/%s/' % (v['name'], ORIGIN, k))
+    if PILOTS_PUBLIC:
+        llms += ['', '## Pilots', '']
+        for p_ in PILOTS:
+            llms.append('- %s: %s' % (p_['name'], p_['line']))
+        llms.append('- %s/customers/' % ORIGIN)
     llms += ['', '## Key pages', '']
     for u in urls:
         llms.append('- %s%s' % (ORIGIN, u))
@@ -1423,7 +1525,11 @@ def build():
     for f in ['Geist-Latin.woff2', 'GeistMono-Latin.woff2']:
         shutil.copy(os.path.join(STATIC, 'fonts', f), os.path.join(DIST, 'fonts', f))
     for f in os.listdir(os.path.join(STATIC, 'img')):
-        shutil.copy(os.path.join(STATIC, 'img', f), os.path.join(DIST, 'img', f))
+        src_ = os.path.join(STATIC, 'img', f)
+        if os.path.isdir(src_):   # img/team/: the portraits
+            shutil.copytree(src_, os.path.join(DIST, 'img', f), ignore=shutil.ignore_patterns('.*', '*.md'))
+        elif not f.startswith('.'):
+            shutil.copy(src_, os.path.join(DIST, 'img', f))
     shutil.copy(os.path.join(SRC, 'js', 'cell.js'), os.path.join(DIST, 'js', 'cell.js'))
     shutil.copy(os.path.join(SRC, 'js', 'diagrams.js'), os.path.join(DIST, 'js', 'diagrams.js'))
     shutil.copy(os.path.join(SRC, 'js', 'app.js'), os.path.join(DIST, 'js', 'app.js'))
@@ -1443,7 +1549,8 @@ def build():
         b_ = fn()
         out = os.path.join(DIST, path.strip('/'))
         os.makedirs(out, exist_ok=True)
-        open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(page(path, t, d_, b_, faq=faq, crumbs=crumbs, extra=extra))
+        open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(
+            page(path, t, d_, b_, faq=faq, crumbs=crumbs, extra=extra, noindex=(path == '/customers/' and not PILOTS_PUBLIC)))
         built.append((path, t, b_))
 
     sm, robots, llms = seo_files()

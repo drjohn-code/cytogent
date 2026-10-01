@@ -1124,3 +1124,23 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
 .srcs ul{display:grid;gap:8px}
 .srcs a{font-size:15px;color:var(--accent);text-underline-offset:3px;word-break:break-word}
 .srcs .fnote{margin-top:14px}
+
+/* solution pages: the "starts with a research brief" strip, right after the intro */
+.bstrip{margin-top:44px;padding:24px 26px;border-radius:var(--r);border:1px solid rgba(179,166,255,.35);
+  background:linear-gradient(180deg,rgba(179,166,255,.07),rgba(179,166,255,.02)),var(--ink-800);display:grid;gap:10px}
+.bstrip__k{font-family:var(--mono);font-size:11px;line-height:1;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.bstrip__q{font-size:clamp(19px,1.9vw,24px);line-height:1.35;letter-spacing:-.015em;color:var(--on-dark);max-width:44ch}
+.bstrip__t{font-size:15px;line-height:1.55;color:var(--on-dark-2);max-width:70ch}
+.bstrip__t a{color:var(--accent);text-underline-offset:3px;white-space:nowrap}
+
+/* about: the team. A circle portrait, or initials until the photo is there */
+.people{margin-top:44px}
+.person{gap:16px}
+.person__img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line-dark-2)}
+.av.person__img{font-size:24px;letter-spacing:.02em}
+.person h3{font-size:clamp(18px,1.4vw,20px)}
+.person__role{margin-top:4px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+
+/* data page: a status legend directly above a wide diagram */
+.wide--tight{margin-top:18px}
+.split__text .body{max-width:none}

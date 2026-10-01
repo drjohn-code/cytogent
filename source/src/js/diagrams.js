@@ -495,42 +495,56 @@
   }
   function mono(ctx, s, x, y, o) { o = o || {}; o.font = o.font || ('500 10.5px ' + MONO); text(ctx, s, x, y, o); }
 
-  // A workflow team: you ask; Reader, Analyst and Writer take turns; their outputs land as documents; you sign off
+  // A workflow team: you ask; the Planner turns it into a brief and hands one task to a person;
+  // Reader, Analyst and Writer take turns; their outputs land as documents; you sign off
   D.team = function (ctx, w, h, t, st) {
     ground(ctx, w, h, 121);
     var c = cfgOf(st, { q: 'Your question', agents: [['Reader', 'long-context LLM'], ['Analyst', 'code model'], ['Writer', 'drafting LLM']], outs: ['Result', 'Sources', 'Draft'] });
-    var cyc = (t * 0.075) % 1, nar = narrow(w, h);
-    var you = { x: w * 0.1, y: h * 0.5 }, ax = w * (nar ? 0.4 : 0.39);
+    var cyc = (t * 0.07) % 1, TEAL = P.teal;
+    var you = { x: w * 0.08, y: h * 0.36 }, pl = { x: w * 0.24, y: h * 0.36 }, pp = { x: w * 0.24, y: h * 0.8 }, ax = w * 0.43;
     var ys = [0.2, 0.5, 0.8].map(function (f) { return h * f; });
     var cols = c.agents.map(function (a) { return ACOL[a[0]] || P.lilac; });
-    // phases: ask, three turns, outputs, sign-off
-    var ph = [[0.02, 0.1], [0.1, 0.3], [0.36, 0.54], [0.6, 0.78]];
+    // phases: ask, plan, three turns, outputs, sign-off
+    var ASK = [0.02, 0.08], PLAN = [0.08, 0.16], ph = [[0.22, 0.36], [0.42, 0.56], [0.62, 0.78]];
     var qx = 12, qy = Math.max(18, h * 0.06);
     chip(ctx, qx, qy, c.q, P.lilac, { on: true });
     link(ctx, { x: you.x, y: you.y - 22 }, { x: Math.min(qx + 20, you.x), y: qy + 11 }, { col: P.lilac, a: 0.25, dash: true });
-    var l0 = link(ctx, { x: you.x + 22, y: you.y }, { x: ax - 24, y: ys[0] }, { col: P.lilac, a: 0.35, bend: 0.12 });
+    var l0 = link(ctx, { x: you.x + 22, y: you.y }, { x: pl.x - 24, y: pl.y }, { col: P.lilac, a: 0.35 });
+    var l1 = link(ctx, { x: pl.x + 24, y: pl.y }, { x: ax - 24, y: ys[0] }, { col: TEAL, a: 0.4, bend: 0.1 });
+    // the Planner's other task goes straight down, to a person
+    var lp = link(ctx, { x: pl.x, y: pl.y + 58 }, { x: pp.x, y: pp.y - 18 }, { col: TEAL, a: 0.4, dash: true });
     // each handoff runs straight down, from under one agent's name and role to the top of the next agent
     var hand = [0, 1].map(function (i) { return link(ctx, { x: ax, y: ys[i] + 58 }, { x: ax, y: ys[i + 1] - 26 }, { col: cols[i], a: 0.45, dash: true }); });
     var ox = w * 0.64, cw = w * 0.3, ch = Math.max(34, h * 0.12), oys = [h * 0.16, h * 0.16 + ch + 12, h * 0.16 + (ch + 12) * 2];
     var outs = oys.map(function (oy) { return link(ctx, { x: ax + 24, y: ys[2] }, { x: ox - 4, y: oy + ch / 2 }, { col: cols[2], a: 0.3, bend: -0.1 }); });
     person(ctx, you.x, you.y, 20, 'You');
+    var planning = cyc >= PLAN[0] && cyc < PLAN[1];
+    agent(ctx, pl.x, pl.y, 44, TEAL, 'Planner', 'long-context LLM', cyc < PLAN[0] ? 0.2 : (planning ? 1 : 0.6));
+    if (planning) spinner(ctx, pl.x, pl.y, 30, TEAL, t, 0.9);
+    if (cyc >= PLAN[1]) check(ctx, pl.x - 26, pl.y - 18, 7, P.teal, 1);   // on the left, clear of the first agent's labels
+    // the person does the task while the agents work, and is done before the outputs land
+    var busy = cyc >= ph[0][0] && cyc < ph[2][0];
+    person(ctx, pp.x, pp.y, 15, 'Your team');
+    if (busy) spinner(ctx, pp.x, pp.y, 22, P.amber, t, 0.8);
+    if (cyc >= ph[2][0]) check(ctx, pp.x + 17, pp.y - 14, 6, P.teal, 1);
     c.agents.forEach(function (a, i) {
-      var on = cyc >= ph[i + 1][0] && cyc < ph[i + 1][1] ? 1 : (cyc >= ph[i + 1][1] ? 0.55 : 0);
+      var on = cyc >= ph[i][0] && cyc < ph[i][1] ? 1 : (cyc >= ph[i][1] ? 0.55 : 0);
       agent(ctx, ax, ys[i], 44, cols[i], a[0], a[1], 0.2 + 0.8 * on);
       if (on === 1) { spinner(ctx, ax, ys[i], 30, cols[i], t, 0.9); }
-      if (cyc >= ph[i + 1][1]) check(ctx, ax + 26, ys[i] - 18, 7, P.teal, 1);
+      if (cyc >= ph[i][1]) check(ctx, ax + 26, ys[i] - 18, 7, P.teal, 1);
     });
-    // the question travels, then each handoff
-    var u = smooth((cyc - ph[0][0]) / (ph[0][1] - ph[0][0])); if (u > 0 && u < 1) packet(ctx, l0(u), P.lilac);
-    [0, 1].forEach(function (i) { var s = (cyc - ph[i + 1][1]) / (ph[i + 2][0] - ph[i + 1][1]); if (s > 0 && s < 1) packet(ctx, hand[i](smooth(s)), cols[i]); });
+    // the question travels to the Planner; the plan goes out to the first agent and to the person; then each handoff
+    var u = smooth((cyc - ASK[0]) / (ASK[1] - ASK[0])); if (u > 0 && u < 1) packet(ctx, l0(u), P.lilac);
+    var v = smooth((cyc - PLAN[1]) / (ph[0][0] - PLAN[1])); if (v > 0 && v < 1) { packet(ctx, l1(v), TEAL); packet(ctx, lp(v), TEAL); }
+    [0, 1].forEach(function (i) { var s = (cyc - ph[i][1]) / (ph[i + 1][0] - ph[i][1]); if (s > 0 && s < 1) packet(ctx, hand[i](smooth(s)), cols[i]); });
     // outputs arrive one by one while the Writer works; the source number sits in the card's lower corner
     c.outs.forEach(function (o, i) {
-      var f = smooth((cyc - (0.64 + i * 0.05)) / 0.06);
+      var f = smooth((cyc - (0.66 + i * 0.05)) / 0.06);
       card(ctx, ox, oys[i], cw, ch, { title: o, lines: 2, on: f > 0.5, col: cols[2], widths: [0.62, 0.4] });
       if (f > 0.5) { var bxx = ox + cw - 16, byy = oys[i] + ch - 12; enter(); ctx.save(); ctx.fillStyle = rgba(P.lilac, 0.2); rrect(ctx, bxx - 9, byy - 7, 18, 14, 3); ctx.fill(); ctx.strokeStyle = rgba(P.lilac, 0.7); ctx.lineWidth = 1; ctx.stroke(); ctx.restore(); leave(); mono(ctx, String(i + 1), bxx, byy + 0.5, { align: 'center', color: P.lilac, font: '500 9px ' + MONO }); }
       if (f > 0 && f < 1) packet(ctx, outs[i](f), cols[2]);
     });
-    var sf = smooth((cyc - 0.84) / 0.08), sy = oys[2] + ch + 30;
+    var sf = smooth((cyc - 0.86) / 0.08), sy = oys[2] + ch + 30;
     check(ctx, ox + 14, sy, 12, P.amber, sf); mono(ctx, 'you sign off', ox + 34, sy, { color: P.amber, a: sf });
   };
 

@@ -227,6 +227,8 @@
         f._sending = false; btn.disabled = false; f.removeAttribute('aria-busy');
         if (err) { status.textContent = err; return; }
         f.hidden = true; var ok = $('#access-success', scope); ok.hidden = false; ok.focus();
+        // analytics, only with consent: one lead per request that was sent
+        if (typeof window.cgTrack === 'function') { window.cgTrack('generate_lead', { form_type: type }); }
       }
       fetch('/api/request-access', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },

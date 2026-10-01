@@ -23,6 +23,7 @@ SOLUTION_PAGES = {
                   "Papers, patents, protocols and registries are searched together. Results come back as claims "
                   "with sources, not as a list of links.",
                   ["Search papers, patents and protocols at once.",
+                   ("Full-text papers from ScienceDirect, through Elsevier's API.", "sciencedirect"),
                    "Every sentence in a result links to the passage it came from.",
                    "Open questions and conflicting findings are marked, not hidden."]),
         "team": {
@@ -421,7 +422,9 @@ DATA = {
                   ("molecule", "Protein structures and annotations", "Experimental and predicted structures with domain and site annotations."),
                   ("flask", "Compound and assay libraries", "Screening results linked to compounds, targets and conditions."),
                   ("users", "Clinical and epidemiological registries", "Aggregated registries with documented consent and access terms."),
-                  ("book", "Literature and protocol corpus", "Open-access papers, patents and protocols, indexed for citation."),
+                  # CONFIRM (sciencedirect): Elsevier licence
+                  ("book", "Literature and protocol corpus", "Open-access papers, patents and protocols, indexed for citation, "
+                                                            "plus full-text papers from ScienceDirect through Elsevier's API."),
                   ("folder", "Your own data", "Upload or connect. It stays in your project and never trains shared models.")]),
     "models": ("Models trained for research, not for <kw>demos</kw>.",
                "Validation is reported with each model, on its own card in the workspace.",
@@ -435,6 +438,17 @@ DATA = {
                   ("Version", "Every change gets an immutable version."),
                   ("Document", "Provenance, schema and known limits."),
                   ("Serve", "Queryable by people and agents, with citations.")]),
+    # CONFIRM (standards): which of the four are live for customers. One line each, the same text as the glossary.
+    "standards": ("Health data <kw>standards</kw>.",
+                  "Clinical data stays consistent, comparable and easy to move between systems.",
+                  [("clipboard", "openEHR", "An open standard for designing and storing patient records, where clinicians "
+                                            "define the medical content separately from the software."),
+                   ("export", "FHIR", "Fast Healthcare Interoperability Resources, an HL7 standard for sending health data "
+                                      "between systems through APIs."),
+                   ("database", "OMOP", "The OMOP Common Data Model, a shared format for research data, so the same study can "
+                                        "run on data from many hospitals."),
+                   ("list", "SNOMED CT", "A large clinical terminology that gives each disease, symptom and procedure a code, "
+                                         "so different words for the same thing match.")]),
     "yours": ("Your data stays in your <kw>project</kw>.",
               "Use it next to the curated collections, on your terms.",
               [("upload", "Upload or connect", "Files, folders or your own storage."),
@@ -454,11 +468,12 @@ SECURITY_PAGE = {
     "handling": ("Where your data lives and how it <kw>moves</kw>.",
                  "Encrypted on the way in, encrypted where it rests, and kept inside its project.",
                  [("Encryption in transit", "TLS 1.2 or higher on every connection.", "done"),
-                  ("Encryption at rest", "Managed keys, rotated on a schedule.", "done"),
+                  ("Encryption at rest", "Managed keys, rotated on a schedule.", "progress", "at_rest"),
                   ("Project isolation", "Each project has its own storage scope and agents see only its data.", "done"),
                   ("No training on your data", "Your data never trains shared models.", "done"),
                   ("EU data residency", "Storage and processing inside the EU.", "progress"),
-                  ("Deletion on request", "Project data removed within a defined window.", "progress")]),
+                  ("Deletion on request", "Project data removed within a defined window.", "progress"),
+                  ("Analytics only with consent", "Google Analytics runs only if you accept it in the cookie banner.", "done")]),
     "access": ("Who can do what, and a <kw>record</kw> of it.",
                "Every account is reviewed. Every role is set per project.",
                [("Access by request only", "No self sign-up. Every account is reviewed.", "done"),
@@ -488,8 +503,18 @@ SECURITY_PAGE = {
 # ---------------------------------------------------------------------------
 ABOUT = {
     "title": "About Cytogent and WelloWork AB",
-    "desc": "Cytogent is an agentic workspace for life science research, built and operated by WelloWork AB in "
-            "Sweden. Why we build it and how we work.",
+    "desc": "Cytogent is an agentic workspace for life science research, built by a medical doctor and an AI engineer "
+            "and operated by WelloWork AB in Sweden.",
+    # CONFIRM (team): full names, photos and LinkedIn URLs. A photo is used when the file exists in
+    # source/static/img/team/ (WebP, 320x320); until then the card shows initials. "sameAs" takes LinkedIn URLs.
+    "team": ("Built by a doctor and an AI <kw>engineer</kw>.",
+             "We started Cytogent to close the gap between what labs find and what industry can use.",
+             [{"name": "John", "role": "Co-founder", "photo": "john.webp", "staff": True, "sameAs": [],
+               "text": "Medical doctor and three-time health-tech founder. Leads the life-science and research side."},
+              {"name": "Navid", "role": "Co-founder", "photo": "navid.webp", "staff": True, "sameAs": [],
+               "text": "AI engineer with 10 years at large companies in Europe and Asia. Builds the platform."},
+              {"name": "Mumshad Mannambeth", "role": "Advisor", "photo": "mumshad-mannambeth.webp", "staff": False, "sameAs": [],
+               "text": "Founder and CEO of KodeKloud."}]),
     "h1": "We build the workspace where science and <kw>agents</kw> meet.",
     "hero": ("whole", "breathe", "The whole Cytogent cell at rest, breathing slowly."),
     "mission": ("Discovery is a team effort. Agents join the <kw>team</kw>.",
@@ -511,15 +536,16 @@ ABOUT = {
 # ---------------------------------------------------------------------------
 RESOURCES = {
     "title": "Resources: FAQ, Glossary and Guides | Cytogent",
-    "desc": "Answers to common questions, a glossary of the terms we use, and our security and data pages, in one place.",
+    "desc": "Answers to common questions, a glossary of the terms we use, and our platform, data and security pages, "
+            "in one place and in plain words. Start here.",
     "h1": "Everything you need to know, in plain <kw>words</kw>.",
     "hero": ("half", "read", "Inside the nucleus of the Cytogent cell, readers travel along the threads of the archive."),
 }
 
 FAQ_PAGE = {
     "title": "Cytogent FAQ: Agents, Data, Security and Access",
-    "desc": "Short, complete answers about Cytogent: what the agents do, how sources are cited, how your data is "
-            "protected and how to get access.",
+    "desc": "Short answers about Cytogent: what the agents do, how the research brief works, how sources are "
+            "cited, how your data is protected and how to get access.",
     "h1": "Questions scientists ask <kw>first</kw>.",
     "hero": ("chromatin", "read", "Chromatin threads inside the Cytogent nucleus, with readers moving along them."),
 }
@@ -537,10 +563,15 @@ FAQ_MORE = {
          "Agents cite as they work. Each claim in a result carries a numbered marker that opens its source: the paper, "
          "patent, protocol or dataset version it came from, and the passage or query behind it. You can check any "
          "claim in one step."),
-        ("Which AI models do the agents use?",
-         "Each step goes to a model suited to it: long-context language models for reading, code models for "
-         "analysis, structure models for proteins and drafting models for documents, plus trained research models for "
-         "prediction. The model used for each step is shown and logged."),
+        ("Which AI models does Cytogent use?",
+         "Cytogent routes each step to the model that does it best: models from Anthropic, OpenAI, Google and xAI for "
+         "reading, coding and drafting, plus life-science models for structure, docking and design. Every routing "
+         "choice is logged, so you can see which model produced which part of a result."),
+        ("Can I connect my own tools and agents?",
+         "Yes. Agents work in real tools through MCP connectors and browser access, and the workspace connects to "
+         "electronic lab notebooks, LIMS, storage, Git, team chat, single sign-on, reference managers, hospital systems "
+         "through FHIR, and ScienceDirect for full-text papers. Anything that sends, posts or changes data outside the "
+         "project waits for a person to approve it."),
         ("Can I export results?",
          "Yes. Results, drafts and citation lists can be exported to your notebook, LIMS or report. Each export keeps "
          "its citations, so the sources travel with the text and your readers can check them too."),
@@ -553,6 +584,10 @@ FAQ_MORE = {
          "Yes. Upload files or connect your sources to a project. Your data is used only inside that project, is "
          "visible only to the roles you choose and never trains shared models. You can combine it with the curated "
          "datasets and trained models in the workspace."),
+        ("Which health data standards does Cytogent use?",
+         "Cytogent uses openEHR to model and store patient records, FHIR to exchange data with hospital systems, the "
+         "OMOP common data model to run the same study on data from many sites, and SNOMED CT to code diseases, "
+         "symptoms and procedures. This keeps clinical data consistent, comparable and easy to move between systems."),
         ("Who can see my project?",
          "Only the people you add, with the role you give them: owner, editor or viewer. Agents work inside the "
          "project and see only its data. Projects are isolated from each other, so work in one never appears in "
@@ -570,8 +605,8 @@ FAQ_MORE = {
 
 GLOSSARY_PAGE = {
     "title": "Glossary of Life Science and AI Terms | Cytogent",
-    "desc": "Plain definitions of the terms used across Cytogent: agents, evidence trails, ADMET, CRF, CSR, IND, "
-            "IVDR, off-target effects, prior art and more.",
+    "desc": "Plain definitions of the terms used across Cytogent: agents, research briefs, evidence trails, ADMET, CRF, "
+            "CSR, FHIR, IND, IVDR, OMOP, prior art and more.",
     "h1": "The words we use, in plain <kw>English</kw>.",
     "hero": ("mito", "breathe", "A mitochondrion inside the Cytogent cell, at rest."),
 }
@@ -579,6 +614,7 @@ GLOSSARY_PAGE = {
 GLOSSARY = [
     ("ADMET", "Absorption, distribution, metabolism, excretion and toxicity: how a compound behaves in the body. Predicted early to drop weak candidates."),
     ("Agent", "An AI worker that takes one step of a task, such as reading, computing or drafting, and hands the result back with its sources."),
+    ("Agent workspace", "Software where AI agents run in the background, use apps and share work with a team."),
     ("Agentic workspace", "A shared place where people and AI agents work on the same project, with the same data, rules and record."),
     ("Audit log", "A record of every agent action and data access in a project: who or what did it, and when."),
     ("Binding affinity", "How strongly a molecule binds to its target. Higher affinity usually means a lower dose is needed."),
@@ -588,20 +624,27 @@ GLOSSARY = [
     ("Docking", "A simulation that predicts how a small molecule fits into the binding site of a protein."),
     ("ELN", "Electronic lab notebook. The digital notebook where a lab records experiments and results."),
     ("Evidence trail", "The chain from a claim back to its sources, versions and the steps in between."),
+    ("FHIR", "Fast Healthcare Interoperability Resources, an HL7 standard for sending health data between systems through APIs."),
     ("GDPR", "The EU General Data Protection Regulation. It sets the rules for processing personal data."),
     ("Guide RNA", "The short RNA that leads a CRISPR enzyme to the exact place in the genome where it should cut."),
+    ("Human task", "A task an agent creates for a person, such as a lab run, a review or an approval, with an owner and the protocol attached."),
     ("IND", "Investigational New Drug application. The request to the US FDA to start testing a new drug in people."),
     ("In silico", "Done by computer simulation rather than in a living system or a test tube."),
     ("Invention disclosure", "A document that describes an invention so a patent attorney can judge whether and how to file."),
     ("IVDR", "The EU In Vitro Diagnostic Medical Devices Regulation. It sets the rules for diagnostic tests sold in the EU."),
     ("LIMS", "Laboratory information management system. Software that tracks samples, tests and results in a lab."),
+    ("MCP", "Model Context Protocol, an open standard that lets AI agents use tools and data sources in a consistent way."),
     ("Model routing", "Sending each step of a task to the model that does it best, and recording which model was used."),
     ("Off-target effect", "An edit made at a place in the genome that was not the intended target."),
+    ("OMOP", "The OMOP Common Data Model, a shared format for research data, so the same study can run on data from many hospitals."),
+    ("openEHR", "An open standard for designing and storing patient records, where clinicians define the medical content separately from the software."),
     ("PK", "Pharmacokinetics. How the level of a drug in the body changes over time."),
     ("Prior art", "Everything already public before a patent is filed. It decides whether an invention is new."),
     ("Project isolation", "Each project has its own storage scope, and agents in one project cannot see another project's data."),
+    ("Research brief", "A one-page plan signed before agents start: question, hypothesis, data, controls, endpoints, limits, rules and owner."),
     ("SAP", "Statistical analysis plan. It sets out, before the data is seen, how a study's data will be analysed."),
     ("Sign-off", "The recorded approval of a result or document by a qualified person."),
+    ("SNOMED CT", "A large clinical terminology that gives each disease, symptom and procedure a code, so different words for the same thing match."),
     ("SOP", "Standard operating procedure. Step-by-step instructions for doing a task the same way every time."),
     ("Variant effect", "The predicted functional impact of a change in a gene's sequence."),
     ("Virtual screening", "Testing large libraries of compounds by computer to find the few worth testing in the lab."),
@@ -612,8 +655,8 @@ GLOSSARY = [
 # ---------------------------------------------------------------------------
 REQUEST = {
     "title": "Request Access to Cytogent",
-    "desc": "No self sign-up. Tell us who you are and what you want to do. We review every request by hand "
-            "and reply within 5 working days.",
+    "desc": "No self sign-up. Tell us who you are and what you want to find out. We reply within five working days "
+            "with a first draft of your research brief.",
     "h1": "Access is by <kw>request</kw>.",
     "hero": ("receptor", "gate", "A receptor on the Cytogent cell membrane: most particles are turned back, the keyed one passes."),
     "sub": ("Tell us who you are and what you plan to do.",
@@ -626,7 +669,8 @@ REQUEST = {
 LEGAL = {
     "terms": {
         "title": "Terms of Service | Cytogent",
-        "desc": "Draft terms of service for Cytogent, operated by WelloWork AB, Sweden. Under legal review before publication.",
+        "desc": "Draft terms of service for Cytogent, operated by WelloWork AB, Sweden: access, acceptable use, your data, "
+                "outputs and liability. Under legal review.",
         "h1": "Terms of <kw>service</kw>.",
         "hero": ("golgi", "breathe", "The Golgi of the Cytogent cell, at rest."),
         "body": [
@@ -850,4 +894,71 @@ VS_PAGES = {
                     ("Dust docs: run agent", "https://docs.dust.tt/docs/run-agent")],
         "solutions": ["regulatory-documentation", "clinical-trials"],
     },
+}
+
+# ---------------------------------------------------------------------------
+# Customers: the two pilots.
+# CONFIRM (pilots): all wording with both companies before publishing. Until content.PILOTS_PUBLIC is True the page
+# is built but kept out of the nav, the footer, the sitemap and llms.txt, and it carries noindex.
+# ---------------------------------------------------------------------------
+CUSTOMERS = {
+    "title": "Cytogent Pilots: CRISPR Diagnostics and Clinical Trials",
+    "desc": "Two active Cytogent pilots: CRISPR research for cervical cancer diagnosis with Cervixel, and a clinical "
+            "trial for a vitiligo skin patch with Eipha Biosciences.",
+    "h1": "Two pilots, from finding to industry-ready <kw>work</kw>.",
+    "hero": ("whole", "divide", "The whole Cytogent cell stretches, pinches and divides: one becomes many."),
+    "sub": ("Cytogent is bootstrapped and built with real research teams.",),
+    "pilots": [
+        {"id": "cervixel",
+         "h2": "Cervixel: CRISPR research for cervical cancer <kw>diagnosis</kw>.",
+         "body": "Cervixel works on CRISPR-based diagnosis of cervical cancer. In the pilot, agents review the literature "
+                 "on CRISPR detection of high-risk HPV, design and check guide candidates, and keep every result in one "
+                 "cited record for the team to review and sign.",
+         "ticks": ["Workflows: CRISPR &amp; genome editing, Literature &amp; evidence", "Status: active pilot"],
+         "links": ["crispr-genome-editing", "literature-and-evidence"]},
+        {"id": "eipha",
+         "h2": "Eipha Biosciences: a clinical trial for a vitiligo skin <kw>patch</kw>.",
+         "body": "Eipha Biosciences develops a skin patch for vitiligo. In the pilot, agents draft and organise trial "
+                 "documents from planning to close: protocol and endpoints, CRFs and site documents, monitoring and "
+                 "safety summaries, with regulatory documents built from the same sources.",
+         "ticks": ["Workflows: Clinical trials full cycle, Regulatory documentation", "Status: active pilot"],
+         "links": ["clinical-trials", "regulatory-documentation"]},
+    ],
+    "cta": ("Want to be our next <kw>pilot</kw>?",
+            "We take on a small number of pilot teams each quarter. Tell us your question."),
+}
+
+# ---------------------------------------------------------------------------
+# Solution pages: the "starts with a research brief" strip, and the industry each one links to.
+# ---------------------------------------------------------------------------
+BRIEF_STRIP = {
+    "literature-and-evidence": ("What is known about resistance to KRAS inhibitors in lung cancer, and where do studies disagree?",
+                                "pharma-and-biotech"),
+    "in-silico-studies": ("Which of our 200 compounds are most likely to bind the pocket and pass basic ADMET filters?",
+                          "pharma-and-biotech"),
+    "protein-design": ("Can we make this enzyme stable at 50 °C without losing activity?", "pharma-and-biotech"),
+    "crispr-genome-editing": ("Which guides knock out our target gene in this cell line with the lowest off-target risk?",
+                              "hospitals-and-academic-labs"),
+    "clinical-trials": ("Plan a phase I/IIa study for our topical patch in adults with vitiligo.", "cro-and-clinical-teams"),
+    "regulatory-documentation": ("Which documents does our clinical trial application still need, and what can we draft "
+                                 "from our results?", "regulatory-and-ip-teams"),
+    "patent-documentation": ("Is our new assay format novel, and what could our first claim cover?", "regulatory-and-ip-teams"),
+}
+# The fourth figure on every solution page, before the three agents. CONFIRM (planner): the name.
+PLANNER = ("Planner", "long-context LLM", "list",
+           "Turns your question into a brief and splits it into tasks for agents and people.")
+
+# ---------------------------------------------------------------------------
+# Industry pages: "Why a specialised workspace?"
+# ---------------------------------------------------------------------------
+WHY_SPECIALISED = {
+    "pharma-and-biotech": "General agent tools can search and summarise. Here, target triage and candidate ranking run "
+                          "on life-science models, and every decision keeps its sources.",
+    "cro-and-clinical-teams": "General tools write text. Cytogent drafts protocols, CRFs, SAPs and CSRs from your study "
+                              "data, in the structure reviewers expect, with every number traced.",
+    "hospitals-and-academic-labs": "Patient-related research needs strict control and shared standards. Cytogent works "
+                                   "with openEHR, FHIR, OMOP and SNOMED CT, keeps each project isolated, logs every agent "
+                                   "action and records who signed off.",
+    "regulatory-and-ip-teams": "General tools draft text. Cytogent builds submissions and claims from one cited record, "
+                               "so each section points to the result behind it.",
 }
