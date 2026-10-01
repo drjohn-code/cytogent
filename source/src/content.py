@@ -9,13 +9,40 @@ SITE = {
     "locale": "en",
 }
 
-# The fixed definition. Word for word on Home, About and in llms.txt.
+# The fixed definition. Word for word on Home (FAQ), About, in llms.txt and in the JSON-LD description.
 DEFINITION = (
-    "Cytogent is an agentic workspace for life science research. Scientists and AI agents "
-    "work together on literature and evidence, in-silico studies, protein studies and design, "
-    "CRISPR and genome editing, clinical trials from planning to report, and regulatory and "
-    "patent documentation — every result with cited, auditable evidence."
+    "Cytogent is an agentic workspace for life science research. Scientists write what they want to find out; "
+    "Cytogent turns it into a research brief, and AI agents and people plan and do the work together across "
+    "literature, in-silico studies, protein design, CRISPR, clinical trials, and regulatory and patent documents. "
+    "Every result is cited and signed off."
 )
+
+# Footer tagline.
+TAGLINE = ("An agentic workspace for life science research. Scientists and AI agents work together, "
+           "from research brief to cited, signed result.")
+
+# The day the facts about other products were last checked against their public pages (compare tables and pages).
+# Change it only after re-checking them: it is printed as "checked on" and "Last checked".
+FACTS_CHECKED = "2 October 2026"
+
+# Open items from the brief stay in the build; each one is marked in the HTML as <!-- CONFIRM: ... -->
+# and listed in docs/HANDOFF.md.
+CONFIRM = {
+    "planner": "Planner is the name of the agent that asks questions and plans",
+    "models": "life-science models (structure, docking, protein design, CRISPR checks) are live; if not, say In progress",
+    "trained": "status of the trained models (variant effect, binding affinity, assay QC)",
+    "at_rest": "encryption at rest: the site said Done, the deck says in transit only",
+    "outbound": "anything that leaves the project waits for an approval",
+    "mcp": "MCP connectors and browser access are available to customers",
+    "reply": "reply within five working days, with a first draft of the research brief",
+    "pilots": "written permission from Cervixel and Eipha Biosciences to be named, and the wording",
+    "team": "founders' full names, photos and LinkedIn URLs",
+    "legal": "lawyer review of the privacy text and the compare pages",
+    "facts": "re-check the facts about other products before launch",
+    "standards": "which of openEHR, FHIR, OMOP and SNOMED CT are live for customers (SNOMED CT needs a licence)",
+    "sciencedirect": "Elsevier licence for ScienceDirect: API access, AI reading and citing, and naming it on the site",
+    "eu": "EU data residency status",
+}
 
 # --------------------------------------------------------------------------
 # Solutions
@@ -350,9 +377,43 @@ DEMO = [
 # Home: how it works
 # --------------------------------------------------------------------------
 HOW = [
-    ("Ask", "Write the question in plain language. Attach your data or connect your sources."),
-    ("Agents work", "Each step is routed to the model that does it best: reading, coding, prediction, drafting. Every action is recorded."),
-    ("You decide", "Review results with their sources. Export to your notebook, LIMS or report."),
+    ("Write", "Your goal in plain language. Attach data or connect your sources."),
+    ("Brief", "Cytogent asks a few questions. You confirm and sign the research brief."),
+    ("Work", "Agents and people do the tasks. Each step goes to the best model and is logged."),
+    ("Decide", "Review cited results, sign off, and export to your notebook, LIMS or report."),
+]
+
+# --------------------------------------------------------------------------
+# Home: the research brief, and people and agents
+# --------------------------------------------------------------------------
+BRIEF_CARDS = [
+    ("pen", "Write it your way", "Type the goal the way you would tell a colleague. Attach data if you have it."),
+    ("message", "Answer a few questions",
+     "Cytogent asks only what changes the plan: data, what counts as an answer, limits and rules."),
+    ("check", "Sign the brief",
+     "One page with the question, hypothesis, data, controls, endpoints, rules and owner. Agents plan from it, "
+     "and every result links back to it."),
+]
+
+# (text, open item or None)
+PEOPLE_TICKS = [
+    ("Agents take the reading, analysis and drafting.", None),
+    ("People get lab work, reviews and sign-offs, with the protocol attached.", None),
+    ("New tasks appear as results come in.", None),
+    ("Anything that leaves the project waits for a yes.", "outbound"),
+]
+
+# --------------------------------------------------------------------------
+# Pilots. CONFIRM: written permission from both companies to be named.
+# PILOTS_PUBLIC decides whether /customers/ is listed: False keeps the page out of the nav, the footer,
+# the sitemap and llms.txt, and marks it noindex. Set it to True once both permissions are in writing.
+# --------------------------------------------------------------------------
+PILOTS_PUBLIC = False
+PILOTS = [
+    {"id": "cervixel", "name": "Cervixel", "line": "CRISPR research for cervical cancer diagnosis.",
+     "tags": ["CRISPR &amp; genome editing", "Literature &amp; evidence"], "vis": "crispr-genome-editing"},
+    {"id": "eipha", "name": "Eipha Biosciences", "line": "Clinical trial for a vitiligo skin patch.",
+     "tags": ["Clinical trials, full cycle", "Regulatory documentation"], "vis": "clinical-trials"},
 ]
 
 # --------------------------------------------------------------------------
@@ -371,7 +432,15 @@ STORY = [
 
     },
     {
-        "n": "02", "h": "Evidence is gathered",
+        "n": "02", "h": "The brief is signed",
+        "p": "Cytogent asks which data to use, what counts as an answer and what the limits are. The PI signs a one-page brief.",
+        "label": "1 brief · signed",
+        "vis": ('st_brief', 'The Planner asks · the brief fills in · the PI signs',
+                'A person, the PI, and the Planner agent; the Planner asks three questions, a research brief card fills in '
+                'line by line, and the PI signs it with a check mark.'),
+    },
+    {
+        "n": "03", "h": "Evidence is gathered",
         "p": "The Reader agent reviews 40 papers and two cohort datasets and cites the three that explain the mutation.",
         "label": "42 sources read · 3 cited",
         "img": ("confocal-fibroblast-actin-dapi.jpg",
@@ -382,7 +451,7 @@ STORY = [
 
     },
     {
-        "n": "03", "h": "Models test the idea",
+        "n": "04", "h": "Models test the idea",
         "p": "In-silico docking and a variant-effect model rank the mutation and suggest a binding-site change.",
         "label": "docking · variant effect",
         "img": ("protein-pocket-mutation.png",
@@ -393,18 +462,20 @@ STORY = [
 
     },
     {
-        "n": "04", "h": "An edit is designed",
-        "p": "Guide RNAs are designed and checked for off-targets. A validation protocol is drafted for the bench.",
-        "label": "4 guides · 0 high-risk off-targets",
+        "n": "05", "h": "An edit is designed",
+        "p": "Guide RNAs are designed and checked for off-targets. An agent creates a lab task for the bench team, with the protocol attached.",
+        "label": "4 guides · 1 lab task",
         "img": ("timelapse-division-01..04.jpg",
                 "Time-lapse · HeLa · H2B-GFP · 20 µm · 4 frames",
                 "CRISPR cut animation running into a dividing-cells time-lapse."),
-        "vis": ('st_edit', 'Guides designed · cut and repair · off-targets checked', 'A guide RNA finds its site, the strand is cut and repaired; guides are checked for off-targets.'),
+        "vis": ('st_edit', 'Guides designed · off-targets checked · a lab task goes to the bench',
+                'A guide RNA finds its site, the strand is cut and repaired; guides are checked for off-targets; a lab task '
+                'with the protocol attached goes to a person on the bench team.'),
 
 
     },
     {
-        "n": "05", "h": "A study is planned",
+        "n": "06", "h": "A study is planned",
         "p": "A cohort definition, protocol draft and statistical plan are prepared for the clinical team to review.",
         "label": "protocol v0.3 · SAP draft",
         "img": ("immune-cells-tissue.jpg",
@@ -415,7 +486,7 @@ STORY = [
 
     },
     {
-        "n": "06", "h": "The record is written",
+        "n": "07", "h": "The record is written",
         "p": "Regulatory and patent drafts are built from the same cited results. A scientist signs off at each checkpoint.",
         "label": "IND module · claim draft",
         "img": ("confocal-cell-cycle-checkpoint.jpg",
@@ -430,26 +501,48 @@ STORY = [
 # --------------------------------------------------------------------------
 # Home: why Cytogent
 # --------------------------------------------------------------------------
-COMPARE = [
-    ("Cites every claim to a source you can open", "Rarely", "Sometimes", "Always"),
-    ("Routes each step to the best model", "No", "No", "Yes, logged"),
-    ("Curated life-science datasets and trained models", "No", "Per tool", "Built in"),
-    ("Works across literature, in-silico, protein, CRISPR, trials, documents", "No", "One area each", "One workspace"),
-    ("Your data never trains shared models", "Varies", "Varies", "Never"),
-    ("Role-based access per project and dataset", "No", "Varies", "Yes"),
-    ("Human sign-off at every checkpoint", "No", "No", "Yes"),
+# Columns: (name, examples, short name for the phone layout). The last column is Cytogent.
+COMPARE_COLS = [
+    ("AI assistants", "e.g. ChatGPT, Claude, Copilot", "Assistants"),
+    ("Agent workspaces", "e.g. ChatGPT dots, Grok Bots, Dust", "Workspaces"),
 ]
+# Rows: (icon, feature, AI assistants, agent workspaces, Cytogent, open item or None).
+# Fair and checkable: never "No" about a named product; every fact about another product comes from its public pages.
+COMPARE = [
+    ("agent", "Agents that work in the background", "Some", "Yes", "Yes", None),
+    ("users", "One workspace for people and agents", "Some", "Yes", "Yes", None),
+    ("export", "Connects to your apps and the web", "Yes", "Yes", "Yes", None),
+    ("clipboard", "Starts from a signed research brief", "General plan step", "General plan step", "Built for research", None),
+    ("flask", "Agents create lab tasks for people", "Not built in", "Approval requests", "With protocol and owner", None),
+    ("molecule", "Life-science models built in", "Via plugins", "Via plugins", "Built in", "models"),
+    ("quote", "One cited trail to the final file", "Per answer", "Per task", "Across 7 workflows", None),
+    ("doc", "Trial, regulatory and patent documents", "General writing", "General writing", "Templates and checks", None),
+    ("check", "Scientist sign-off in the audit log", "Varies", "Approval rules", "Every checkpoint", None),
+    ("cpu", "Models from many providers", "Varies", "Varies", "Yes, logged", None),
+]
+# Four more rows on the compare hub.
+COMPARE_MORE = [
+    ("lock", "Each project isolated from others", "Varies", "Varies", "Yes", None),
+    ("shield", "Your data never trains shared models", "Depends on plan", "Depends on plan", "Never", None),
+    ("globe", "EU data residency", "Varies", "Varies", "In progress", "eu"),
+    ("database", "Health data standards (openEHR, FHIR, OMOP, SNOMED CT)", "Varies", "Varies", "Built in", "standards"),
+]
+COMPARE_NOTE = ("Examples are for orientation, based on public product information checked on %s. "
+                "Product names are trademarks of their owners." % FACTS_CHECKED)
 
 # --------------------------------------------------------------------------
 # Home: security rows
 # --------------------------------------------------------------------------
+# (control, text, status, open item or None)
 SECURITY = [
-    ("Project isolation", "Each project has its own storage scope. Agents see only its data.", "done"),
-    ("No training on your data", "Your data never trains shared models.", "done"),
-    ("Encryption in transit and at rest", "TLS 1.2 or higher. Managed keys, rotated on a schedule.", "done"),
-    ("Role-based access", "Owner, editor and viewer roles per project and dataset.", "done"),
-    ("EU data residency", "Storage and processing inside the EU.", "progress"),
-    ("SOC 2 Type II", "Independent audit of controls.", "planned"),
+    ("Project isolation", "Each project has its own storage scope. Agents see only its data.", "done", None),
+    ("No training on your data", "Your data never trains shared models.", "done", None),
+    ("Encryption in transit", "TLS 1.2 or higher on every connection.", "done", None),
+    ("Encryption at rest", "Managed keys, rotated on a schedule.", "progress", "at_rest"),
+    ("Role-based access", "Owner, editor and viewer roles per project and dataset.", "done", None),
+    ("EU data residency", "Storage and processing inside the EU.", "progress", None),
+    ("SOC 2 Type II", "Independent audit of controls.", "planned", None),
+    ("Analytics only with consent", "Google Analytics runs only if you accept it in the cookie banner.", "done", None),
 ]
 
 # --------------------------------------------------------------------------
@@ -466,40 +559,65 @@ DOORS = [
 # --------------------------------------------------------------------------
 FAQ = [
     ("What is Cytogent?",
-     "Cytogent is an agentic workspace for life science research. Scientists and AI agents work together on "
-     "literature and evidence, in-silico studies, protein studies and design, CRISPR and genome editing, clinical "
-     "trials from planning to report, and regulatory and patent documentation — every result with cited, "
-     "auditable evidence. Cytogent is operated by WelloWork AB in Sweden."),
+     "Cytogent is an agentic workspace for life science research. Scientists write what they want to find out, "
+     "Cytogent turns it into a signed research brief, and AI agents and people do the work together, from literature "
+     "and in-silico studies to trials, regulatory files and patents. Every result is cited. Cytogent is operated by "
+     "WelloWork AB in Sweden."),
+    ("How is Cytogent different from ChatGPT, Claude or Copilot?",
+     "Keep them for everyday work. Cytogent uses the same kind of frontier models, but it is built for research. It "
+     "starts from a signed research brief, gives lab tasks to people, runs life-science models, and keeps one cited "
+     "trail from the first question to the final protocol, regulatory or patent file."),
+    ("How is Cytogent different from agent workspaces like ChatGPT dots, Grok Bots or Dust?",
+     "Those tools run always-on agents for any kind of work, and Cytogent does too. The difference is focus. Cytogent "
+     "plans from a research brief, knows trial, regulatory and patent formats, records scientist sign-off at each "
+     "checkpoint, and keeps every claim linked to a source you can open."),
+    ("What is a research brief?",
+     "A one-page plan you sign before agents start. It holds the question, hypothesis, data, controls, endpoints, "
+     "limits, rules and owner. You write the goal in your own words, and Cytogent asks only the questions that change "
+     "the plan. Agents plan from the brief, and every result links back to it."),
+    ("Can agents give tasks to people?",
+     "Yes. When a step needs hands or judgment, an agent creates a task for a person: a lab run with the protocol "
+     "attached, a review, or an approval. Each task has an owner and a due date. When the person adds the result, it "
+     "goes back into the same record for everyone to see."),
     ("Who is Cytogent for?",
      "Four groups. Pharma and biotech R&amp;D teams who need evidence behind every decision. CROs and clinical teams "
      "who draft protocols, CRFs and reports. Hospitals and academic labs doing cohort work under strict ethics and "
      "data rules. Regulatory and IP teams who build submissions and patent filings from scattered results."),
-    ("What can the agents do?",
-     "Seven workflows. Search literature, patents and protocols with citations. Run in-silico screens and "
-     "simulations. Predict protein structure and design sequences. Design CRISPR guides and analyse screens. "
-     "Support clinical trials from protocol to clinical study report. Draft regulatory documents. Support patent "
-     "prior-art search and claim drafting."),
     ("Is my data used to train models?",
      "No. Data you bring to Cytogent stays inside your project and never trains shared models. Projects are "
      "isolated from each other, access is granted per role, and every agent action against your data is recorded "
      "in an audit trail you can read. WelloWork AB acts as processor under a data processing agreement."),
-    ("Where is data hosted?",
-     "Cytogent is built and operated from Sweden by WelloWork AB. EU data residency — storage and processing "
-     "inside the EU — is in progress rather than finished, and the security page shows the current status of "
-     "every control with a plain label: Done, In progress or Planned. Sub-processors are listed publicly."),
-    ("How is Cytogent different from a general AI assistant?",
-     "A general assistant gives you an answer. Cytogent gives you evidence. Every claim links to a source you can "
-     "open, each step is routed to the model that does it best and logged, curated datasets and trained models are "
-     "built in, access follows your data rules, and a scientist signs off at every checkpoint."),
     ("How do I get access?",
-     "By request. There is no self sign-up, no password and no free trial. Choose one of three request types — "
-     "Individual, Institute or Hospital — and tell us your field and what you want to do. We read every request, "
-     "arrange a short call if needed, then set up a workspace with your permissions."),
+     "By request. There is no self sign-up and no free trial. Choose Individual, Institute or Hospital, and tell us "
+     "what you want to find out. We read every request, reply within five working days, and set up a workspace with "
+     "your permissions, starting from a first draft of your research brief."),
     ("Is Cytogent a medical device?",
      "No. Cytogent is a research tool. It makes no clinical decisions, gives no diagnosis and is not certified as a "
      "medical device under the MDR or IVDR. Agents draft, search, predict and support. A qualified scientist or "
      "clinician reviews and decides, and that review is part of the record."),
 ]
+
+# Two answers that moved from the home page to the FAQ page only.
+FAQ_AGENTS = (
+    "What can the agents do?",
+    "Seven workflows. Search literature, patents and protocols with citations. Run in-silico screens and "
+    "simulations. Predict protein structure and design sequences. Design CRISPR guides and analyse screens. "
+    "Support clinical trials from protocol to clinical study report. Draft regulatory documents. Support patent "
+    "prior-art search and claim drafting.")
+FAQ_HOSTING = (
+    "Where is data hosted?",
+    "Cytogent is built and operated from Sweden by WelloWork AB. EU data residency — storage and processing "
+    "inside the EU — is in progress rather than finished, and the security page shows the current status of "
+    "every control with a plain label: Done, In progress or Planned. Sub-processors are listed publicly.")
+
+# Open items attached to an answer (question -> key in CONFIRM); printed as an HTML comment beside it.
+FAQ_CONFIRM = {
+    "How do I get access?": "reply",
+    "How is Cytogent different from ChatGPT, Claude or Copilot?": "models",
+    "Can I connect my own tools and agents?": "mcp",
+    "Which health data standards does Cytogent use?": "standards",
+    "Can Cytogent and Dust work together?": "mcp",
+}
 
 # --------------------------------------------------------------------------
 # Footer

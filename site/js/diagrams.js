@@ -140,30 +140,44 @@
   /* ---------- the diagrams ---------- */
   var D = {};
 
-  // How it works: You → question → three agents (with their models) → a cited result → your decision
+  // How it works, in four steps: You write → the Planner asks and you sign the brief → three agents and a person work → a cited result you sign off
   D.flow = function (ctx, w, h, t, st) {
     ground(ctx, w, h, 11);
-    var p = st.progress > 0 ? st.progress : ((t * 0.09) % 1);
-    // the three agents sit so the lowest one's name and role stay inside the frame
-    var AS = h < 330 ? 36 : 44, y0 = h * 0.2, y2 = Math.min(h * 0.8, h - AS / 2 - 36), y1 = (y0 + y2) / 2;
-    var you = { x: w * 0.12, y: y1 }, ag = [{ x: w * 0.47, y: y0, c: P.violet, n: 'Reader', r: 'long-context LLM' }, { x: w * 0.47, y: y1, c: P.cyan, n: 'Analyst', r: 'code model' }, { x: w * 0.47, y: y2, c: P.magenta, n: 'Writer', r: 'drafting LLM' }];
-    // the result page on the right; its numbered sources sit under it, then the human check
-    var pg = { x: w * 0.68, y: h * 0.12, w: w * 0.25, h: h * 0.42 }, out = { x: pg.x + pg.w / 2, y: pg.y + pg.h / 2 };
-    var s1 = smooth(p / 0.34), s2 = smooth((p - 0.34) / 0.33), s3 = smooth((p - 0.67) / 0.33);
-    var fans = ag.map(function (a) { return link(ctx, { x: you.x + 24, y: you.y }, { x: a.x - AS / 2 - 2, y: a.y }, { col: P.lilac, a: 0.3 + 0.3 * s1, bend: 0.08 }); });
-    var outs = ag.map(function (a) { return link(ctx, { x: a.x + AS / 2 + 2, y: a.y }, { x: pg.x - 4, y: out.y }, { col: a.c, a: 0.25 + 0.4 * s3, bend: -0.08 }); });
-    person(ctx, you.x, you.y, 22, 'You');
+    var p = st.progress > 0 ? st.progress : ((t * 0.075) % 1);
+    var AS = h < 330 ? 32 : 38, TEAL = P.teal;
+    // four workers in a column; the lowest one's name and role stay inside the frame
+    var yTop = Math.max(AS / 2 + 14, h * 0.13), yBot = Math.min(h * 0.82, h - AS / 2 - 36), ys = [0, 1, 2, 3].map(function (i) { return lerp(yTop, yBot, i / 3); });
+    var you = { x: w * 0.09, y: (yTop + yBot) / 2 }, pl = { x: w * 0.27, y: you.y }, wx = w * 0.5;
+    var workers = [{ n: 'Reader', r: 'long-context LLM', c: P.violet }, { n: 'Analyst', r: 'code model', c: P.cyan }, { n: 'Writer', r: 'drafting LLM', c: P.magenta }, { n: 'Your team', r: 'lab · review', c: P.paper, person: true }];
+    // the result page on the right; its numbered sources sit under it, then the sign-off
+    var pg = { x: w * 0.7, y: h * 0.12, w: w * 0.25, h: h * 0.42 }, out = { x: pg.x + pg.w / 2, y: pg.y + pg.h / 2 };
+    var s1 = smooth(p / 0.25), s2 = smooth((p - 0.25) / 0.25), s3 = smooth((p - 0.5) / 0.25), s4 = smooth((p - 0.75) / 0.25);
+    var ask = link(ctx, { x: you.x + 22, y: you.y }, { x: pl.x - AS / 2 - 2, y: pl.y }, { col: P.lilac, a: 0.3 + 0.3 * s1 });
+    var fans = ys.map(function (y) { return link(ctx, { x: pl.x + AS / 2 + 2, y: pl.y }, { x: wx - AS / 2 - 2, y: y }, { col: TEAL, a: 0.2 + 0.4 * s3, bend: 0.06 }); });
+    var outs = ys.map(function (y, i) { return link(ctx, { x: wx + AS / 2 + 2, y: y }, { x: pg.x - 4, y: out.y }, { col: workers[i].c, a: 0.2 + 0.4 * s4, bend: -0.08 }); });
+    person(ctx, you.x, you.y, 20, 'You');
     chip(ctx, Math.max(12, you.x - 22), Math.max(18, h * 0.06), 'Why does the line resist?', P.lilac, { on: s1 > 0 });
-    ag.forEach(function (a, i) { agent(ctx, a.x, a.y, AS, a.c, a.n, a.r, 0.25 + 0.75 * smooth((s2 - i * 0.2) / 0.5)); });
-    if (s1 > 0 && s1 < 1) fans.forEach(function (f) { packet(ctx, f(s1), P.lilac); });
-    if (s2 > 0 && s2 < 1) ag.forEach(function (a, i) { var q = smooth((s2 - i * 0.2) / 0.5); if (q > 0 && q < 1) { glowAt(ctx, a.x, a.y, 30 * q, a.c, 0.5); } });
-    page(ctx, pg.x, pg.y, pg.w, pg.h, { title: 'Result', lines: 6, cites: [1, 3], fill_t: 0.15 + s3 * 0.85, on: s3 > 0.2 });
-    if (s3 > 0 && s3 < 1) outs.forEach(function (f, i) { packet(ctx, f(s3), ag[i].c); });
+    // the Planner asks; the brief is signed before any work starts
+    agent(ctx, pl.x, pl.y, AS, TEAL, 'Planner', '', 0.25 + 0.75 * s2);
+    var bxm = (you.x + pl.x) / 2, bym = pl.y - AS / 2 - 18, signed = smooth((s2 - 0.6) / 0.4);
+    var bw = chip(ctx, bxm - 8, bym, 'brief', TEAL, { align: 'center', on: s2 > 0.3 });
+    check(ctx, bxm - 8 + bw / 2 + 11, bym, 7, P.amber, signed);
+    if (s1 > 0 && s1 < 1) packet(ctx, ask(s1), P.lilac);
+    if (s2 > 0 && s2 < 1) glowAt(ctx, pl.x, pl.y, 28 * s2, TEAL, 0.5);
+    workers.forEach(function (a, i) {
+      var on = 0.25 + 0.75 * smooth((s3 - i * 0.15) / 0.5);
+      if (a.person) { person(ctx, wx, ys[i], AS / 2, a.n); text(ctx, a.r, wx, ys[i] + AS / 2 + 26, { font: '500 10px ' + MONO, color: INK3, align: 'center' }); if (on > 0.3) glowAt(ctx, wx, ys[i], 22, P.amber, 0.25 * on); }
+      else agent(ctx, wx, ys[i], AS, a.c, a.n, a.r, on);
+    });
+    if (s3 > 0 && s3 < 1) fans.forEach(function (f) { packet(ctx, f(s3), TEAL); });
+    page(ctx, pg.x, pg.y, pg.w, pg.h, { title: 'Result', lines: 6, cites: [1, 3], fill_t: 0.15 + s4 * 0.85, on: s4 > 0.2 });
+    if (s4 > 0 && s4 < 1) outs.forEach(function (f, i) { packet(ctx, f(s4), workers[i].c); });
     // the sources carry the same numbers as the markers on the page, so no connecting lines are needed
-    ['[1] article · DOI', '[2] dataset · v3'].forEach(function (sname, i) { chip(ctx, pg.x, pg.y + pg.h + 18 + i * 26, sname, P.lilac, { on: s3 > 0.6 }); });
-    var dy = pg.y + pg.h + 18 + 2 * 26 + 6, dx = pg.x + 12;
-    check(ctx, dx, dy, 11, P.amber, smooth((s3 - 0.7) / 0.3));
-    text(ctx, 'you decide', dx + 20, dy, { font: '500 10.5px ' + MONO, color: P.amber, a: smooth((s3 - 0.7) / 0.3) });
+    var srcs = ['[1] article · DOI', '[2] dataset · v3'], sx0 = Math.min(pg.x, w - 8 - Math.max(chipW(ctx, srcs[0]), chipW(ctx, srcs[1])));
+    srcs.forEach(function (sname, i) { chip(ctx, sx0, pg.y + pg.h + 18 + i * 26, sname, P.lilac, { on: s4 > 0.6 }); });
+    var dy = pg.y + pg.h + 18 + 2 * 26 + 6, dx = sx0 + 12;
+    check(ctx, dx, dy, 11, P.amber, smooth((s4 - 0.7) / 0.3));
+    text(ctx, 'you sign off', dx + 20, dy, { font: '500 10.5px ' + MONO, color: P.amber, a: smooth((s4 - 0.7) / 0.3) });
   };
 
   // Literature & evidence: one query over papers, patents and protocols; three become citations
@@ -348,6 +362,22 @@
     });
     text(ctx, dock > 0.95 ? '2 datasets attached · project isolated' : 'attaching data…', bx, by + bh + 22 + (oneRow ? 0 : 26) + 28, { color: INK3 });
   };
+  // Story: the Planner asks three things, the brief fills in, the PI signs it
+  D.st_brief = function (ctx, w, h, t, st) {
+    ground(ctx, w, h, 97); var cyc = (t * 0.1) % 1, TEAL = P.teal;
+    var pi = { x: w * 0.13, y: h * 0.24 }, pl = { x: w * 0.13, y: h * 0.66 };
+    var bx = w * 0.54, by = h * 0.1, bw = w * 0.4, bh = h * 0.64;
+    var asked = [0.08, 0.22, 0.36].map(function (a) { return smooth((cyc - a) / 0.08); }), sg = smooth((cyc - 0.62) / 0.14);
+    var sign = link(ctx, { x: pi.x + 22, y: pi.y }, { x: bx - 4, y: pi.y }, { col: P.amber, a: 0.25 + 0.4 * sg, dash: true });
+    person(ctx, pi.x, pi.y, 20, 'PI');
+    agent(ctx, pl.x, pl.y, 42, TEAL, 'Planner', 'long-context LLM', 0.3 + 0.7 * (1 - sg));
+    // the three questions sit beside the Planner and light up in turn
+    ['which data?', 'what answer?', 'what limits?'].forEach(function (q, i) { chip(ctx, w * 0.27, pl.y - 26 + i * 26, q, TEAL, { on: asked[i] > 0.5 }); });
+    page(ctx, bx, by, bw, bh, { title: 'Research brief', lines: 7, fill_t: 0.12 + 0.88 * (asked[0] + asked[1] + asked[2]) / 3, on: sg > 0.5 });
+    if (sg > 0 && sg < 1) packet(ctx, sign(sg), P.amber);
+    check(ctx, bx + bw - 14, by + 14, 8, P.amber, sg);
+    text(ctx, sg > 0.5 ? '1 brief · signed by the PI' : 'drafting the brief…', bx, by + bh + 20, { color: sg > 0.5 ? P.amber : INK3 });
+  };
   D.st_evidence = function (ctx, w, h, t, st) {
     ground(ctx, w, h, 92); var cyc = (t * 0.1) % 1;
     agent(ctx, w * 0.14, h * 0.42, 46, P.violet, 'Reader', 'long-context LLM');
@@ -370,7 +400,18 @@
     text(ctx, 'Analyst', ax + 23, ay, { font: '500 12px ' + SANS, color: INK });
     chip(ctx, ax + 23 + nw + 12, ay, lab, P.magenta, { on: true, dot: true });
   };
-  D.st_edit = function (ctx, w, h, t, st) { D.crispr(ctx, w, h, t, st); chip(ctx, w * 0.06, h * 0.14, 'validation protocol drafted for the bench', P.lilac, { on: true }); };
+  D.st_edit = function (ctx, w, h, t, st) {
+    D.crispr(ctx, w, h, t, st);
+    // an agent hands the bench a task: the card goes to a person, with the protocol attached
+    var cyc = (t * 0.11) % 1, y = Math.max(24, h * 0.1), F = '500 11px ' + SANS, lab = 'Lab task · protocol attached';
+    var cw = tw(ctx, lab, F) + 22, x = w * 0.06, px = x + cw + 46, f = smooth((cyc - 0.45) / 0.3);
+    var l = link(ctx, { x: x + cw + 2, y: y }, { x: px - 13, y: y }, { col: P.lilac, a: 0.5, dash: true });
+    card(ctx, x, y - 13, cw, 26, { title: lab, col: P.lilac, on: true });
+    person(ctx, px, y, 11, '');
+    text(ctx, 'bench team', px + 19, y, { color: INK2 });
+    if (f > 0 && f < 1) packet(ctx, l(f), P.lilac);
+    check(ctx, px + 9, y - 10, 5, P.teal, f >= 1 ? 1 : 0);
+  };
   D.st_plan = function (ctx, w, h, t, st) {
     ground(ctx, w, h, 95); var cyc = (t * 0.08) % 1;
     agent(ctx, w * 0.12, h * 0.3, 44, P.magenta, 'Writer', 'drafting LLM');
@@ -566,32 +607,49 @@
     c.stages.forEach(function (s, i) { var f = smooth((run - i + 0.2) / 0.3); var x = w * 0.06 + i * (lw + 8); rrect(ctx, x, ly, lw, 22, 5); ctx.fillStyle = rgba(P.lilac, 0.06 * f); ctx.fill(); ctx.strokeStyle = f > 0.5 ? rgba(P.lilac, 0.45) : LINE; ctx.lineWidth = 1; ctx.stroke(); if (f > 0.05) mono(ctx, (i + 1) + ' · logged', x + 8, ly + 11.5, { color: INK2, a: f, font: '500 9.5px ' + MONO }); });
   };
 
-  // Platform: a project board — three agents at work, one draft waiting for you
+  // Platform and home: a project board — agents at work, a lab task for a person, one draft waiting for you.
+  // The person's task moves from to do to done, and its result returns to the project record.
   D.bench = function (ctx, w, h, t, st) {
     ground(ctx, w, h, 151);
-    var cyc = (t * 0.08) % 1, nar = narrow(w, h);
-    var x0 = w * 0.05, x1 = nar ? w * 0.95 : w * 0.72, top = h * 0.07;
-    rrect(ctx, x0, top, x1 - x0, 34, 10); ctx.fillStyle = RAISED; ctx.fill(); ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.stroke();
+    var c = cfgOf(st, { person: ['Lab tech', 'Run qPCR on clone 4', 'protocol attached'] });
+    var cyc = (t * 0.08) % 1, pc = (t * 0.05) % 1, nar = narrow(w, h);
+    var x0 = w * 0.05, x1 = nar ? w * 0.92 : w * 0.72, top = Math.max(10, h * 0.05);
+    // the person's task: to do → in progress → done; then the result travels back to the record
+    var doing = smooth((pc - 0.18) / 0.06), done = smooth((pc - 0.56) / 0.06), back = clamp((pc - 0.64) / 0.16), filed = pc > 0.8;
+    rrect(ctx, x0, top, x1 - x0, 34, 10); ctx.fillStyle = RAISED; ctx.fill(); ctx.strokeStyle = filed ? rgba(P.teal, 0.5) : LINE; ctx.lineWidth = 1; ctx.stroke();
     text(ctx, 'Project · KRAS G12C', x0 + 14, top + 17, { font: '500 12px ' + SANS, color: INK });
+    mono(ctx, 'record · ' + (filed ? 4 : 3) + ' results', x1 - 12, top + 17, { align: 'right', color: filed ? P.teal : INK3, font: '500 10px ' + MONO });
     var tabs = ['Datasets', 'Models', 'Protocols', 'Evidence'], tx = x0;
     tabs.forEach(function (tb, i) { var wd = chip(ctx, tx, top + 52, tb, i === 3 ? P.lilac : INK3, { on: i === Math.floor(cyc * 4) }); tx += wd + 6; });
-    var rows = [['Reader', 'Literature review', '42 sources · 3 open questions'], ['Analyst', 'Variant call · cohort 07', 'QC passed · 1,204 samples'], ['Writer', 'Protocol draft', 'Waiting for your review']];
-    var rh = nar ? h * 0.16 : h * 0.18, ry0 = top + 76;
+    var rows = [['Reader', 'Literature review', '42 sources · 3 open questions'], ['Analyst', 'Variant call · cohort 07', 'QC passed · 1,204 samples'],
+      [c.person[0], c.person[1], c.person[0] + ' · ' + c.person[2]], ['Writer', 'Protocol draft', 'Waiting for your review']];
+    var ry0 = top + 72, gap = 7, bottom = nar ? h - 58 : h - 12, rh = Math.min(h * 0.18, (bottom - ry0 - 3 * gap) / 4);
+    var rowY = function (i) { return ry0 + i * (rh + gap); };
+    // the way back to the record: out of the task's row, up the side, into the project header
+    var ret = elbow(ctx, { x: x1, y: rowY(2) + rh / 2 }, { x: x1, y: top + 17 }, x1 + (nar ? 12 : 18), { col: P.teal, a: 0.2 + 0.4 * done, dash: true });
     rows.forEach(function (rw, i) {
-      var y = ry0 + i * (rh + 8), col = ACOL[rw[0]];
-      rrect(ctx, x0, y, x1 - x0, rh, 10); ctx.fillStyle = RAISED; ctx.fill(); ctx.strokeStyle = i === 2 ? rgba(P.amber, 0.45) : LINE; ctx.lineWidth = 1; ctx.stroke();
-      agent(ctx, x0 + 26, y + rh / 2, 30, col, '', '', 1);
+      var y = rowY(i), isP = i === 2, col = isP ? P.paper : ACOL[rw[0]], wait = i === 3;
+      rrect(ctx, x0, y, x1 - x0, rh, 10); ctx.fillStyle = RAISED; ctx.fill(); ctx.strokeStyle = wait ? rgba(P.amber, 0.45) : (isP && done > 0.5 ? rgba(P.teal, 0.45) : LINE); ctx.lineWidth = 1; ctx.stroke();
+      if (isP) person(ctx, x0 + 26, y + rh / 2, 13, ''); else agent(ctx, x0 + 26, y + rh / 2, 30, col, '', '', 1);
+      // the person's task says where it stands: in a chip when the row has room, in its own line when it does not
+      var state = done > 0.5 ? 'done' : (doing > 0.5 ? 'in progress' : 'to do'), F10 = '500 10px ' + MONO;
+      var roomy = !isP || x1 - 10 - chipW(ctx, 'in progress') > x0 + 50 + tw(ctx, rw[2], F10) + 8;
       text(ctx, rw[1], x0 + 50, y + rh * 0.34, { font: '500 12px ' + SANS, color: INK });
-      mono(ctx, rw[2], x0 + 50, y + rh * 0.62, { color: i === 2 ? P.amber : INK3, font: '500 10px ' + MONO });
-      var prog = i === 2 ? 1 : ((cyc + i * 0.37) % 1), bw = x1 - x0 - 66;
-      ctx.fillStyle = LINE; ctx.fillRect(x0 + 50, y + rh - 9, bw, 2.2); ctx.fillStyle = rgba(col, 0.9); ctx.fillRect(x0 + 50, y + rh - 9, bw * prog, 2.2);
+      mono(ctx, roomy || state === 'to do' ? rw[2] : c.person[0] + ' · ' + state, x0 + 50, y + rh * 0.62, { color: wait ? P.amber : (isP && !roomy && state !== 'to do' ? (state === 'done' ? P.teal : P.amber) : INK3), font: F10 });
+      var bw = x1 - x0 - 66, prog = wait ? 1 : (isP ? clamp((pc - 0.2) / 0.36) : ((cyc + i * 0.37) % 1));
+      ctx.fillStyle = LINE; ctx.fillRect(x0 + 50, y + rh - 8, bw, 2.2); ctx.fillStyle = rgba(isP ? P.teal : col, 0.9); ctx.fillRect(x0 + 50, y + rh - 8, bw * prog, 2.2);
       if (i < 2) spinner(ctx, x0 + 26, y + rh / 2, 21, col, t + i, 0.8);
+      if (isP) {
+        if (roomy) chip(ctx, x1 - 10, y + rh * 0.34, state, done > 0.5 ? P.teal : (doing > 0.5 ? P.amber : INK3), { align: 'right', on: doing > 0.5 });
+        if (doing > 0.5 && done < 0.5) spinner(ctx, x0 + 26, y + rh / 2, 19, P.amber, t, 0.8);
+      }
     });
-    // the reviewer
-    var wy = ry0 + 2 * (rh + 8) + rh / 2;
-    var rx = nar ? w * 0.84 : w * 0.86, ry = nar ? ry0 + 3 * (rh + 8) + 26 : wy;
-    person(ctx, rx, ry, 18, 'You');
-    var l = link(ctx, nar ? { x: rx, y: wy + rh / 2 } : { x: x1 + 4, y: wy }, nar ? { x: rx, y: ry - 20 } : { x: rx - 22, y: ry }, { col: P.amber, a: 0.5, dash: true });
+    if (back > 0 && back < 1) packet(ctx, ret(smooth(back)), P.teal, 2.8);
+    // the reviewer: beside the waiting draft, or under the board on a phone
+    var wy = rowY(3) + rh / 2, rx = nar ? w * 0.84 : w * 0.86, ry = nar ? h - 30 : wy;
+    person(ctx, rx, ry, nar ? 14 : 18, '');
+    if (nar) text(ctx, 'You', rx - 22, ry, { font: '500 12px ' + SANS, color: INK, align: 'right' }); else text(ctx, 'You', rx, ry - 30, { font: '500 12px ' + SANS, color: INK, align: 'center' });
+    var l = link(ctx, nar ? { x: rx, y: wy + rh / 2 } : { x: x1 + 4, y: wy }, nar ? { x: rx, y: ry - 16 } : { x: rx - 22, y: ry }, { col: P.amber, a: 0.5, dash: true });
     packet(ctx, l((t * 0.5) % 1), P.amber, 2.4);
     var blink = 0.5 + 0.5 * Math.sin(t * 3); glowAt(ctx, rx, ry, 26, P.amber, 0.2 + 0.25 * blink);
   };
@@ -732,7 +790,7 @@
     var kx = bx + bw * 0.78, ky = by + bh * 0.52, rot = smooth(((t * 0.2) % 1 - 0.8) / 0.2) * TAU;
     ctx.save(); ctx.translate(kx, ky); ctx.rotate(rot); ctx.strokeStyle = P.gold; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(-6, 0, 5, 0, TAU); ctx.moveTo(-1, 0); ctx.lineTo(9, 0); ctx.moveTo(6, 0); ctx.lineTo(6, 4); ctx.moveTo(9, 0); ctx.lineTo(9, 4); ctx.stroke(); ctx.restore();
     mono(ctx, nar ? 'managed keys' : 'at rest · managed keys', bx + bw / 2, by + bh - 16, { align: 'center', color: INK2, font: '500 10px ' + MONO });
-    if (rot > 0.1) chip(ctx, kx, ky - 26, 'rotated', P.gold, { align: 'center', on: true });
+    if (rot > 0.1) chip(ctx, Math.min(kx, bx + bw - 6 - chipW(ctx, 'rotated') / 2), ky - 36, 'rotated', P.gold, { align: 'center', on: true });
   };
 
   // Security: roles per project — owner, editor, viewer — and what each may do

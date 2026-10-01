@@ -12,8 +12,10 @@ SRC = os.path.join(ROOT, 'src')
 STATIC = os.path.join(ROOT, 'static')
 DIST = os.path.join(ROOT, 'dist')
 sys.path.insert(0, SRC)
-from content import (SITE, DEFINITION, SOLUTIONS, INDUSTRIES, HOW, STORY,
-                     COMPARE, SECURITY, DOORS, FAQ, FOOTER,
+from content import (SITE, DEFINITION, TAGLINE, FACTS_CHECKED, CONFIRM, SOLUTIONS, INDUSTRIES, HOW, STORY,
+                     BRIEF_CARDS, PEOPLE_TICKS, PILOTS, PILOTS_PUBLIC,
+                     COMPARE, COMPARE_COLS, COMPARE_MORE, COMPARE_NOTE, SECURITY, DOORS,
+                     FAQ, FAQ_AGENTS, FAQ_HOSTING, FAQ_CONFIRM, FOOTER,
                      DEMO, DEMO_STEPS, DEMO_AGENTS)                  # noqa: E402
 from pages import (SOLUTION_PAGES, INDUSTRY_PAGES, PLATFORM, DATA, SECURITY_PAGE, ABOUT, RESOURCES,  # noqa: E402
                    FAQ_PAGE, FAQ_MORE, GLOSSARY_PAGE, GLOSSARY, REQUEST, LEGAL)
@@ -129,6 +131,39 @@ def ico(name, n=0, cls=''):
 
 
 # ------------------------------------------------------------ components ---
+def confirm(key):
+    """An open item from the brief: it stays in the build, marked in the HTML and listed in docs/HANDOFF.md."""
+    return '<!-- CONFIRM: %s -->' % CONFIRM[key] if key else ''
+
+
+def cmp_table(cols, rows, label, uid='cmp'):
+    """The comparison matrix. cols: (name, examples, short name) for every column but the last, which is Cytogent.
+    rows: (icon, feature, cell per column..., open item). A cell that starts with Yes gets a tick; any other cell about
+    another product gets a neutral dash, never a cross. Cytogent's cells get a tick unless they say In progress."""
+    n = len(cols) + 1
+
+    def cell(word, col, ours):
+        yes = (not word.startswith('In progress')) if ours else word.split(',')[0] == 'Yes'
+        mark = '<path d="M5 12.5l4.5 4.5L19 7.5"/>' if yes else '<path d="M5 12h14"/>'
+        return ('<span class="mk mk--%s" role="cell" data-col="%s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+                'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg><span>%s</span></span>'
+                % ('yes' if yes else 'part', col, mark, word))
+
+    head = '<span role="columnheader"><span class="sr-only">Feature</span></span>' + ''.join(
+        '<span role="columnheader">%s%s</span>' % (name, '<small>%s</small>' % eg if eg else '') for name, eg, _ in cols)
+    body = ''
+    for r in rows:
+        icon_, feature, cells, note = r[0], r[1], r[2:2 + n], r[2 + n]
+        body += ('%s<div class="cmpv__row" role="row"><span class="cmpv__label" role="rowheader"><svg viewBox="0 0 24 24" fill="none" '
+                 'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg>%s</span>%s%s</div>'
+                 % (confirm(note), ICONS[icon_], feature,
+                    ''.join(cell(w, c[2], False) for w, c in zip(cells, cols)), cell(cells[-1], 'Cytogent', True)))
+    key = ''.join('<span><b>%s</b> %s</span>' % (short, eg) for _, eg, short in cols if eg)
+    return ('%s<div class="cmpv cmpv--%d rv" role="table" aria-label="%s">'
+            '<div class="cmpv__head" role="row">%s<span class="cmpv__us" role="columnheader">%sCytogent</span></div>'
+            '<div class="cmpv__body" role="rowgroup">%s</div></div>'
+            % ('<p class="cmpv__key rv">%s</p>' % key if key else '', n, label, head, logo_mark(uid), body))
+
 def slate(img, extra=''):
     """A labelled placeholder for a real microscopy image we do not have yet."""
     fname, caption, desc = img
@@ -337,9 +372,7 @@ def footer():
         '<div class="foot__legal"><span>&copy; 2026 WelloWork AB</span><span>Cytogent is a research tool, not a medical device.</span></div>'
         '</div></footer>'
         % (logo_mark('foot'),
-           'An agentic workspace for life science research. Scientists and AI agents work together, '
-           'from question to cited evidence.',
-           cols)
+           TAGLINE, cols)
     )
 
 
@@ -382,6 +415,11 @@ def jsonld(path, title, desc, faq=None, crumbs=None, extra=None):
             "@id": ORIGIN + "/#software", "name": "Cytogent",
             "applicationCategory": "Research", "operatingSystem": "Web browser",
             "description": DEFINITION,
+            "featureList": ["Research brief", "AI agents and human tasks on one board",
+                            "Literature and evidence with citations", "In-silico studies", "Protein studies and design",
+                            "CRISPR guide design and off-target review", "Clinical trial documents",
+                            "Regulatory documents (IND/CTA, IVDR)", "Patent prior art and claims",
+                            "Health data standards (openEHR, FHIR, OMOP, SNOMED CT)", "Audit log and scientist sign-off"],
             "publisher": {"@id": ORIGIN + "/#organization"},
             "offers": {"@type": "Offer", "availability": "https://schema.org/LimitedAvailability",
                        "description": "Access is by request only. No self sign-up."},
@@ -501,8 +539,9 @@ def artifact(pages, home_title, home_body):
 # =============================================================== home page ==
 def home():
     o = []
+    kwd = lambda w: '<span class="nobr"><span class="kw">%s</span>.</span>' % w
 
-    # ---- 1. hero: one screen; the cell sits behind it and explodes as the page scrolls ---
+    # ---- hero: one screen; the cell sits behind it and explodes as the page scrolls ---
     o.append(
         '<section class="heroscene" aria-label="Introduction" id="hero">'
         '<div class="hero__stage">'
@@ -512,23 +551,43 @@ def home():
         '</div>'
         '<div class="wrap hero__content hero">'
         '<h1>Where scientists and AI agents do research <span class="nobr"><span class="kw">together</span>.</span></h1>'
+        '<p class="hero__support">Write what you want to find out, in your own words. Cytogent turns it into a research '
+        'brief you can sign. Then AI agents and your team plan and do the work, with every step cited.</p>'
         '<div class="hero__actions">%s%s</div>'
+        '%s<p class="hero__note">Runs on models from Anthropic, OpenAI, Google and xAI, plus life-science models.</p>'
         '</div>'
         '</section>'
         % (btn('Request access', '/request-access/', 'primary'),
-           btn('See the platform', '/platform/', 'outline', False)))
+           btn('See an example', '#demo', 'outline', False), confirm('models')))
 
     # ---- the live demo, right under the hero --------------------------------
     o.append(
-        '<section class="band band--cream" aria-labelledby="h-demo" id="demo"><div class="wrap">%s%s'
+        '<section class="band band--cream" aria-labelledby="h-demo" id="demo"><div class="wrap">%s%s%s'
         '<div class="dfoot rv"><p class="cap">Illustrative example. Names, data and numbers are made up.</p>%s</div>'
         '</div></section>'
-        % (shead('See it work', '<span id="h-demo">From a rough idea to a signed <span class="nobr"><span class="kw">plan</span>.</span></span>',
+        % (shead('See it work', '<span id="h-demo">From a rough idea to a signed %s</span>' % kwd('plan'),
                  'Pick an example. Watch Cytogent ask the right questions, write the brief, split the work between '
                  'agents and people, and build the file.', show=True),
-           demo(DEMO, 'full'), tlink('See how the platform works', '/platform/')))
+           confirm('planner'), demo(DEMO, 'full'), tlink('See how the platform works', '/platform/')))
 
-    # ---- 2. who it is for --------------------------------------------------
+    # ---- the research brief -------------------------------------------------
+    o.append(
+        '<section class="band band--dark" aria-labelledby="h-brief"><div class="wrap">%s%s</div></section>'
+        % (shead('The research brief', '<span id="h-brief">You don\'t need the perfect %s</span>' % kwd('prompt'),
+                 'A research question is not a prompt. It hides choices about controls, endpoints, sample size, ethics '
+                 'and regulation. Cytogent asks about them first, so agents plan from a brief your PI would sign.', show=True),
+           icards(BRIEF_CARDS, cols=3)))
+
+    # ---- people and agents ----------------------------------------------------
+    ticks_ = '<ul class="ticks">%s</ul>' % ''.join('%s<li>%s<span>%s</span></li>' % (confirm(k), TICK, t_) for t_, k in PEOPLE_TICKS)
+    o.append(
+        '<section class="band band--cream" aria-labelledby="h-people"><div class="wrap">%s</div></section>'
+        % split('<h2 id="h-people">Agents plan the work and give work back to %s</h2>'
+                '<p class="lede">After you sign the brief, agents split it into tasks. Some go to agents. Some go to people: '
+                'a lab run, a review, an approval. Results come back into the same record.</p>%s' % (kwd('people'), ticks_),
+                bench_frame('frame--43')))
+
+    # ---- who it is for --------------------------------------------------
     cards = ''
     for i in INDUSTRIES:
         cards += (
@@ -540,35 +599,30 @@ def home():
         '<section class="band band--dark" aria-labelledby="h-who"><div class="wrap">%s'
         '<div class="grid grid--4 rv" data-stagger style="margin-top:44px">%s</div>'
         '</div></section>'
-        % (shead('Who it is for', '<span id="h-who">Built for the people who move science <span class="nobr"><span class="kw">forward</span>.</span></span>',
+        % (shead('Who it is for', '<span id="h-who">Built for the people who move science %s</span>' % kwd('forward'),
                  'Four teams, one workspace. Each gets the agents, data and documents its work needs.'),
            cards))
 
-    # ---- 3. how it works ---------------------------------------------------
+    # ---- how it works: four steps -------------------------------------------
     steps = ''
     for n, (h, p) in enumerate(HOW, 1):
         steps += ('<li class="step"><span class="step__n">0%d</span><div><h3>%s</h3><p>%s</p></div></li>'
                   % (n, h, p))
-    annots = (
-        '<span class="annot" data-how-label style="left:6%;top:12%"><i></i>Receptor</span>'
-        '<span class="annot" data-how-label style="left:6%;bottom:22%"><i></i>Cascade</span>'
-        '<span class="annot" data-how-label style="right:6%;top:12%"><i></i>Nucleus</span>'
-    )
-    how_media = frame(('', 'You \u2192 Reader, Analyst, Writer \u2192 a cited result \u2192 your decision', ''),
+    how_media = frame(('', 'You → Planner → Reader, Analyst, Writer and a person → a signed result', ''),
                       'frame--43', '',
-                      vis=dg('flow', 'A person asks a question; it fans out to three agents, Reader, Analyst and Writer, '
-                                     'each with its model; their work lands in a result page with two citations; '
-                                     'a person signs off.', cid='dg-how'))
+                      vis=dg('flow', 'You write a goal; the Planner asks a few questions and you sign a research brief; the work '
+                                     'fans out to three agents, Reader, Analyst and Writer, each with its model, and to a person on '
+                                     'your team; their results land in a page with two citations; you sign off.', cid='dg-how'))
     o.append(
         '<section class="band band--cream" aria-labelledby="h-how"><div class="wrap">%s'
         '<div class="how"><ol class="steps rv" id="how-steps" data-drive="dg-how">%s</ol>'
-        '<div class="rv">%s</div>'
+        '<div class="rv">%s%s</div>'
         '</div></div></section>'
-        % (shead('How it works', '<span id="h-how">From question to cited <span class="kw">answer</span> in three steps.</span>',
-                 'You ask. Agents read, compute and draft. You review and decide. Every step is logged.'),
-           steps, how_media))
+        % (shead('How it works', '<span id="h-how">From question to signed result in four %s</span>' % kwd('steps'),
+                 'You write. Cytogent asks and you sign the brief. Agents and people work. You decide. Every step is logged.'),
+           steps, confirm('planner'), how_media))
 
-    # ---- 4. seven workflows ------------------------------------------------
+    # ---- seven workflows ------------------------------------------------
     flows = ''
     for s in SOLUTIONS:
         tags = ''.join('<span class="tag">%s</span>' % t for t in s['tags'])
@@ -589,14 +643,13 @@ def home():
                  'Every workflow uses the same agents, data and rules, so a result in one is a source in the next.'),
            flows))
 
-    # ---- 5. one project, end to end ---------------------------------------
+    # ---- one project, end to end ---------------------------------------
     layers, steps_html = '', ''
     for i, st in enumerate(STORY):
         v = st['vis']
         body = dg(v[0], v[2], phase=i)
-        extra = ''
-        layers += '<div class="story__layer" data-on="%s">%s%s<p class="frame__cap">%s</p></div>' % (
-            'true' if i == 0 else 'false', body, extra, v[1])
+        layers += '<div class="story__layer" data-on="%s">%s<p class="frame__cap">%s</p></div>' % (
+            'true' if i == 0 else 'false', body, v[1])
         steps_html += (
             '<li class="sstep" data-on="%s" data-label="%s"><span class="sstep__n">%s</span>'
             '<h3>%s</h3><p>%s</p></li>'
@@ -605,127 +658,129 @@ def home():
         '<section class="band band--cream" aria-labelledby="h-story" id="story"><div class="wrap">%s'
         '<div class="story"><div class="story__media">'
         '<div class="frame story__frame">%s</div>'
+        '<p class="illus story__illus">Illustrative example</p>'
         '</div>'
         '<ol class="story__steps">%s</ol></div></div></section>'
         % (shead('One project, end to end',
                  '<span id="h-story">Follow a single <span class="kw">question</span> through the workspace.</span>',
-                 'A resistance mutation in a cancer cell line. Six steps, one evidence trail. '
+                 'A resistance mutation in a cancer cell line. Seven steps, one evidence trail. '
                  'Illustrative example.'),
            layers, steps_html))
 
-    # ---- 6. why Cytogent: an icon matrix, the Cytogent column raised --------
-    def mark(word, col=''):
-        yes = ('Always', 'Yes', 'Yes, logged', 'Built in', 'One workspace', 'Never')
-        part = ('Rarely', 'Sometimes', 'Varies', 'Per tool', 'One area each')
-        kind = 'yes' if word in yes else ('part' if word in part else 'no')
-        ico = {'yes': '<path d="M5 12.5l4.5 4.5L19 7.5"/>', 'part': '<path d="M5 12h14"/>', 'no': '<path d="M7 7l10 10M17 7L7 17"/>'}[kind]
-        return ('<span class="mk mk--%s" data-col="%s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
-                'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg><span>%s</span></span>' % (kind, col, ico, word))
-    rows = ''
-    row_icons = [
-        '<path d="M7 9h3l-2 6H5zM14 9h3l-2 6h-3z"/>',
-        '<path d="M6 5v6a4 4 0 0 0 4 4h8M14 11l4 4-4 4"/>',
-        '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/>',
-        '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
-        '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
-        '<circle cx="9" cy="12" r="3.5"/><path d="M12.5 12H20M17 12v3M14.5 12v2"/>',
-        '<circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6M15 16l2.5 2.5L22 14"/>',
-    ]
-    for n, (label, a, b, c) in enumerate(COMPARE):
-        rows += ('<li class="cmpv__row"><span class="cmpv__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
-                 'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg>%s</span>'
-                 '%s%s%s</li>' % (row_icons[n], label, mark(a, 'General AI'), mark(b, 'Point tools'), mark(c, 'Cytogent')))
+    # ---- why Cytogent: keep your tools, choose Cytogent for research ---------
     o.append(
-        '<section class="band band--dark" aria-labelledby="h-why"><div class="wrap">%s'
-        '<div class="cmpv rv" role="table" aria-label="How Cytogent compares">'
-        '<div class="cmpv__head" role="row"><span></span><span>General AI chat</span><span>Point tools</span>'
-        '<span class="cmpv__us">%sCytogent</span></div>'
-        '<ul class="cmpv__body">%s</ul></div></div></section>'
-        % (shead('Why Cytogent', '<span id="h-why">Not another chat <span class="nobr"><span class="kw">window</span>.</span></span>',
-                 'General AI assistants give answers. Cytogent gives evidence, inside your data rules, '
-                 'with a record of every step.'),
-           logo_mark('cmp'), rows))
+        '<section class="band band--dark" aria-labelledby="h-why"><div class="wrap">%s%s'
+        '<p class="fnote rv">%s</p>'
+        '<p class="more rv"><a class="tlink" href="/compare/" data-cta="compare">See the full comparison%s</a></p>'
+        '</div></section>'
+        % (shead('Why Cytogent', '<span id="h-why">Keep your AI tools. Choose Cytogent for %s</span>' % kwd('research'),
+                 'ChatGPT, Claude, Copilot and agent workspaces are great for general work. Cytogent does the same agent '
+                 'work, and is built for how research moves from question to file.', show=True),
+           cmp_table(COMPARE_COLS, COMPARE, 'How Cytogent compares with AI assistants and agent workspaces'),
+           COMPARE_NOTE, ARROW))
 
-    # ---- 8. data and models ------------------------------------------------
+    # ---- pilots ------------------------------------------------------------
+    pil = ''
+    for n, p_ in enumerate(PILOTS):
+        v = SOL[p_['vis']]['vis']
+        pil += ('<div class="flow flow--static rv" data-rv-item><div class="frame">%s<p class="frame__cap">%s</p></div>'
+                '<div class="flow__body"><h3>%s</h3><p>%s</p><div class="tags">%s</div></div></div>'
+                % (dg(v[0], v[2], phase=n + 2), v[1], p_['name'], p_['line'],
+                   ''.join('<span class="tag">%s</span>' % t_ for t_ in p_['tags'])))
+    o.append(
+        '<section class="band band--cream" aria-labelledby="h-pilots"><div class="wrap">%s%s'
+        '<div class="flows" data-stagger>%s</div><p class="more rv">%s</p></div></section>'
+        % (shead('Pilots', '<span id="h-pilots">Two pilot studies, running %s</span>' % kwd('now'),
+                 'Both turn a science finding into industry-ready work.', show=True),
+           confirm('pilots'), pil, tlink('Read about the pilots', '/customers/')))
+
+    # ---- data and models ------------------------------------------------
     dm_cards = [
         ('Datasets', 'Public and licensed collections, cleaned, versioned and documented. Each one lists its '
-                     'source, version and licence inside the workspace.'),
-        ('Trained models', 'Domain models for prediction and screening — variant effect, binding affinity, '
-                           'assay QC — each with its validation reported on its own card.'),
-        ('Protocols', 'Protocols you can search, adapt and cite, with every step attributed to where it came from.'),
+                     'source, version and licence inside the workspace. Literature includes full-text papers from '
+                     'ScienceDirect, through Elsevier\'s API.', '', 'sciencedirect'),
+        ('Trained models', 'Domain models for prediction and screening (variant effect, binding affinity, assay QC). '
+                           'Each shows its validation on its own card.', pill('progress'), 'trained'),
+        ('Protocols', 'Protocols you can search, adapt and cite, with every step attributed to where it came from.', '', None),
+        ('Health data standards', 'Patient data is modelled with openEHR, exchanged with FHIR, mapped to OMOP for '
+                                  'multi-site studies, and coded with SNOMED CT.', '', 'standards'),
     ]
-    cards = ''.join('<div class="card rv" data-rv-item><h3>%s</h3><p class="card__get">%s</p></div>' % c
-                    for c in dm_cards)
+    cards = ''.join('%s<div class="card rv" data-rv-item><h3>%s</h3><p class="card__get">%s</p>%s</div>'
+                    % (confirm(k), h, p_, pl) for h, p_, pl, k in dm_cards)
     o.append(
-        '<section class="band band--cream" aria-labelledby="h-data"><div class="wrap">%s'
+        '<section class="band band--dark" aria-labelledby="h-data"><div class="wrap">%s'
         '<div class="split"><div class="split__text">'
         '<div class="grid" style="gap:14px">%s</div>%s</div>'
         '<div class="split__media rv">%s</div>'
         '</div></div></section>'
-        % (shead('Data &amp; models', '<span id="h-data">Built on data you can <span class="nobr"><span class="kw">trace</span>.</span></span>',
+        % (shead('Data &amp; models', '<span id="h-data">Built on data you can %s</span>' % kwd('trace'),
                  'Every dataset has a source, a version and a licence. Every model reports its validation.'),
            cards, tlink('See data and models', '/data-and-models/'),
-           frame(('', 'Datasets with source, version and licence \u00b7 models with validation \u00b7 the curation path', ''),
+           frame(('', 'Datasets with source, version and licence · models with validation · the curation path', ''),
                  'frame--43', vis=dg('data', 'Four dataset cards with their version and licence; three trained models with '
                                              'their validation metric; a five-step path Collect, Clean, Version, Document, Serve.'))))
 
-    # ---- 9. security -------------------------------------------------------
+    # ---- security -------------------------------------------------------
     rows = ''
-    for name, desc, state in SECURITY:
-        rows += '<li class="row rv" data-rv-item><b>%s</b><p>%s</p>%s</li>' % (name, desc, pill(state))
+    for name, desc, state, k in SECURITY:
+        rows += '%s<li class="row rv" data-rv-item><b>%s</b><p>%s</p>%s</li>' % (confirm(k), name, desc, pill(state))
     o.append(
-        '<section class="band band--dark" aria-labelledby="h-sec"><div class="wrap">%s'
+        '<section class="band band--cream" aria-labelledby="h-sec"><div class="wrap">%s'
         '<div class="split"><div class="split__text" style="max-width:none">'
         '<ul class="rows" data-stagger style="margin-top:0">%s</ul>'
         '<p class="body" style="font-size:15px">Cytogent is a research tool. It is not a medical device and '
         'makes no clinical decisions.</p>%s</div>'
         '<div class="split__media rv">%s</div>'
         '</div></div></section>'
-        % (shead('Security', '<span id="h-sec">Your data stays <span class="nobr"><span class="kw">yours</span>.</span></span>',
+        % (shead('Security', '<span id="h-sec">Your data stays %s</span>' % kwd('yours'),
                  'Projects are isolated. Access is per role. Nothing trains on your data.'),
            rows, tlink('Read the full security page', '/security/'),
-           frame(('', 'Three isolated projects \u00b7 a crossing refused \u00b7 roles \u00b7 the audit log', ''),
+           frame(('', 'Three isolated projects · a crossing refused · roles · the audit log', ''),
                  'frame--43', vis=dg('security', 'Three project boxes, each with its own data and agent and a lock; a packet '
                                                  'trying to cross between projects is refused; owner, editor and viewer roles; '
                                                  'an audit log filling in.'))))
 
-    # ---- 10. three ways in -------------------------------------------------
+    # ---- three ways in -------------------------------------------------
     doors = ''
     for k, name, desc, t in DOORS:
         doors += ('<a class="door rv" data-rv-item href="/request-access/?type=%s">'
                   '<h3>%s</h3><p>%s</p>%s</a>' % (t, name, desc, tfake('Request access')))
     o.append(
-        '<section class="band band--cream" aria-labelledby="h-access"><div class="wrap">%s'
+        '<section class="band band--dark" aria-labelledby="h-access"><div class="wrap">%s'
         '<div class="doors" data-stagger>%s</div>'
-        '<div class="next" style="margin-top:40px"><span data-n="1">We read your request</span>'
+        '%s<p class="body doors__note rv">Tell us what you want to find out. We reply within five working days with a '
+        'first draft of your research brief.</p>'
+        '<div class="next"><span data-n="1">We read your request</span>'
         '<span data-n="2">A short call, if needed</span>'
         '<span data-n="3">Workspace set up with your permissions</span></div>'
         '</div></section>'
-        % (shead('Access', '<span id="h-access">Access is by <span class="nobr"><span class="kw">request</span>.</span></span>',
-                 'No self sign-up. Tell us who you are and what you want to do. We review every request.'),
-           doors))
+        % (shead('Access', '<span id="h-access">Access is by %s</span>' % kwd('request'),
+                 'No self sign-up. Tell us who you are and what you want to find out. We review every request.'),
+           doors, confirm('reply')))
 
-    # ---- 11. FAQ: a standard accordion, the first answer open ---------------
-    qa = ''.join('<details class="qa"%s><summary><span>%s</span><svg class="qa__chev" viewBox="0 0 16 16" fill="none" '
-                 'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>'
-                 '</summary><div class="qa__a"><p>%s</p></div></details>' % (' open' if n == 0 else '', q, a)
-                 for n, (q, a) in enumerate(FAQ))
+    # ---- FAQ: a standard accordion, the first answer open ---------------
     o.append(
-        '<section class="band band--dark" aria-labelledby="h-faq"><div class="wrap">%s'
+        '<section class="band band--cream" aria-labelledby="h-faq"><div class="wrap">%s'
         '<div class="faq rv">%s</div></div></section>'
-        % (shead('FAQ', '<span id="h-faq">Questions scientists ask <span class="nobr"><span class="kw">first</span>.</span></span>',
+        % (shead('FAQ', '<span id="h-faq">Questions scientists ask %s</span>' % kwd('first'),
                  'Short answers, in plain words. The full list lives in Resources.'),
-           qa))
+           qa_list(FAQ)))
 
-    # ---- 12. final CTA -----------------------------------------------------
-    o.append(
-        '<section class="band band--cream" aria-labelledby="h-cta"><div class="wrap">'
-        '<div class="cta rv">'
-        '<h2 id="h-cta">Bring your next <span class="nobr"><span class="kw">question</span>.</span></h2>'
-        '<p class="lede">Tell us your field and what you want to do. We set up the workspace around it.</p>'
-        '%s</div></div></section>' % btn('Request access', '/request-access/', 'primary'))
+    # ---- final CTA -----------------------------------------------------
+    o.append(cta('Bring your next <kw>question</kw>.',
+                 'Tell us what you want to find out. We set up the workspace and send you a first research brief.', kind='dark'))
 
     return ''.join(o)
+
+
+def bench_frame(cls='frame--wide'):
+    """The project board diagram: agents at work, a lab task for a person, one draft waiting for review."""
+    return dframe(
+        'bench', 'An illustrative project board · agents and a person at work · one draft waiting for you',
+        'A project board for KRAS G12C with four tasks: the Reader on a literature review, the Analyst on a variant call, '
+        'a lab technician who runs qPCR on clone 4 with the protocol attached, and the Writer on a protocol draft that waits '
+        'for your review. The lab task moves from to do to done, and its result returns to the project record.',
+        cfg={'person': ['Lab tech', 'Run qPCR on clone 4', 'protocol attached']}, cls=cls)
 
 
 
@@ -807,15 +862,16 @@ def status_rows(items):
 
 
 def qa_list(items, first_open=True):
-    return ''.join('<details class="qa"%s><summary><span>%s</span><svg class="qa__chev" viewBox="0 0 16 16" fill="none" '
+    return ''.join('%s<details class="qa"%s><summary><span>%s</span><svg class="qa__chev" viewBox="0 0 16 16" fill="none" '
                    'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>'
-                   '</summary><div class="qa__a"><p>%s</p></div></details>' % (' open' if (n == 0 and first_open) else '', q, a)
+                   '</summary><div class="qa__a"><p>%s</p></div></details>'
+                   % (confirm(FAQ_CONFIRM.get(q)), ' open' if (n == 0 and first_open) else '', q, a)
                    for n, (q, a) in enumerate(items))
 
 
-def cta(h2, lede, href='/request-access/', label='Request access'):
-    return ('<section class="band band--cream" aria-labelledby="h-cta"><div class="wrap"><div class="cta rv">'
-            '<h2 id="h-cta">%s</h2><p class="lede">%s</p>%s</div></div></section>' % (kw(h2), lede, btn(label, href, 'primary')))
+def cta(h2, lede, href='/request-access/', label='Request access', kind='cream'):
+    return ('<section class="band band--%s" aria-labelledby="h-cta"><div class="wrap"><div class="cta rv">'
+            '<h2 id="h-cta">%s</h2><p class="lede">%s</p>%s</div></div></section>' % (kind, kw(h2), lede, btn(label, href, 'primary')))
 
 
 def pill2(state):
@@ -894,10 +950,7 @@ def platform_page():
     c = PLATFORM
     o = [phero(c['h1'], c['hero'], btn('Request access', '/request-access/', 'primary') + btn('Data and models', '/data-and-models/', 'outline', False))]
     h2, lede = c['bench']
-    o.append(band('dark', 'h-bench', head2('h-bench', h2, lede) + '<div class="wide rv">%s</div>' % dframe(
-        'bench', 'An illustrative project board · three agents at work · one draft waiting for you',
-        'A project board for KRAS G12C with three tasks: the Reader on a literature review, the Analyst on a variant call, '
-        'the Writer on a protocol draft that waits for your review.', cls='frame--wide')))
+    o.append(band('dark', 'h-bench', head2('h-bench', h2, lede) + '<div class="wide rv">%s</div>' % bench_frame()))
     h2, lede, routes = c['routing']
     rl = ''.join('<li class="route" data-rv-item>%s<div><b>%s</b><span>%s</span></div></li>' % (ico(a, n), b, m) for n, (a, b, m) in enumerate(routes))
     o.append(band('cream', 'h-route', split('<h2 id="h-route">%s</h2><ul class="routes" data-stagger>%s</ul>' % (kw(h2), rl),
@@ -1002,11 +1055,12 @@ def about_page():
 
 # ---- resources, FAQ, glossary ---------------------------------------------
 def faq_groups():
-    F = FAQ
-    return [('About Cytogent', [F[0]] + FAQ_MORE['general'] + [F[1], F[2], F[5]]),
-            ('Using the workspace', FAQ_MORE['using']),
-            ('Data and security', [F[3], F[4]] + FAQ_MORE['data'] + [F[7]]),
-            ('Access', [F[6]] + FAQ_MORE['access'])]
+    F = dict((q, (q, a)) for q, a in FAQ)
+    what, vs_chat, vs_ws, brief_, tasks, who, train, access, device = [F[q] for q, _ in FAQ]
+    return [('About Cytogent', [what] + FAQ_MORE['general'] + [who, FAQ_AGENTS, vs_chat, vs_ws]),
+            ('Using the workspace', [brief_, tasks] + FAQ_MORE['using']),
+            ('Data and security', [train, FAQ_HOSTING] + FAQ_MORE['data'] + [device]),
+            ('Access', [access] + FAQ_MORE['access'])]
 
 
 def resources_page():
@@ -1021,7 +1075,7 @@ def resources_page():
              ('key', 'Request access', 'Three request types, reviewed by hand.', '/request-access/', 'Request access')]
     o.append(band('dark', 'h-res', head2('h-res', 'Start <kw>here</kw>.', 'Answers, terms and the pages people ask about most.') + icards(cards, cols=3)))
     o.append(band('cream', 'h-top', head2('h-top', 'Asked most <kw>often</kw>.', 'Three answers to start with.') +
-                  '<div class="faq rv">%s</div><p class="more rv">%s</p>' % (qa_list([FAQ[0], FAQ[3], FAQ[6]]), tlink('All questions', '/resources/faq/'))))
+                  '<div class="faq rv">%s</div><p class="more rv">%s</p>' % (qa_list([FAQ[0], FAQ[6], FAQ[7]]), tlink('All questions', '/resources/faq/'))))
     o.append(cta('Bring your next <kw>question</kw>.', 'Tell us your field and what you want to do. We set up the workspace around it.'))
     return ''.join(o)
 
@@ -1264,9 +1318,9 @@ def build():
     # favicon = the mark on its own
     open(os.path.join(DIST, 'img', 'favicon.svg'), 'w', encoding='utf-8').write(MARK)
 
-    title = 'Cytogent — Agentic Workspace for Life Science Research'
-    desc = ('An agentic workspace where scientists and AI agents research together: literature, '
-            'in-silico, protein design, CRISPR, trials and regulatory documents.')
+    title = 'Cytogent — AI Agents for Life Science Research'
+    desc = ('Write your research goal in plain words. Cytogent turns it into a signed research brief, then AI agents '
+            'and your team do the work, with every step cited.')
     body = home()
     open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(
         page('/', title, desc, body, faq=FAQ, crumbs=None))

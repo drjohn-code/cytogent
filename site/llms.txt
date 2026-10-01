@@ -1,12 +1,12 @@
 # Cytogent
 
-> Cytogent is an agentic workspace for life science research. Scientists and AI agents work together on literature and evidence, in-silico studies, protein studies and design, CRISPR and genome editing, clinical trials from planning to report, and regulatory and patent documentation — every result with cited, auditable evidence.
+> Cytogent is an agentic workspace for life science research. Scientists write what they want to find out; Cytogent turns it into a research brief, and AI agents and people plan and do the work together across literature, in-silico studies, protein design, CRISPR, clinical trials, and regulatory and patent documents. Every result is cited and signed off.
 
 Cytogent is operated by WelloWork AB, a company registered in Sweden.
 
 ## What it is
 
-Cytogent is an agentic workspace for life science research. Scientists and AI agents work together on literature and evidence, in-silico studies, protein studies and design, CRISPR and genome editing, clinical trials from planning to report, and regulatory and patent documentation — every result with cited, auditable evidence.
+Cytogent is an agentic workspace for life science research. Scientists write what they want to find out; Cytogent turns it into a research brief, and AI agents and people plan and do the work together across literature, in-silico studies, protein design, CRISPR, clinical trials, and regulatory and patent documents. Every result is cited and signed off.
 
 Access is by request only. There is no self sign-up, no password and no free trial. Three request types: Individual, Institute, Hospital.
 
