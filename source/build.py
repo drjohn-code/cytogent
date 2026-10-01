@@ -13,7 +13,8 @@ STATIC = os.path.join(ROOT, 'static')
 DIST = os.path.join(ROOT, 'dist')
 sys.path.insert(0, SRC)
 from content import (SITE, DEFINITION, SOLUTIONS, INDUSTRIES, HOW, STORY,
-                     COMPARE, SECURITY, DOORS, FAQ, FOOTER)          # noqa: E402
+                     COMPARE, SECURITY, DOORS, FAQ, FOOTER,
+                     DEMO, DEMO_STEPS, DEMO_AGENTS)                  # noqa: E402
 from pages import (SOLUTION_PAGES, INDUSTRY_PAGES, PLATFORM, DATA, SECURITY_PAGE, ABOUT, RESOURCES,  # noqa: E402
                    FAQ_PAGE, FAQ_MORE, GLOSSARY_PAGE, GLOSSARY, REQUEST, LEGAL)
 
@@ -25,6 +26,7 @@ CSS = read(os.path.join(SRC, 'css', 'site.css'))
 CELL_JS = read(os.path.join(SRC, 'js', 'cell.js'))
 DG_JS = read(os.path.join(SRC, 'js', 'diagrams.js'))
 APP_JS = read(os.path.join(SRC, 'js', 'app.js'))
+DEMO_JS = read(os.path.join(SRC, 'js', 'demo.js'))
 
 
 def squeeze_js(js):
@@ -119,11 +121,11 @@ def icon(name):
             'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg>' % ICONS[name])
 
 
-def ico(name, n=0):
+def ico(name, n=0, cls=''):
     """An icon in a squircle tile, the way Kilogent draws its agents. n picks the tile colour."""
-    return ('<span class="ico" style="--ic:%s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+    return ('<span class="ico%s" style="--ic:%s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
             'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg></span>'
-            % (ICON_COLS[n % len(ICON_COLS)], _svgdraw(ICONS[name])))
+            % (' ' + cls if cls else '', ICON_COLS[n % len(ICON_COLS)], _svgdraw(ICONS[name])))
 
 
 # ------------------------------------------------------------ components ---
@@ -175,9 +177,100 @@ def tfake(label):
     return '<span class="tlink">%s%s</span>' % (label, ARROW)
 
 
-def shead(eyebrow, h2, lede, split=True, level=2):
-    # eyebrow and lede are kept for the call sites but no longer printed: titles stand on their own
-    return ('<div class="shead rv"><div class="shead__top"><h%d>%s</h%d></div></div>' % (level, h2, level))
+def shead(eyebrow, h2, lede, split=True, level=2, show=False):
+    # the eyebrow is kept for the call sites but not printed: titles stand on their own.
+    # the lede is printed only where a section needs it to be understood (show=True).
+    return ('<div class="shead%s rv"><div class="shead__top"><h%d>%s</h%d></div>%s</div>'
+            % (' shead--wide' if show else '', level, h2, level, '<p class="lede">%s</p>' % lede if show else ''))
+
+
+# ------------------------------------------------------------------- demo ---
+def demo(examples, mode='full'):
+    """The live brief demo: a chat-like feed on the left, a stage on the right (brief, board, file), a stepper under it.
+    Real HTML, so the text can be read, searched and spoken. mode='full': tabs and autoplay (home);
+    mode='single': one example, no tabs (platform). Without JavaScript the first example shows its last step."""
+    esc = lambda t: html.escape(t, quote=False)
+    tick = ('<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" '
+            'stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.6 10.2l2.2 2.2 4.4-4.6"/></svg>')
+
+    def face(name, ini='', size='sm'):
+        """An agent is a squircle with its icon; a person is a circle with initials."""
+        if name in DEMO_AGENTS:
+            return ico(DEMO_AGENTS[name][0], DEMO_AGENTS[name][1], 'ico--' + size)
+        return '<span class="av av--%s" aria-hidden="true">%s</span>' % (size, esc(ini))
+
+    def message(m):
+        if 'event' in m:
+            return ('<li class="msg msg--event" data-at="%d"><p class="msg__ev">%s<span>%s</span><span class="msg__meta">%s</span></p></li>'
+                    % (m['at'], tick, esc(m['event']), m['time']))
+        extra = ''
+        if m.get('files'):
+            extra += '<ul class="msg__files" aria-label="Attachments">%s</ul>' % ''.join(
+                '<li class="tag">%s</li>' % esc(f) for f in m['files'])
+        if m.get('qa'):
+            extra += '<ol class="msg__qa">%s</ol>' % ''.join(
+                '<li><span>%s</span><span class="ans"><span class="sr-only">Answer: </span>%s</span></li>' % (esc(q), esc(a)) for q, a in m['qa'])
+        return ('<li class="msg" data-at="%d">%s<div class="msg__b"><p class="msg__meta">%s · %s</p><p class="msg__t">%s</p>%s</div></li>'
+                % (m['at'], face(m['who'], m.get('ini', '')), esc(m['who']), m['time'], esc(m['text']), extra))
+
+    def task(t):
+        if 'agent' in t:
+            owner = '%s<span>%s</span><span class="tag">%s</span>' % (face(t['agent'], size='xs'), t['agent'], esc(t['model']))
+        else:
+            owner = '%s<span>%s</span>' % (face('', t['ini'], 'xs'), esc(t['owner']))
+        pills = ''.join('<span class="pill%s"><i></i>%s</span>' % (' pill--' + k if k else '', esc(n)) for n, k in t.get('pills', []))
+        return ('<li class="task"><span class="task__id">%s</span><p class="task__t">%s</p><div class="task__o">%s</div>%s</li>'
+                % (t['id'], esc(t['t']), owner, '<div class="task__p">%s</div>' % pills if pills else ''))
+
+    def brief_rows(ex, plain=False):
+        return ''.join('<div class="bf__row"%s><dt>%s</dt><dd><span>%s</span></dd></div>'
+                       % ('' if plain else ' data-fill="%d"' % at, esc(k), esc(v)) for k, v, at in ex['brief']['fields'])
+
+    def panel(ex, n):
+        b, f = ex['brief'], ex['file']
+        feed = ('<div class="dfeed"><button type="button" class="dmore" hidden>Show all</button>'
+                '<div class="dfeed__scroll"><ol class="feed" aria-live="off" aria-label="Conversation">%s</ol></div></div>'
+                % ''.join(message(m) for m in ex['feed']))
+        brief = ('<div class="stage stage--brief"><div class="dcard"><div class="dcard__head">'
+                 '<h3 class="dcard__title">Research brief <span>%s</span></h3>'
+                 '<span class="pill pill--progress dpill--draft"><i></i>Draft</span>'
+                 '<span class="pill pill--done dpill--signed"><i></i>Signed</span></div>'
+                 '<dl class="bf">%s</dl></div></div>' % (b['id'], brief_rows(ex)))
+        cols = ''.join('<div class="board__col"><h4>%s <span>%d</span></h4><ul>%s</ul></div>'
+                       % (name, len(tasks), ''.join(task(t) for t in tasks)) for name, tasks in ex['board'])
+        board = ('<div class="stage stage--board"><div class="dcard__head"><h3 class="dcard__title">Task board <span>%s</span></h3></div>'
+                 '<div class="board">%s</div></div>' % (b['id'], cols))
+        file_ = ('<div class="stage stage--file"><div class="dcard"><div class="dcard__head"><h3 class="dcard__title">%s</h3></div>'
+                 '<p class="dcard__meta">%s</p><ol class="fsec">%s</ol>'
+                 '<p class="fline">Every claim links to its source. <span class="cite">[1]</span> <span class="cite">[2]</span> '
+                 '<span class="cite">[3]</span></p>'
+                 '<div class="fexp"><span>Export</span>%s</div></div></div>'
+                 % (esc(f['title']), esc(f['meta']), ''.join('<li>%s</li>' % esc(x) for x in f['sections']),
+                    ''.join('<span class="tag">%s</span>' % x for x in f['exports'])))
+        if mode == 'full':
+            attrs = ('role="tabpanel" id="demo-p-%s" aria-labelledby="demo-t-%s" tabindex="0"%s'
+                     % (ex['id'], ex['id'], '' if n == 0 else ' hidden'))
+        else:
+            attrs = 'role="group" aria-label="Example: %s"' % esc(ex['tab'])
+        return ('<div class="dpanel" %s data-example="%s"><div class="dframe">%s<div class="dstage">%s%s%s</div></div></div>'
+                % (attrs, ex['id'], feed, brief, board, file_))
+
+    tabs = ''
+    if mode == 'full':
+        tabs = '<div class="dtabs" role="tablist" aria-label="Examples">%s</div>' % ''.join(
+            '<button type="button" class="dtab" role="tab" id="demo-t-%s" aria-controls="demo-p-%s" aria-selected="%s"%s>%s</button>'
+            % (ex['id'], ex['id'], 'true' if n == 0 else 'false', '' if n == 0 else ' tabindex="-1"', esc(ex['tab']))
+            for n, ex in enumerate(examples))
+    steps = '<ol class="dsteps" aria-label="Steps">%s</ol>' % ''.join(
+        '<li><button type="button" class="dstep%s" data-step="%d"%s><i></i>%s</button></li>'
+        % (' is-done', n, ' aria-current="step"' if n == len(DEMO_STEPS) else '', name)
+        for n, name in enumerate(DEMO_STEPS, 1))
+    first = examples[0]
+    nos = ('<noscript><div class="dcard dnos"><div class="dcard__head"><h3 class="dcard__title">Research brief <span>%s</span></h3>'
+           '<span class="pill pill--done"><i></i>Signed</span></div><dl class="bf">%s</dl></div></noscript>'
+           % (first['brief']['id'], brief_rows(first, plain=True)))
+    return ('<div class="demo rv" data-demo data-mode="%s" data-step="%d">%s%s%s%s</div>'
+            % (mode, len(DEMO_STEPS), tabs, ''.join(panel(ex, n) for n, ex in enumerate(examples)), steps, nos))
 
 
 # -------------------------------------------------------------------- nav ---
@@ -347,9 +440,10 @@ def page(path, title, desc, body, faq=None, crumbs=None, extra=None):
             '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
             '%s</head><body>%s\n<main id="main">%s</main>\n%s'
             '<script src="/js/cell.js" defer></script><script src="/js/diagrams.js" defer></script>'
-            '<script src="/js/app.js" defer></script>'
+            '%s<script src="/js/app.js" defer></script>'
             '</body></html>'
-            % (''.join(head), nav(path), body, footer()))
+            % (''.join(head), nav(path), body, footer(),
+               '<script src="/js/demo.js" defer></script>' if 'data-demo' in body else ''))
 
 
 ROUTER = r"""
@@ -390,7 +484,7 @@ ROUTER = r"""
 def artifact(pages, home_title, home_body):
     """One self-contained file for the Claude preview: all pages as templates, a hash router, fonts inline."""
     css = font_face(True) + CSS
-    js = CELL_JS + '\n' + DG_JS + '\n' + APP_JS
+    js = CELL_JS + '\n' + DG_JS + '\n' + DEMO_JS + '\n' + APP_JS
     tmpl = ''.join('<template data-path="%s" data-title="%s">%s</template>' % (p, html.escape(t, quote=True), b)
                    for p, t, b in pages)
     doc = ('<title>%s</title><meta name="description" content="Cytogent website preview"><style>%s</style>'
@@ -423,6 +517,16 @@ def home():
         '</section>'
         % (btn('Request access', '/request-access/', 'primary'),
            btn('See the platform', '/platform/', 'outline', False)))
+
+    # ---- the live demo, right under the hero --------------------------------
+    o.append(
+        '<section class="band band--cream" aria-labelledby="h-demo" id="demo"><div class="wrap">%s%s'
+        '<div class="dfoot rv"><p class="cap">Illustrative example. Names, data and numbers are made up.</p>%s</div>'
+        '</div></section>'
+        % (shead('See it work', '<span id="h-demo">From a rough idea to a signed <span class="nobr"><span class="kw">plan</span>.</span></span>',
+                 'Pick an example. Watch Cytogent ask the right questions, write the brief, split the work between '
+                 'agents and people, and build the file.', show=True),
+           demo(DEMO, 'full'), tlink('See how the platform works', '/platform/')))
 
     # ---- 2. who it is for --------------------------------------------------
     cards = ''
@@ -656,9 +760,10 @@ def phero(h1, hero, actions='', short=False, sub=None):
                '<div class="hero__actions">%s</div>' % actions if actions else ''))
 
 
-def head2(hid, h2, lede, split=True):
-    # the lede is kept in the copy for reference but not printed: titles stand on their own
-    return '<div class="shead rv"><div class="shead__top"><h2 id="%s">%s</h2></div></div>' % (hid, kw(h2))
+def head2(hid, h2, lede, split=True, show=False):
+    # the lede is printed only where a section needs it to be understood (show=True); otherwise titles stand on their own
+    return ('<div class="shead%s rv"><div class="shead__top"><h2 id="%s">%s</h2></div>%s</div>'
+            % (' shead--wide' if show else '', hid, kw(h2), '<p class="lede">%s</p>' % lede if show else ''))
 
 
 def band(kind, hid, inner):
@@ -1155,6 +1260,7 @@ def build():
     shutil.copy(os.path.join(SRC, 'js', 'cell.js'), os.path.join(DIST, 'js', 'cell.js'))
     shutil.copy(os.path.join(SRC, 'js', 'diagrams.js'), os.path.join(DIST, 'js', 'diagrams.js'))
     shutil.copy(os.path.join(SRC, 'js', 'app.js'), os.path.join(DIST, 'js', 'app.js'))
+    shutil.copy(os.path.join(SRC, 'js', 'demo.js'), os.path.join(DIST, 'js', 'demo.js'))
     # favicon = the mark on its own
     open(os.path.join(DIST, 'img', 'favicon.svg'), 'w', encoding='utf-8').write(MARK)
 

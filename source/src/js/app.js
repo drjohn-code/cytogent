@@ -253,6 +253,7 @@
     scrollJobs = []; byId = {}; byCanvas = [];
     closeSheet();
     reveal(scope); heroes(scope); diagrams(scope); steps(scope); story(scope); form(scope);
+    if (window.CytogentDemo) { window.CytogentDemo.mount(scope); }
     onScroll();
   }
   window.CytogentApp = { mount: mount };

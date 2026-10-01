@@ -912,6 +912,164 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
   .cookiebar__actions .btn{flex:1 1 0;min-width:0}
 }
 .prose code{font-family:var(--mono);font-size:.92em;color:var(--on-dark)}
+
+/* ===========================================================
+   demo: the live brief demo. Real HTML, drawn with the site's tokens only.
+   data-step on .demo (1 Write, 2 Ask, 3 Brief, 4 Work, 5 File) decides what shows.
+   Without JavaScript the first example stands at its last step, with the whole feed.
+   =========================================================== */
+.demo{margin-top:44px}
+.demo:not([data-live]) .dtabs,.demo:not([data-live]) .dsteps{display:none}
+
+/* example tabs: pills that scroll inside their own row on a phone */
+.dtabs{display:flex;gap:8px;margin:0 -4px 12px;padding:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.dtabs::-webkit-scrollbar{display:none}
+.dtab{flex:none;font:500 14px/1 var(--sans);letter-spacing:-.005em;padding:11px 16px;border-radius:var(--r-pill);cursor:pointer;
+  border:1px solid var(--line-dark-2);background:none;color:var(--on-dark-2);
+  transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease),background var(--t-fast) var(--ease)}
+.dtab:hover{border-color:rgba(236,240,255,.4);color:var(--on-dark)}
+.dtab[aria-selected="true"]{border-color:var(--accent);color:var(--on-dark);background:rgba(179,166,255,.14)}
+.dtab:focus-visible{border-radius:var(--r-pill)}
+
+/* the framed panel: feed on the left, stage on the right */
+.dpanel[hidden]{display:none}
+.dpanel:focus-visible{border-radius:var(--r)}
+.dframe{display:grid;background:var(--ink-800);border:1px solid var(--line-dark);border-radius:var(--r);overflow:hidden}
+.dfeed,.dstage{min-width:0;padding:18px}
+.dstage{border-top:1px solid var(--line-dark)}
+.dfeed__scroll{scrollbar-width:thin;scrollbar-color:var(--line-dark-2) transparent}
+.dstage{scrollbar-width:thin;scrollbar-color:var(--line-dark-2) transparent}
+@media (min-width:720px){.dfeed,.dstage{padding:24px}}
+@media (min-width:1024px){
+  .dframe{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}
+  .dstage{border-top:0;border-left:1px solid var(--line-dark)}
+  /* a fixed height, so the page under the demo never moves as the steps play */
+  .demo[data-live]:not(.is-expanded) .dframe{height:680px;grid-template-rows:minmax(0,1fr)}
+  .demo[data-live]:not(.is-expanded) .dfeed,.demo[data-live]:not(.is-expanded) .dstage{min-height:0}
+  .demo[data-live]:not(.is-expanded) .dfeed{padding:0}
+  .demo[data-live]:not(.is-expanded) .dfeed__scroll{height:100%;overflow-y:auto;padding:24px}
+  .demo[data-live]:not(.is-expanded) .dstage{overflow-y:auto}
+}
+/* phone and tablet: the feed is a short window on the newest messages; the stage sits under it */
+@media (max-width:1023px){
+  .demo[data-live]:not(.is-expanded) .dfeed__scroll{height:300px;overflow:hidden}
+}
+/* when older messages have scrolled out, the top of the feed fades */
+.demo:not(.is-expanded) .dfeed__scroll.is-clipped{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 36px);mask-image:linear-gradient(180deg,transparent 0,#000 36px)}
+@media (max-width:719px){
+  .demo:not(.is-expanded) .msg.is-old{display:none}
+}
+.dmore{display:none;margin:0 0 12px;padding:8px 0;background:none;border:0;cursor:pointer;
+  font:500 13.5px/1 var(--sans);color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+@media (max-width:1023px){.dmore:not([hidden]){display:inline-block}}
+
+/* feed: people are circles with initials, agents are squircles with their icon */
+.feed{display:grid;gap:18px}
+.msg{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;align-items:start}
+.demo[data-live] .msg,.demo[data-live] .stage{animation:demoIn var(--t-fast) var(--ease) both}
+@keyframes demoIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg__meta{font-family:var(--mono);font-size:11px;line-height:1.4;letter-spacing:.04em;color:var(--on-dark-3)}
+.msg__t{margin-top:4px;font-size:15px;line-height:1.5;color:var(--on-dark)}
+.msg__files{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.msg__files .tag{color:var(--on-dark-2)}
+.msg__qa{display:grid;gap:12px;margin-top:12px;counter-reset:q}
+.msg__qa li{display:grid;gap:6px;justify-items:start;padding-left:22px;position:relative;counter-increment:q;
+  font-size:14px;line-height:1.45;color:var(--on-dark-2)}
+.msg__qa li::before{content:counter(q);position:absolute;left:2px;top:2px;font-family:var(--mono);font-size:11px;color:var(--accent)}
+.ans{font-family:var(--mono);font-size:11px;line-height:1.4;letter-spacing:.03em;color:var(--on-dark);
+  border:1px solid rgba(179,166,255,.4);background:rgba(179,166,255,.1);border-radius:var(--r-sm);padding:5px 10px}
+.msg--event{grid-template-columns:minmax(0,1fr)}
+.msg__ev{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r-sm);
+  border:1px solid rgba(79,207,138,.35);background:rgba(79,207,138,.06);font-size:13.5px;line-height:1.3;color:var(--done)}
+.msg__ev svg{width:18px;height:18px;flex:none}
+.msg__ev .msg__meta{margin-left:auto}
+.av{display:grid;place-items:center;flex:none;border-radius:50%;color:var(--on-dark);
+  background:rgba(236,240,255,.08);border:1px solid var(--line-dark-2);font-family:var(--mono);font-weight:500;letter-spacing:.02em;line-height:1}
+.av--sm{width:32px;height:32px;font-size:10.5px}
+.av--xs{width:22px;height:22px;font-size:8.5px}
+.ico--sm{width:32px;height:32px;border-radius:10px}
+.ico--sm svg{width:16px;height:16px}
+.ico--xs{width:22px;height:22px;border-radius:7px;box-shadow:none}
+.ico--xs svg{width:12px;height:12px}
+
+/* stage: the brief, then the board, then the file */
+.stage{display:none}
+.demo[data-step="1"] .stage--brief,.demo[data-step="2"] .stage--brief,.demo[data-step="3"] .stage--brief,
+.demo[data-step="4"] .stage--board,.demo[data-step="5"] .stage--file{display:block}
+.demo[data-step="1"] .msg[data-at="2"],.demo[data-step="1"] .msg[data-at="3"],.demo[data-step="1"] .msg[data-at="4"],.demo[data-step="1"] .msg[data-at="5"],
+.demo[data-step="2"] .msg[data-at="3"],.demo[data-step="2"] .msg[data-at="4"],.demo[data-step="2"] .msg[data-at="5"],
+.demo[data-step="3"] .msg[data-at="4"],.demo[data-step="3"] .msg[data-at="5"],
+.demo[data-step="4"] .msg[data-at="5"]{display:none}
+.dcard{background:var(--ink-700);border:1px solid var(--line-dark);border-radius:var(--r-sm);padding:18px}
+@media (min-width:720px){.dcard{padding:22px}}
+.dcard__head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:26px;margin-bottom:14px}
+.dcard__title{font-size:16px;font-weight:500;letter-spacing:-.01em;line-height:1.3}
+.dcard__title span{margin-left:6px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--on-dark-3)}
+.dcard__meta{font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.04em;color:var(--on-dark-2);margin-top:-6px}
+.dcard .pill{flex:none}
+.demo[data-step="1"] .dpill--signed,.demo[data-step="2"] .dpill--signed,
+.demo[data-step="3"] .dpill--draft,.demo[data-step="4"] .dpill--draft,.demo[data-step="5"] .dpill--draft{display:none}
+
+/* the brief: fields fill in as the answers arrive; an empty field keeps its place */
+.bf{margin:0;border-top:1px solid var(--line-dark)}
+.bf__row{display:grid;gap:3px;padding:10px 0;border-bottom:1px solid var(--line-dark)}
+.bf__row:last-child{border-bottom:0;padding-bottom:0}
+@media (min-width:480px){.bf__row{grid-template-columns:132px minmax(0,1fr);gap:16px}}
+.bf dt{font-family:var(--mono);font-size:10.5px;line-height:1.5;letter-spacing:.08em;text-transform:uppercase;color:var(--on-dark-3);padding-top:3px}
+.bf dd{margin:0;position:relative;font-size:14.5px;line-height:1.5;color:var(--on-dark)}
+.demo[data-step="1"] .bf__row[data-fill="2"] dd > span,.demo[data-step="1"] .bf__row[data-fill="3"] dd > span,
+.demo[data-step="2"] .bf__row[data-fill="3"] dd > span{visibility:hidden}
+.demo[data-step="1"] .bf__row[data-fill="2"] dd::before,.demo[data-step="1"] .bf__row[data-fill="3"] dd::before,
+.demo[data-step="2"] .bf__row[data-fill="3"] dd::before{content:"";position:absolute;left:0;top:7px;width:min(62%,220px);height:8px;
+  border-radius:var(--r-pill);background:var(--line-dark)}
+
+/* the board: three columns; on a phone they stack */
+.board{display:grid;gap:16px}
+@media (min-width:720px){.board{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}}
+.board__col h4{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-family:var(--mono);font-size:10.5px;font-weight:500;
+  line-height:1;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark-3)}
+.board__col h4 span{color:var(--on-dark-2);border:1px solid var(--line-dark-2);border-radius:var(--r-pill);padding:3px 7px;letter-spacing:0}
+.board__col ul{display:grid;gap:8px}
+.task{display:grid;gap:7px;padding:12px;background:var(--ink-700);border:1px solid var(--line-dark);border-radius:var(--r-sm)}
+.task__id{font-family:var(--mono);font-size:10px;line-height:1;letter-spacing:.08em;color:var(--on-dark-3)}
+.task__t{font-size:13.5px;line-height:1.4;color:var(--on-dark)}
+.task__o{display:flex;flex-wrap:wrap;align-items:center;gap:6px 7px;font-size:12.5px;line-height:1.3;color:var(--on-dark-2)}
+.task__o .tag{font-size:9.5px;padding:3px 8px;letter-spacing:.03em}
+.task__p{display:flex;flex-wrap:wrap;gap:6px}
+.task .pill{font-size:9.5px;letter-spacing:.07em;padding:4px 9px}
+
+/* the file: sections, citation markers, export chips */
+.fsec{counter-reset:s;margin:16px 0;border-top:1px solid var(--line-dark)}
+.fsec li{counter-increment:s;display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--line-dark);font-size:14.5px;line-height:1.4;color:var(--on-dark)}
+.fsec li::before{content:counter(s);font-family:var(--mono);font-size:11px;line-height:1.85;color:var(--accent)}
+.fline{font-size:14px;line-height:1.5;color:var(--on-dark-2)}
+.cite{font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid rgba(179,166,255,.5);background:rgba(179,166,255,.14);
+  border-radius:var(--r-pill);padding:1px 7px;white-space:nowrap}
+.fexp{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:16px}
+.fexp > span:first-child{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark-3);margin-right:4px}
+.fexp .tag{color:var(--on-dark-2)}
+.dnos{margin-top:14px}
+
+/* the stepper: five buttons on a line */
+.dsteps{display:flex;align-items:center;margin-top:14px;padding-inline:6px}
+.dsteps li{display:flex;align-items:center;flex:1 1 auto;min-width:0}
+.dsteps li:last-child{flex:0 0 auto}
+.dsteps li:not(:last-child)::after{content:"";flex:1 1 auto;min-width:8px;height:1px;margin:0 clamp(4px,1.2vw,14px);background:var(--line-dark-2)}
+.dstep{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 2px;background:none;border:0;cursor:pointer;
+  font:500 13.5px/1 var(--sans);color:var(--on-dark-3);transition:color var(--t-fast) var(--ease)}
+.dstep i{width:10px;height:10px;flex:none;border-radius:50%;border:1.5px solid currentColor;
+  transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease)}
+.dstep:hover{color:var(--on-dark)}
+.dstep.is-done{color:var(--on-dark-2)}
+.dstep.is-done i{background:var(--accent);border-color:var(--accent)}
+.dstep[aria-current="step"]{color:var(--on-dark)}
+.dstep[aria-current="step"] i{box-shadow:0 0 0 4px rgba(179,166,255,.22)}
+@media (max-width:479px){.dstep{font-size:12.5px;gap:6px}}
+
+/* under the panel: the example note and a way on */
+.dfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;margin-top:14px}
+.dfoot .cap{margin-top:0}
 </style><script>(function () {
 'use strict';
 var KEY = 'cg-consent', ID = 'G-H7WJPJ2WSP', d = document, state = null, loaded = false, bar = null, opener = null;

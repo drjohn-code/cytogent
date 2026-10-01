@@ -68,7 +68,7 @@ with sync_playwright() as p:
         while y < H:
             m.evaluate('window.scrollTo(0,%d)' % y); m.wait_for_timeout(40); y += 700
         m.wait_for_timeout(2400)
-        ov = m.evaluate("() => ({sw: document.documentElement.scrollWidth, iw: innerWidth, bad: [...document.querySelectorAll('main *')].filter(e=>{const r=e.getBoundingClientRect(); return r.width>0 && r.right > innerWidth+1 && !e.closest('.phero__stage,.hero__stage')}).slice(0,4).map(e=>e.className||e.tagName)})")
+        ov = m.evaluate("() => ({sw: document.documentElement.scrollWidth, iw: innerWidth, bad: [...document.querySelectorAll('main *')].filter(e=>{const r=e.getBoundingClientRect(); return r.width>0 && r.right > innerWidth+1 && !e.closest('.phero__stage,.hero__stage,.dtabs')}).slice(0,4).map(e=>e.className||e.tagName)})")
         if ov['sw'] > ov['iw'] or ov['bad']: bad('mobile overflow %s' % ov)
         mc = m.evaluate(CONTRAST)
         if mc: m.wait_for_timeout(1500); mc = m.evaluate(CONTRAST)

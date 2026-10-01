@@ -165,6 +165,188 @@ INDUSTRIES = [
 ]
 
 # --------------------------------------------------------------------------
+# The live brief demo (home, right under the hero; one example on Platform).
+# Every name, time, file and number here is made up: the panel carries the label "Illustrative example".
+# Steps: 1 Write, 2 Ask, 3 Brief, 4 Work, 5 File. "at" = the step a feed message appears at;
+# the third value of a brief field = the step it is filled in at.
+# --------------------------------------------------------------------------
+DEMO_STEPS = ["Write", "Ask", "Brief", "Work", "File"]
+
+# agent: (icon, tile colour, model). CONFIRM: "Planner" as the name of the agent that asks and plans.
+DEMO_AGENTS = {
+    "Planner": ("list", 4, "long-context LLM"),
+    "Reader": ("search", 0, "long-context LLM"),
+    "Analyst": ("compare", 1, "code model"),
+    "Writer": ("pen", 2, "drafting LLM"),
+}
+
+DEMO = [
+    {
+        "id": "resistance", "tab": "Drug resistance",
+        "feed": [
+            {"who": "Dr. Berg", "ini": "AB", "time": "09:00", "at": 1,
+             "text": "Our lung cancer cell line stopped responding to a KRAS inhibitor after six weeks. Why, and what "
+                     "should we test next?",
+             "files": ["rna-seq_wk0_wk6.csv", "variants.vcf"]},
+            {"who": "Planner", "time": "09:01", "at": 2, "text": "Three questions before I plan.",
+             "qa": [("What counts as a good answer?", "Top 3 causes, each with one test"),
+                    ("What can the lab do in the next four weeks?", "Two CRISPR knockouts, no animal work"),
+                    ("What do we compare with?", "The parental line")]},
+            {"event": "Brief signed by Dr. Berg", "time": "09:04", "at": 3},
+            {"who": "Planner", "time": "09:05", "at": 4,
+             "text": "I split the brief into 6 tasks: 4 for agents, 2 for people."},
+            {"who": "Analyst", "time": "11:40", "at": 4,
+             "text": "The week-6 sample has a mutation at a known resistance site. Flagged for review."},
+            {"who": "Writer", "time": "14:12", "at": 5,
+             "text": "Report v0.2 is ready: 3 causes, 3 tests, 18 citations."},
+        ],
+        "brief": {
+            "id": "RB-014",
+            "fields": [
+                ("Question", "What causes acquired resistance to the KRAS inhibitor in line LC-7R?", 1),
+                ("Hypothesis", "A second mutation in KRAS, or a bypass pathway.", 2),
+                ("Data", "RNA-seq at week 0 and week 6, variant list, dose–response curves.", 1),
+                ("Control", "Parental line LC-7.", 2),
+                ("Success", "Top 3 causes, each with evidence and one test.", 2),
+                ("Limits", "Two CRISPR knockouts. No animal work.", 2),
+                ("Owner", "Dr. A. Berg · signed 09:04", 3),
+            ],
+        },
+        "board": [
+            ("To do", [
+                {"id": "CG-105", "t": "Order guides for the top 2 targets", "owner": "Jonas, lab manager", "ini": "J",
+                 "pills": [("Person", "")]},
+            ]),
+            ("In progress", [
+                {"id": "CG-101", "t": "Read 40 papers on KRAS inhibitor resistance", "agent": "Reader", "model": "long-context LLM"},
+                {"id": "CG-102", "t": "Compare variants with known resistance sites", "agent": "Analyst", "model": "code model"},
+                {"id": "CG-104", "t": "Approve the knockout plan", "owner": "Dr. Berg", "ini": "AB",
+                 "pills": [("Needs Dr. Berg", "progress")]},
+            ]),
+            ("Done", [
+                {"id": "CG-100", "t": "Brief signed", "owner": "Dr. Berg", "ini": "AB"},
+                {"id": "CG-103", "t": "Dock the inhibitor into the mutant pocket", "agent": "Analyst", "model": "structure model"},
+            ]),
+        ],
+        "file": {
+            "title": "Resistance report v0.2",
+            "meta": "3 causes · 3 tests · 18 citations",
+            "sections": ["Summary", "Evidence table", "Docking results", "Proposed tests", "Bench protocol: CRISPR knockout"],
+            "exports": ["ELN", "Word", "PDF"],
+        },
+    },
+    {
+        "id": "trial", "tab": "Clinical trial",
+        "feed": [
+            {"who": "Dr. Lind", "ini": "ML", "time": "09:00", "at": 1,
+             "text": "We have a skin patch for vitiligo. Help us plan the first study in people.",
+             "files": ["preclinical_safety.pdf", "IB_draft_v2.docx"]},
+            {"who": "Planner", "time": "09:01", "at": 2, "text": "Three questions before I plan.",
+             "qa": [("Which phase, and where?", "Phase I/IIa, two sites in Sweden"),
+                    ("What matters most?", "Safety first, then repigmentation at week 24"),
+                    ("Who can join?", "Adults with stable non-segmental vitiligo")]},
+            {"event": "Brief signed by Dr. Lind", "time": "09:06", "at": 3},
+            {"who": "Planner", "time": "09:07", "at": 4,
+             "text": "I split the brief into 7 tasks: 4 for agents, 3 for people."},
+            {"who": "Analyst", "time": "13:20", "at": 4,
+             "text": "Sample size draft: 24 participants. Assumptions are listed for the statistician."},
+            {"who": "Writer", "time": "16:05", "at": 5,
+             "text": "Protocol v0.3 is drafted against the SPIRIT checklist, with 31 citations."},
+        ],
+        "brief": {
+            "id": "RB-022",
+            "fields": [
+                ("Question", "Is the patch safe, and does it show early repigmentation in adults with non-segmental vitiligo?", 1),
+                ("Design", "Phase I/IIa, randomised, double-blind, vehicle-controlled.", 2),
+                ("Population", "Adults aged 18 to 65 with stable non-segmental vitiligo.", 2),
+                ("Primary endpoint", "Adverse events up to week 24.", 2),
+                ("Secondary endpoint", "Change in F-VASI at week 24.", 2),
+                ("Sites and rules", "Two sites in Sweden · EU CTR · ICH GCP.", 2),
+                ("Owner", "Dr. M. Lind · signed 09:06", 3),
+            ],
+        },
+        "board": [
+            ("To do", [
+                {"id": "CG-207", "t": "Book the ethics review meeting", "owner": "Elin, study coordinator", "ini": "E",
+                 "pills": [("Person", "")]},
+            ]),
+            ("In progress", [
+                {"id": "CG-202", "t": "Draft the protocol", "agent": "Writer", "model": "drafting LLM"},
+                {"id": "CG-203", "t": "Sample size and SAP draft", "agent": "Analyst", "model": "code model"},
+                {"id": "CG-205", "t": "Confirm site feasibility", "owner": "Site lead", "ini": "SL",
+                 "pills": [("Person", "")]},
+                {"id": "CG-206", "t": "Approve protocol v0.3", "owner": "Dr. Lind", "ini": "ML",
+                 "pills": [("Needs Dr. Lind", "progress")]},
+            ]),
+            ("Done", [
+                {"id": "CG-200", "t": "Brief signed", "owner": "Dr. Lind", "ini": "ML"},
+                {"id": "CG-201", "t": "Review 25 trials of topical vitiligo treatments", "agent": "Reader", "model": "long-context LLM"},
+            ]),
+        ],
+        "file": {
+            "title": "Clinical trial application draft",
+            "meta": "Protocol v0.3 · SAP draft · CRF set · 31 citations",
+            "sections": ["Protocol", "Statistical analysis plan", "Case report forms",
+                         "Gaps in the investigator's brochure", "Cover letter draft"],
+            "exports": ["Word", "PDF"],
+        },
+    },
+    {
+        "id": "crispr", "tab": "CRISPR diagnostic",
+        "feed": [
+            {"who": "Dr. Nyberg", "ini": "SN", "time": "09:00", "at": 1,
+             "text": "We want a CRISPR test that finds high-risk HPV in cervical samples. Where do we start?",
+             "files": ["sample_overview.xlsx"]},
+            {"who": "Planner", "time": "09:01", "at": 2, "text": "Three questions before I plan.",
+             "qa": [("Which HPV types first?", "HPV16 and HPV18"),
+                    ("Where will the test run?", "In the clinic, from a self-collected swab"),
+                    ("Which market first?", "The EU, under IVDR")]},
+            {"event": "Brief signed by Dr. Nyberg", "time": "09:05", "at": 3},
+            {"who": "Planner", "time": "09:06", "at": 4,
+             "text": "I split the brief into 6 tasks: 4 for agents, 2 for people."},
+            {"who": "Analyst", "time": "12:30", "at": 4,
+             "text": "12 candidate guides designed. 4 pass the cross-reactivity check against 14 other HPV types."},
+            {"who": "Writer", "time": "15:45", "at": 5,
+             "text": "The assay design report and an IVDR technical file outline are ready."},
+        ],
+        "brief": {
+            "id": "RB-031",
+            "fields": [
+                ("Question", "Can a Cas12-based test detect HPV16 and HPV18 in self-collected swabs?", 1),
+                ("Targets", "E6 and E7 regions of HPV16 and HPV18.", 2),
+                ("Compare with", "A validated PCR test on the same samples.", 2),
+                ("Success", "Sensitivity and specificity against PCR on banked samples.", 2),
+                ("Rules", "Ethics approval for banked samples · IVDR.", 2),
+                ("Owner", "Dr. S. Nyberg · signed 09:05", 3),
+            ],
+        },
+        "board": [
+            ("To do", [
+                {"id": "CG-306", "t": "Run a limit-of-detection test on synthetic targets", "owner": "Lab technician", "ini": "LT",
+                 "pills": [("Person", ""), ("Protocol attached", "note")]},
+            ]),
+            ("In progress", [
+                {"id": "CG-302", "t": "Design guides for HPV16 and HPV18 E6/E7", "agent": "Analyst", "model": "design model"},
+                {"id": "CG-304", "t": "Outline the IVDR technical file", "agent": "Writer", "model": "drafting LLM"},
+                {"id": "CG-305", "t": "Approve the guide shortlist", "owner": "Dr. Nyberg", "ini": "SN",
+                 "pills": [("Needs Dr. Nyberg", "progress")]},
+            ]),
+            ("Done", [
+                {"id": "CG-300", "t": "Brief signed", "owner": "Dr. Nyberg", "ini": "SN"},
+                {"id": "CG-301", "t": "Review 60 papers on CRISPR detection of HPV", "agent": "Reader", "model": "long-context LLM"},
+            ]),
+        ],
+        "file": {
+            "title": "Assay design report v0.1",
+            "meta": "4 guides · 1 lab protocol · IVDR outline · 26 citations",
+            "sections": ["Summary", "Guide shortlist and checks", "Lab protocol: limit of detection",
+                         "IVDR technical file outline", "Open questions"],
+            "exports": ["ELN", "Word", "PDF"],
+        },
+    },
+]
+
+# --------------------------------------------------------------------------
 # Home: how it works
 # --------------------------------------------------------------------------
 HOW = [
