@@ -624,7 +624,7 @@ FAQ_CONFIRM = {
 # --------------------------------------------------------------------------
 FOOTER = [
     ("Product", [("Platform", "/platform/"), ("Data &amp; models", "/data-and-models/"),
-                 ("Security", "/security/"), ("Request access", "/request-access/")]),
+                 ("Security", "/security/"), ("Compare", "/compare/"), ("Request access", "/request-access/")]),
     ("Solutions", [(s["nav"], "/solutions/%s/" % s["slug"]) for s in SOLUTIONS]),
     ("Industries", [(i["nav"], "/industries/%s/" % i["slug"]) for i in INDUSTRIES]),
     ("Company", [("About", "/about/"), ("Resources", "/resources/"), ("FAQ", "/resources/faq/"),

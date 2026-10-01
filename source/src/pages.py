@@ -668,3 +668,186 @@ LEGAL = {
         ],
     },
 }
+
+# ---------------------------------------------------------------------------
+# Compare: the hub and one page per product.
+# Rules (brief 6.1): fair and checkable. Never "No" about a named product. Every fact about another product comes
+# from its public pages, listed under "Sources" with the day they were last checked (content.FACTS_CHECKED).
+# Re-check the sources before every launch; if a fact changed, change the text and the date.
+# ---------------------------------------------------------------------------
+COMPARE_HUB = {
+    "title": "Cytogent vs ChatGPT, Grok Bots and Dust for Research",
+    "desc": "How Cytogent compares with AI assistants and agent workspaces for life science research: signed research "
+            "briefs, lab tasks, science models and cited files.",
+    "h1": "How Cytogent compares for life science <kw>research</kw>.",
+    "hero": ("whole", "breathe", "The whole Cytogent cell at rest, breathing slowly."),
+    "sub": ("Keep the AI tools you use today. This page shows when Cytogent is the better choice.",),
+    # "connect to many apps": the brief said "thousands of apps", which the public pages support for one product only
+    "well": ("General tools are good at general <kw>work</kw>.",
+             "ChatGPT, Claude and Copilot answer questions, write and code. Agent workspaces such as ChatGPT dots, "
+             "Grok Bots and Dust run agents in the background, connect to many apps and let teams share agents. "
+             "Cytogent does this too."),
+    # (icon, title, text, open item or None). Also listed in llms.txt as "Why teams choose Cytogent".
+    "further": ("Built for how research <kw>moves</kw>.",
+                "Six things a research team needs around the agents.",
+                [("clipboard", "A signed research brief",
+                  "Cytogent turns a rough idea into a one-page brief with question, controls, endpoints and rules. "
+                  "Agents plan from it.", None),
+                 ("users", "Tasks for people, not only agents",
+                  "Agents create lab work, reviews and approvals for people, with the protocol attached. Results return "
+                  "to the record.", None),
+                 ("molecule", "Science models built in",
+                  "Structure prediction, docking, protein design and CRISPR guide checks run inside the project.", "models"),
+                 ("quote", "One evidence trail",
+                  "Every claim links to a source you can open, from the brief to the final file, across all seven "
+                  "workflows.", None),
+                 ("doc", "Documents reviewers expect",
+                  "Protocol, CRF, SAP, CSR, IND/CTA, IVDR and patent claims are built from the same cited results.", None),
+                 ("check", "Scientist sign-off on record",
+                  "Each checkpoint waits for a named person. The sign-off is saved in the audit log.", None)]),
+    "table": ("Side by <kw>side</kw>.", "The same table as on the home page, with four more rows."),
+    "both": ("Use each tool for what it does <kw>best</kw>.",
+             "Three steps.",
+             [("Keep your general tools", "Use ChatGPT, Claude or Copilot for email, code and slides."),
+              ("Bring research to Cytogent", "Questions that need data, evidence, lab work and sign-off start here."),
+              ("Export where your team works", "Send results to your notebook, LIMS, Word or PDF.")]),
+    "detail": ("Compare one tool at a <kw>time</kw>.", "Three pages, one for each product."),
+    "faq": [("Is Cytogent better than ChatGPT?",
+             "For general work, ChatGPT is excellent. For life science research, Cytogent is the better fit: it starts "
+             "from a signed research brief, gives lab tasks to people, runs life-science models, and keeps one cited "
+             "trail into protocol, regulatory and patent files. Many teams use both, and Cytogent can run OpenAI models "
+             "inside."),
+            ("Can I use Cytogent together with ChatGPT or Claude?",
+             "Yes. Keep your general assistant for email, code and slides. Bring research questions to Cytogent. "
+             "Cytogent uses models from Anthropic, OpenAI, Google and xAI inside the project, and you can export "
+             "results to Word, PDF, your notebook or LIMS whenever your team needs them elsewhere."),
+            ("Does Cytogent use the same AI models?",
+             "Partly. Cytogent routes reading, coding and drafting to frontier models from Anthropic, OpenAI, Google "
+             "and xAI, and adds life-science models for structure prediction, docking and design. The difference is "
+             "not only the model, but the brief, the tasks for people, the evidence trail and the sign-off around it.")],
+    "cta": ("See it with your own <kw>question</kw>.", "Tell us what you want to find out. We send you a first research brief."),
+    "solutions": ["literature-and-evidence", "clinical-trials"],
+}
+
+# The five points every product page shares: (text, open item or None).
+VS_FURTHER = [
+    ("A signed research brief before any agent starts.", None),
+    ("Lab tasks for people, with the protocol attached and the result returned to the record.", None),
+    ("Life-science models for structure, docking, design and CRISPR guide checks.", "models"),
+    ("Templates and checks for protocol, CRF, SAP, CSR, IND/CTA, IVDR and patent claims.", None),
+    ("One cited trail and a scientist sign-off at every checkpoint.", None),
+]
+
+# Table rows: (icon, feature, the other product, Cytogent, open item or None).
+def _vs_rows(always, shared, plan, tasks, science, trail, docs, models, ours_models="Anthropic, OpenAI, Google, xAI"):
+    return [
+        ("agent", "Always-on agents", always, "Yes", None),
+        ("users", "Shared workspace", shared, "Yes", None),
+        ("clipboard", "Starts from a research brief", plan, "Signed, research-specific", None),
+        ("flask", "Lab tasks for people", tasks, "With protocol and owner", None),
+        ("molecule", "Life-science models", science, "Built in", "models"),
+        ("quote", "Cited trail to the final file", trail, "Brief to final file", None),
+        ("doc", "Trial, regulatory, patent documents", docs, "Templates and checks", None),
+        ("cpu", "Models", models, ours_models, None),
+    ]
+
+
+VS_PAGES = {
+    "chatgpt": {
+        "name": "ChatGPT", "does": "does",
+        "title": "Cytogent vs ChatGPT for Life Science Research",
+        "desc": "ChatGPT, dots and Space are strong general tools. See where Cytogent goes further for research: "
+                "signed briefs, lab tasks, science models and cited files.",
+        "h1": "Cytogent vs ChatGPT for life science <kw>research</kw>.",
+        "short": "ChatGPT is a strong general assistant, and with dots and ChatGPT Space it now runs always-on agents "
+                 "in a shared workspace. Choose Cytogent when the work is research. It starts from a signed research "
+                 "brief, gives lab tasks to people, and builds cited trial, regulatory and patent files.",
+        "well": ["Dots are always-on agents. Each works on its own cloud computer and keeps working between conversations.",
+                 "Dots connect to more than 4,000 apps through plugins, and reply in ChatGPT, Slack or Microsoft Teams.",
+                 "ChatGPT Space is a shared workspace where teammates, ChatGPT and dots work on the same pages.",
+                 "Custom rules let you set what a dot may do alone and when it must ask first."],
+        "rows": _vs_rows("Yes, dots", "Yes, Space", "General plan step", "Approval rules", "Via plugins", "Per answer",
+                         "General writing", "OpenAI"),
+        "together": "Many teams keep ChatGPT for daily work. Cytogent can run OpenAI models inside a research project, "
+                    "so you keep the model you like and add the brief, the lab tasks and the evidence trail around it.",
+        "faq": [("Can ChatGPT dots do life science research?",
+                 "Dots can research, draft and use apps for many kinds of work, and they are getting better fast. "
+                 "Cytogent adds what research teams need around that: a signed research brief, life-science models, "
+                 "lab tasks for people, scientist sign-off on record, and one cited trail into trial, regulatory and "
+                 "patent files."),
+                ("Do I need to stop using ChatGPT?",
+                 "No. Keep ChatGPT for everyday work. Use Cytogent for research projects that need data, evidence, lab "
+                 "work and sign-off. Cytogent can run OpenAI models inside the project, and results export to Word, "
+                 "PDF, your notebook or LIMS, so the two tools sit side by side.")],
+        "sources": [("OpenAI: Introducing dots", "https://openai.com/index/introducing-dots/"),
+                    ("ChatGPT docs: dots", "https://learn.chatgpt.com/docs/dots"),
+                    ("ChatGPT docs: working together in Space", "https://learn.chatgpt.com/docs/space/collaboration"),
+                    ("ChatGPT docs: dot controls", "https://learn.chatgpt.com/docs/dots/controls")],
+        "solutions": ["literature-and-evidence", "in-silico-studies"],
+    },
+    "grok": {
+        "name": "Grok Bots", "does": "do",
+        "title": "Cytogent vs Grok Bots for Life Science Research",
+        "desc": "Grok Bots run always-on AI teammates on a cloud computer. See where Cytogent goes further for research: "
+                "signed briefs, lab tasks and cited files.",
+        "h1": "Cytogent vs Grok Bots for life science <kw>research</kw>.",
+        "short": "Grok Bots are persistent AI teammates that work on a cloud computer and hand work to each other. "
+                 "Choose Cytogent when the work is research. It starts from a signed research brief, gives lab tasks "
+                 "to people, and builds cited trial, regulatory and patent files.",
+        "well": ["Bots keep working on a cloud computer after you close your laptop.",
+                 "A Team Bot lets a whole team share one Bot, with the same files, skills, plugins and team memory. "
+                 "It is in public beta.",
+                 "Bots can hand work to each other, with one Bot leading specialists.",
+                 "A plugin Marketplace connects Bots to common work apps."],
+        "rows": _vs_rows("Yes", "Yes, Team Bots (beta)", "General plan step", "Asks when a decision is needed", "Via plugins",
+                         "Per answer", "General writing", "Grok models"),
+        # the brief said "including xAI"; the company behind Grok now signs its pages SpaceXAI, so the models are named instead
+        "together": "Keep Grok for the work it does well. Cytogent routes steps to models from several providers, "
+                    "so a research project can still use Grok models where they fit.",
+        "faq": [("Can Grok Bots do life science research?",
+                 "Grok Bots can run long tasks on a cloud computer, use apps and hand work to each other, which helps "
+                 "with many kinds of research. Cytogent adds the research layer: a signed brief, life-science models, "
+                 "lab tasks for people, scientist sign-off on record and one cited trail to the final file."),
+                ("Can I keep using Grok?",
+                 "Yes. Keep Grok for the work it does well. Cytogent routes steps to models from several providers, "
+                 "so a research project can still use Grok models where they fit. Results export to Word, PDF, your "
+                 "notebook or LIMS for the rest of your team.")],
+        "sources": [("Introducing Grok Bot", "https://x.ai/news/introducing-grok-bot"),
+                    ("Grok Bot docs: overview", "https://docs.x.ai/grok-bot/overview"),
+                    ("Grok Bot docs: Team Bots", "https://docs.x.ai/grok-bot/team-bots"),
+                    ("Team Bots announcement", "https://x.ai/news/team-bots")],
+        "solutions": ["literature-and-evidence", "crispr-genome-editing"],
+    },
+    "dust": {
+        "name": "Dust", "does": "does",
+        "title": "Cytogent vs Dust for Life Science Research",
+        "desc": "Dust is a multiplayer AI platform for company-wide agents. See where Cytogent goes further for research: "
+                "signed briefs, lab tasks and cited files.",
+        "h1": "Cytogent vs Dust for life science <kw>research</kw>.",
+        "short": "Dust is a strong platform for company-wide agents that share knowledge and tools. Choose Cytogent "
+                 "when the work is research. It starts from a signed research brief, gives lab tasks to people, and "
+                 "builds cited trial, regulatory and patent files.",
+        "well": ["Dust calls its approach multiplayer AI: humans and agents share context, tools and goals.",
+                 "Teams build and share agents across 70+ connectors, such as Slack, Notion, GitHub and Google Drive.",
+                 "Agents can use MCP servers and call other agents as tools.",
+                 "Dust works with models from several providers."],
+        "rows": _vs_rows("Yes", "Yes", "General plan step", "Approval per tool", "Via connectors", "Per answer",
+                         "General writing", "Several providers", "Several providers, plus science models"),
+        "together": "Many teams use a company-wide agent platform for internal knowledge and a specialised workspace "
+                    "for research. Cytogent results export to Word, PDF, notebooks and LIMS, and its MCP connectors let "
+                    "agents work in other tools.",
+        "faq": [("Can Dust agents do life science research?",
+                 "Dust lets teams build agents on company knowledge and run them across many tools, which suits "
+                 "research operations. Cytogent is built for the science itself: a signed research brief, life-science "
+                 "models, lab tasks for people, scientist sign-off on record and one cited trail into trial, regulatory "
+                 "and patent files."),
+                ("Can Cytogent and Dust work together?",
+                 "Yes. Many teams use a company-wide agent platform for internal knowledge and a specialised workspace "
+                 "for research. Cytogent results export to Word, PDF, notebooks and LIMS, and its MCP connectors let "
+                 "agents work in other tools. Tell us about your setup and we will check the fit together.")],
+        "sources": [("Dust", "https://dust.tt/"),
+                    ("Dust blog: multiplayer AI", "https://dust.tt/blog/series-b-multiplayer-ai"),
+                    ("Dust docs: run agent", "https://docs.dust.tt/docs/run-agent")],
+        "solutions": ["regulatory-documentation", "clinical-trials"],
+    },
+}

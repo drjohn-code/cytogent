@@ -33,6 +33,10 @@ Cytogent is a research tool. It is not a medical device and makes no clinical de
 
 - https://cytogent.com/
 - https://cytogent.com/platform/
+- https://cytogent.com/compare/
+- https://cytogent.com/compare/chatgpt/
+- https://cytogent.com/compare/grok/
+- https://cytogent.com/compare/dust/
 - https://cytogent.com/data-and-models/
 - https://cytogent.com/security/
 - https://cytogent.com/about/

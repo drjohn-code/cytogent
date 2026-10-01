@@ -1084,7 +1084,7 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
 .split__text .lede{max-width:none}
 
 /* comparison matrix: two or three product columns, an examples line in each head, a key on phones */
-.cmpv--2 .cmpv__head,.cmpv--2 .cmpv__row{grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr))}
+@media (min-width:761px){.cmpv--2 .cmpv__head,.cmpv--2 .cmpv__row{grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr))}}
 .cmpv__head small{display:block;margin-top:5px;font-size:10.5px;line-height:1.4;letter-spacing:.03em;text-transform:none;color:var(--on-dark-3)}
 .cmpv__head > span{line-height:1.3}
 .cmpv__head .cmpv__us{padding:18px 16px}
@@ -1113,3 +1113,14 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
 .aside .body{font-size:15.5px}
 /* a hero subtitle on a full-height hero stays clear of the cell */
 @media (min-width:720px){.phero--sub:not(.phero--short) .phero__sub{max-width:520px}}
+
+/* compare pages: ticks on their own, steps on their own, a row of links, the sources */
+.ticklist{max-width:74ch;margin-top:32px}
+.stepsolo{margin-top:44px;max-width:680px}
+.more--row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px}
+.more--row > span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark-3)}
+.srcs{margin-top:44px;max-width:820px;padding-top:24px;border-top:1px solid var(--line-dark)}
+.srcs h3{font-size:17px;margin-bottom:12px}
+.srcs ul{display:grid;gap:8px}
+.srcs a{font-size:15px;color:var(--accent);text-underline-offset:3px;word-break:break-word}
+.srcs .fnote{margin-top:14px}

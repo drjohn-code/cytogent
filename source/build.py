@@ -5,7 +5,7 @@ Outputs:
   dist/               deployable static site (real paths, sitemap, robots, llms.txt)
   dist-artifact/      one self-contained HTML file for the Claude artifact preview
 """
-import os, re, json, shutil, base64, sys, html
+import os, re, json, shutil, base64, sys, html, datetime
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, 'src')
@@ -18,10 +18,12 @@ from content import (SITE, DEFINITION, TAGLINE, FACTS_CHECKED, CONFIRM, SOLUTION
                      FAQ, FAQ_AGENTS, FAQ_HOSTING, FAQ_CONFIRM, FOOTER,
                      DEMO, DEMO_STEPS, DEMO_AGENTS)                  # noqa: E402
 from pages import (SOLUTION_PAGES, INDUSTRY_PAGES, PLATFORM, DATA, SECURITY_PAGE, ABOUT, RESOURCES,  # noqa: E402
-                   FAQ_PAGE, FAQ_MORE, GLOSSARY_PAGE, GLOSSARY, REQUEST, LEGAL)
+                   FAQ_PAGE, FAQ_MORE, GLOSSARY_PAGE, GLOSSARY, REQUEST, LEGAL,
+                   COMPARE_HUB, VS_PAGES, VS_FURTHER)
 
 read = lambda p: open(p, encoding='utf-8').read()
 ORIGIN = SITE['origin']
+BUILD_DATE = os.environ.get('CG_BUILD_DATE') or datetime.date.today().isoformat()   # sitemap <lastmod>
 
 # ---------------------------------------------------------------- assets ---
 CSS = read(os.path.join(SRC, 'css', 'site.css'))
@@ -332,16 +334,23 @@ def nav(current=''):
 
     sol = [(s['nav'], '/solutions/%s/' % s['slug'], s['menu']) for s in SOLUTIONS]
     ind = [(i['nav'], '/industries/%s/' % i['slug'], i['menu']) for i in INDUSTRIES]
-    plain = [('Platform', '/platform/'), ('Data &amp; models', '/data-and-models/'),
-             ('Security', '/security/'), ('Resources', '/resources/'), ('About', '/about/')]
+    plain = [('Platform', '/platform/'), ('Compare', '/compare/'), ('Data &amp; models', '/data-and-models/'),
+             ('Security', '/security/'), ('About', '/about/')]
+    # the phone menu also lists the pages that moved to the footer on desktop
+    more = [('Resources', '/resources/')]
+
+    def within(h):
+        # a page under /compare/ keeps Compare marked in the bar
+        return ' data-current="true"' if h != current and h != '/' and current.startswith(h) else ''
 
     links = '<li class="nav__item"><a class="nav__link" href="/platform/"%s>Platform</a></li>' % cur('/platform/')
     links += menu(sol, 'Solutions') + menu(ind, 'Industries')
     for t, h in plain[1:]:
-        links += '<li class="nav__item"><a class="nav__link" href="%s"%s>%s</a></li>' % (h, cur(h), t)
+        links += '<li class="nav__item"%s><a class="nav__link" href="%s"%s>%s</a></li>' % (within(h), h, cur(h), t)
 
     row = lambda t, h: '<a class="sheet__row" href="%s"%s>%s</a>' % (h, cur(h), t)
-    sheet_rows = row(*plain[0]) + group(sol, 'Solutions') + group(ind, 'Industries') + ''.join(row(t, h) for t, h in plain[1:])
+    sheet_rows = (row(*plain[0]) + group(sol, 'Solutions') + group(ind, 'Industries') +
+                  ''.join(row(t, h) for t, h in plain[1:] + more))
 
     return (
         '<a class="skip" href="#main">Skip to content</a>'
@@ -991,6 +1000,88 @@ def platform_page():
     return ''.join(o)
 
 
+# ---- compare --------------------------------------------------------------
+def sol_links(slugs, lead='See it in a workflow'):
+    """Text links to the solution pages a page should point to."""
+    return '<p class="more more--row rv"><span>%s</span>%s</p>' % (
+        lead, ''.join(tlink(strip(SOL[s_]['title']), '/solutions/%s/' % s_) for s_ in slugs))
+
+
+def tick_list(items):
+    """A list of ticks on its own (outside a split). items: text, or (text, open item)."""
+    rows = ''
+    for it in items:
+        t_, k = it if isinstance(it, tuple) else (it, None)
+        rows += '%s<li>%s<span>%s</span></li>' % (confirm(k), TICK, t_)
+    return '<div class="split__text ticklist rv"><ul class="ticks">%s</ul></div>' % rows
+
+
+def compare_hub_page():
+    c = COMPARE_HUB
+    o = [phero(c['h1'], c['hero'], btn('Request access', '/request-access/', 'primary') +
+               btn('See the platform', '/platform/', 'outline', False), sub=c['sub'])]
+    o.append(confirm('legal') + confirm('facts'))
+    # 1. what general tools do well
+    h2, lede = c['well']
+    o.append(band('dark', 'h-well', head2('h-well', h2, lede, show=True)))
+    # 2. where Cytogent goes further
+    h2, lede, items = c['further']
+    cards = ''.join('%s<div class="card icard" data-rv-item>%s<h3>%s</h3><p>%s</p></div>' % (confirm(k), ico(a, n), b, t_)
+                    for n, (a, b, t_, k) in enumerate(items))
+    o.append(band('cream', 'h-further', head2('h-further', h2, lede) +
+                  '<div class="grid grid--3 icards rv" data-stagger>%s</div>' % cards + sol_links(c['solutions'])))
+    # 3. the table: the home rows and four more
+    h2, lede = c['table']
+    o.append(band('dark', 'h-table', head2('h-table', h2, lede) +
+                  cmp_table(COMPARE_COLS, COMPARE + COMPARE_MORE, 'Cytogent, AI assistants and agent workspaces, side by side') +
+                  '<p class="fnote rv">%s</p>' % COMPARE_NOTE))
+    # 4. how to use both
+    h2, lede, steps_ = c['both']
+    o.append(band('cream', 'h-both', head2('h-both', h2, lede) + '<div class="stepsolo">%s</div>' % steps_list(steps_)))
+    # 5. one page per product
+    h2, lede = c['detail']
+    cards = [('compare', 'Cytogent vs %s' % v['name'], v['desc'].split('. ')[0] + '.', '/compare/%s/' % k, 'Open the comparison')
+             for k, v in VS_PAGES.items()]
+    o.append(band('dark', 'h-detail', head2('h-detail', h2, lede) + icards(cards, cols=3)))
+    # 6. FAQ
+    o.append(band('cream', 'h-faq', head2('h-faq', 'Common <kw>questions</kw>.', 'Short answers.') +
+                  '<div class="faq rv">%s</div>' % qa_list(c['faq'])))
+    h2, lede = c['cta']
+    o.append(cta(h2, lede, kind='dark'))
+    return ''.join(o)
+
+
+def vs_page(key):
+    c = VS_PAGES[key]
+    name = c['name']
+    hero = ('whole', 'breathe', 'The whole Cytogent cell at rest, breathing slowly.')
+    o = [phero(c['h1'], hero, btn('Request access', '/request-access/', 'primary') +
+               btn('All comparisons', '/compare/', 'outline', False))]
+    o.append(confirm('legal') + confirm('facts'))
+    # short answer
+    o.append(band('dark', 'h-short', head2('h-short', 'The short <kw>answer</kw>.', c['short'], show=True)))
+    # what the other product does well: facts from its public pages
+    o.append(band('cream', 'h-well', head2('h-well', 'What %s %s <kw>well</kw>.' % (name, c['does']), '') + tick_list(c['well'])))
+    # where Cytogent goes further
+    o.append(band('dark', 'h-further', head2('h-further', 'Where Cytogent goes <kw>further</kw>.', '') + tick_list(VS_FURTHER) +
+                  sol_links(c['solutions'])))
+    # the table
+    o.append(band('cream', 'h-table', head2('h-table', 'Side by <kw>side</kw>.', '') +
+                  cmp_table([(name, '', name)], c['rows'], 'Cytogent and %s, side by side' % name, uid='vs') +
+                  '<p class="fnote rv">Based on public product information checked on %s. Product names are trademarks of their owners.</p>'
+                  % FACTS_CHECKED))
+    # use them together
+    o.append(band('dark', 'h-both', head2('h-both', 'Use them <kw>together</kw>.', c['together'], show=True)))
+    # FAQ, then the sources and the day they were checked
+    srcs = ''.join('<li><a href="%s" rel="noopener">%s</a></li>' % (u, t_) for t_, u in c['sources'])
+    o.append(band('cream', 'h-faq', head2('h-faq', 'Common <kw>questions</kw>.', 'Short answers.') +
+                  '<div class="faq rv">%s</div>' % qa_list(c['faq']) +
+                  '<div class="srcs rv"><h3>Sources</h3><ul>%s</ul><p class="fnote">Last checked: %s. '
+                  'What this page says about %s comes from the public pages listed here.</p></div>' % (srcs, FACTS_CHECKED, name)))
+    o.append(cta(COMPARE_HUB['cta'][0], COMPARE_HUB['cta'][1], kind='dark'))
+    return ''.join(o)
+
+
 # ---- data and models ------------------------------------------------------
 def data_page():
     c = DATA
@@ -1230,6 +1321,11 @@ def legal_page(key):
 def inner_pages():
     P = []
     P.append(('/platform/', PLATFORM['title'], PLATFORM['desc'], platform_page, None, [('Home', '/'), ('Platform', '/platform/')], None))
+    P.append(('/compare/', COMPARE_HUB['title'], COMPARE_HUB['desc'], compare_hub_page, COMPARE_HUB['faq'],
+              [('Home', '/'), ('Compare', '/compare/')], None))
+    for k, v in VS_PAGES.items():
+        P.append(('/compare/%s/' % k, v['title'], v['desc'], (lambda k_=k: vs_page(k_)), v['faq'],
+                  [('Home', '/'), ('Compare', '/compare/'), (v['name'], '/compare/%s/' % k)], None))
     P.append(('/data-and-models/', DATA['title'], DATA['desc'], data_page, None, [('Home', '/'), ('Data and models', '/data-and-models/')], None))
     P.append(('/security/', SECURITY_PAGE['title'], SECURITY_PAGE['desc'], security_page, SECURITY_PAGE['faq'], [('Home', '/'), ('Security', '/security/')], None))
     P.append(('/about/', ABOUT['title'], ABOUT['desc'], about_page, None, [('Home', '/'), ('About', '/about/')], None))
@@ -1261,8 +1357,11 @@ def hero_of(path):
     m = {'/platform/': PLATFORM, '/data-and-models/': DATA, '/security/': SECURITY_PAGE, '/about/': ABOUT,
          '/resources/': RESOURCES, '/resources/faq/': FAQ_PAGE, '/resources/glossary/': GLOSSARY_PAGE,
          '/request-access/': REQUEST, '/terms/': LEGAL['terms'], '/privacy/': LEGAL['privacy']}
+    m['/compare/'] = COMPARE_HUB
     if path in m:
         return m[path]['hero'], m[path]['h1']
+    if path.startswith('/compare/'):
+        return ('whole', 'breathe', ''), VS_PAGES[path.split('/')[2]]['h1']
     if path.startswith('/solutions/'):
         c = SOLUTION_PAGES[path.split('/')[2]]; return c['hero'], c['h1']
     if path.startswith('/industries/'):
@@ -1272,17 +1371,18 @@ def hero_of(path):
 
 # ============================================================== SEO files ===
 def seo_files():
-    urls = ['/', '/platform/', '/data-and-models/', '/security/', '/about/',
-            '/resources/', '/resources/faq/', '/resources/glossary/',
-            '/request-access/', '/terms/', '/privacy/']
+    urls = ['/', '/platform/', '/compare/'] + ['/compare/%s/' % k for k in VS_PAGES]
+    urls += ['/data-and-models/', '/security/', '/about/',
+             '/resources/', '/resources/faq/', '/resources/glossary/',
+             '/request-access/', '/terms/', '/privacy/']
     urls += ['/solutions/%s/' % s['slug'] for s in SOLUTIONS]
     urls += ['/industries/%s/' % i['slug'] for i in INDUSTRIES]
     prio = {'/': '1.0'}
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in urls:
-        sm.append('<url><loc>%s%s</loc><changefreq>monthly</changefreq><priority>%s</priority></url>'
-                  % (ORIGIN, u, prio.get(u, '0.8')))
+        sm.append('<url><loc>%s%s</loc><lastmod>%s</lastmod><changefreq>monthly</changefreq><priority>%s</priority></url>'
+                  % (ORIGIN, u, BUILD_DATE, prio.get(u, '0.8')))
     sm.append('</urlset>')
 
     robots = ('User-agent: *\nAllow: /\nDisallow: /request-access/success/\n\n'
