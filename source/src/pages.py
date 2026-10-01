@@ -361,33 +361,49 @@ INDUSTRY_PAGES = {
 # ---------------------------------------------------------------------------
 PLATFORM = {
     "title": "Agentic Research Platform for Life Science | Cytogent",
-    "desc": "Agents, data, models and protocols share one evidence trail. See how the workspace routes each step, "
-            "logs it and keeps scientists in charge.",
-    "h1": "One <kw>workspace</kw>, many tools.",
+    "desc": "Write a goal, sign a research brief, and let AI agents and your team do the work. Each step goes to the "
+            "best model, and every step is logged and cited.",
+    "h1": "One workspace from research brief to signed <kw>result</kw>.",
     "hero": ("half", "signal", "The Cytogent cell: a signal lands on a receptor, runs along the membrane and reaches the nucleus."),
+    "sub": ("Agents and people work from the same brief, the same data and the same record.",),
+    "brief": ("Every project starts with a <kw>brief</kw>.",
+              "Write the goal in your own words. Cytogent asks what changes the plan, then writes a one-page brief for "
+              "you to sign. Agents plan from it, and every result links back to it."),
+    # CONFIRM (outbound): the last sentence of the bench lede
     "bench": ("A shared bench for people and <kw>agents</kw>.",
-              "Ask, delegate, review. Each agent works inside a project you control, with the same data and the same rules."),
+              "Agents and people take tasks from the same board. Agents read, analyse and draft. People run the lab work, "
+              "review and sign. Nothing leaves the project without a yes."),
     "routing": ("The right model for each <kw>step</kw>.",
-                "Reading, coding, structure prediction and drafting go to different models. Routing is explicit and logged.",
+                "Reading goes to a long-context model, code to a code model, structures to a structure model, drafts to a "
+                "drafting model. Every choice is logged, so you can see which model did what.",
                 [("book", "Read papers", "Long-context language model"),
                  ("code", "Write analysis code", "Code model"),
                  ("molecule", "Predict structure", "Structure model"),
                  ("pen", "Draft the report", "Drafting language model")]),
     "cascade": ("How a request becomes a <kw>result</kw>.",
-                "Four steps. Each one is checked and logged.",
-                [("A request arrives", "You ask a question, or a new dataset lands in the project."),
+                "Five steps. Each one is checked and logged.",
+                [("You write the goal", "In plain words, with your data attached."),
+                 ("The brief is signed", "Cytogent asks a few questions. You confirm and sign."),
                  ("Access is checked", "The workspace checks who asked and what they may see."),
-                 ("Agents run", "Agents work in sequence, each step logged with its model and inputs."),
-                 ("The result is written back", "A cited result lands in the project for you to review.")]),
+                 ("Agents and people work", "Tasks run in order, each logged with its model, inputs and owner."),
+                 ("The result is written back", "A cited result lands in the project for you to review and sign.")]),
+    # (icon, title, text, open item or None)
     "stack": ("Data, models and protocols, <kw>built in</kw>.",
               "Everything an agent uses has a source, a version and a place in the record.",
-              [("database", "Datasets", "Public and licensed collections, cleaned, versioned and documented."),
-               ("cpu", "Trained models", "Domain models for prediction and screening, with reported validation."),
-               ("clipboard", "Protocols", "Protocols you can search, adapt and cite, with each step attributed.")]),
+              [("database", "Datasets", "Public and licensed collections, cleaned, versioned and documented. Literature "
+                                        "includes full-text papers from ScienceDirect, through Elsevier's API.", "sciencedirect"),
+               ("cpu", "Trained models", "Domain models for prediction and screening, with reported validation.", "trained"),
+               ("clipboard", "Protocols", "Protocols you can search, adapt and cite, with each step attributed.", None),
+               ("users", "Health data standards", "Patient data is modelled with openEHR, exchanged with FHIR, mapped to "
+                                                  "OMOP for multi-site studies, and coded with SNOMED CT.", "standards")]),
     "integrations": ("Connects to the tools you already <kw>use</kw>.",
                      "Bring data in, send results out.",
                      ["Electronic lab notebook", "LIMS", "Object storage", "Git", "Team chat", "Single sign-on",
                       "Reference manager"]),
+    # CONFIRM (mcp): MCP connectors and browser access are available to customers
+    "own_ai": ("Use the AI you already trust",
+               "Cytogent runs on models from Anthropic, OpenAI, Google and xAI. Agents also work in real tools through "
+               "MCP connectors and browser access, not only in chat."),
 }
 
 # ---------------------------------------------------------------------------

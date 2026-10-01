@@ -675,31 +675,40 @@
     for (var q = 0; q < 3; q++) { var idx = k - 2 + q; if (idx < 0) continue; var a2 = q === 2 ? smooth((u - 0.5) / 0.3) : 1; if (q === 2 && u < 0.5) continue; mono(ctx, '12:0' + (4 + idx) + '  ' + tasks[idx].toLowerCase() + ' → ' + models[idx][0], w * 0.04, ly + q * 15, { color: q === 2 ? INK : INK2, a: a2, font: '500 10px ' + MONO }); }
   };
 
-  // Platform: a request becomes a result — request, access check, agents in turn, result written back (scroll-driven)
+  // Platform: a goal becomes a result — goal, signed brief, access check, agents and a person in turn, result written back (scroll-driven)
   D.cascade = function (ctx, w, h, t, st) {
     ground(ctx, w, h, 171);
-    var p = st.progress > 0 ? st.progress : ((t * 0.08) % 1), nar = narrow(w, h);
-    // four stops: in a row on a wide frame (names under them), in a column on a phone (names beside them, never on the path)
-    var S = nar ? [0.13, 0.37, 0.61, 0.85].map(function (f) { return { x: w * 0.2, y: h * f }; }) : [0.1, 0.35, 0.62, 0.88].map(function (f) { return { x: w * f, y: h * 0.44 }; });
-    var off = [36, 42, 64, 42];
-    var s = p * 4, labels = ['request', 'access check', 'agents · logged', 'cited result'];
-    for (var i = 0; i < 3; i++) { var a = S[i], b = S[i + 1], f = clamp(s - i - 0.5); ctx.save(); ctx.strokeStyle = LINE; ctx.lineWidth = 2; ctx.setLineDash([3, 5]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.restore(); if (f > 0) { ctx.save(); ctx.strokeStyle = rgba(P.lilac, 0.8); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(lerp(a.x, b.x, f), lerp(a.y, b.y, f)); ctx.stroke(); ctx.restore(); } }
+    var p = st.progress > 0 ? st.progress : ((t * 0.07) % 1), nar = narrow(w, h), N = 5;
+    // five stops: in a row on a wide frame (names under them), in a column on a phone (names beside them, never on the path)
+    var S = nar ? [0.1, 0.3, 0.5, 0.7, 0.9].map(function (f) { return { x: w * 0.2, y: h * f }; }) : [0.08, 0.27, 0.46, 0.68, 0.9].map(function (f) { return { x: w * f, y: h * 0.44 }; });
+    var off = [36, 40, 42, 74, 42];
+    var s = p * N, labels = ['goal', 'brief', 'access check', 'agents and people', 'cited result'];
+    for (var i = 0; i < N - 1; i++) { var a = S[i], b = S[i + 1], f = clamp(s - i - 0.5); ctx.save(); ctx.strokeStyle = LINE; ctx.lineWidth = 2; ctx.setLineDash([3, 5]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.restore(); if (f > 0) { ctx.save(); ctx.strokeStyle = rgba(P.lilac, 0.8); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(lerp(a.x, b.x, f), lerp(a.y, b.y, f)); ctx.stroke(); ctx.restore(); } }
     function note(i, sname, col, on) { if (nar) { chip(ctx, S[i].x + off[i], S[i].y + 13, sname, col, { on: on }); return; } var cw = chipW(ctx, sname); chip(ctx, clamp(S[i].x - cw / 2, 8, w - 8 - cw), S[i].y - 44, sname, col, { on: on }); }
-    // 1 the request
-    person(ctx, S[0].x, S[0].y, 20, '', P.paper); if (s < 1.2) note(0, 'new question', P.lilac, true);
-    // 2 the gate
-    var g = smooth(s - 1); rrect(ctx, S[1].x - 26, S[1].y - 26, 52, 52, 14); ctx.fillStyle = BASE; ctx.fill(); ctx.fillStyle = rgba(P.teal, 0.05 + 0.1 * g); ctx.fill(); ctx.strokeStyle = rgba(g > 0.9 ? P.teal : INK3, 0.8); ctx.lineWidth = 1.2; ctx.stroke();
-    lockIcon(ctx, S[1].x, S[1].y + 2, 18, g > 0.9 ? P.teal : INK2, g);
-    if (g > 0.9) note(1, 'editor · project A', P.teal, true);
-    // 3 the agents, in turn
-    ['Reader', 'Analyst', 'Writer'].forEach(function (n, i) { var on = clamp((s - 2) * 3 - i); var ax = S[2].x + (i - 1) * 34, ay = S[2].y; agent(ctx, ax, ay, 28, ACOL[n], '', '', 0.2 + 0.8 * on); if (on > 0 && on < 1) spinner(ctx, ax, ay, 20, ACOL[n], t, 0.9); });
-    var logs = Math.floor(clamp((s - 2) * 3, 0, 3)); if (logs) labels[2] = logs + ' of 3 logged';
-    // 4 the result
-    var r = smooth(s - 3); var pw = 54, phh = 66;
-    page(ctx, S[3].x - pw / 2, S[3].y - phh / 2, pw, phh, { lines: 5, cites: [1, 3], fill_t: r, on: r > 0.2 });
-    if (r > 0.95) { check(ctx, S[3].x + pw / 2 + 8, S[3].y - phh / 2, 8, P.amber, 1); }
+    // 1 the goal
+    person(ctx, S[0].x, S[0].y, 20, '', P.paper); if (s < 1.2) note(0, 'new goal', P.lilac, true);
+    // 2 the brief: it fills in, then it is signed
+    var bf = smooth(s - 1), bw = 44, bh = 54;
+    page(ctx, S[1].x - bw / 2, S[1].y - bh / 2, bw, bh, { lines: 4, fill_t: bf, on: bf > 0.5 });
+    if (bf > 0.9) { check(ctx, S[1].x + bw / 2 + 3, S[1].y + bh / 2 - 4, 7, P.amber, 1); labels[1] = 'brief signed'; }
+    // 3 the gate
+    var g = smooth(s - 2); rrect(ctx, S[2].x - 26, S[2].y - 26, 52, 52, 14); ctx.fillStyle = BASE; ctx.fill(); ctx.fillStyle = rgba(P.teal, 0.05 + 0.1 * g); ctx.fill(); ctx.strokeStyle = rgba(g > 0.9 ? P.teal : INK3, 0.8); ctx.lineWidth = 1.2; ctx.stroke();
+    lockIcon(ctx, S[2].x, S[2].y + 2, 18, g > 0.9 ? P.teal : INK2, g);
+    if (g > 0.9) note(2, 'editor · project A', P.teal, true);
+    // 4 three agents and a person, in turn
+    ['Reader', 'Analyst', 'Writer', 'You'].forEach(function (n, i) {
+      var on = clamp((s - 3) * 4 - i), ax = S[3].x + (i - 1.5) * 31, ay = S[3].y;
+      if (n === 'You') { person(ctx, ax, ay, 13, '', P.paper); if (on > 0) glowAt(ctx, ax, ay, 18, P.amber, 0.35 * on); }
+      else agent(ctx, ax, ay, 26, ACOL[n], '', '', 0.2 + 0.8 * on);
+      if (on > 0 && on < 1) spinner(ctx, ax, ay, 19, n === 'You' ? P.amber : ACOL[n], t, 0.9);
+    });
+    var logs = Math.floor(clamp((s - 3) * 4, 0, 4)); if (logs) labels[3] = logs + ' of 4 logged';
+    // 5 the result
+    var r = smooth(s - 4); var pw = 54, phh = 66;
+    page(ctx, S[4].x - pw / 2, S[4].y - phh / 2, pw, phh, { lines: 5, cites: [1, 3], fill_t: r, on: r > 0.2 });
+    if (r > 0.95) { check(ctx, Math.min(S[4].x + pw / 2 + 8, w - 13), S[4].y - phh / 2, 8, P.amber, 1); }
     // travelling packet
-    var k = Math.min(2, Math.floor(s)), f2 = clamp(s - k); if (p < 0.999 && s < 3.2) packet(ctx, { x: lerp(S[k].x, S[k + 1].x, smooth(f2)), y: lerp(S[k].y, S[k + 1].y, smooth(f2)) }, P.paper, 3);
+    var k = Math.min(N - 2, Math.floor(s)), f2 = clamp(s - k); if (p < 0.999 && s < N - 0.8) packet(ctx, { x: lerp(S[k].x, S[k + 1].x, smooth(f2)), y: lerp(S[k].y, S[k + 1].y, smooth(f2)) }, P.paper, 3);
     S.forEach(function (q, i) { if (nar) mono(ctx, labels[i], q.x + off[i], q.y - 9, { color: s >= i ? INK2 : INK3 }); else mono(ctx, labels[i], q.x, q.y + 46, { align: 'center', color: s >= i ? INK2 : INK3 }); });
   };
 

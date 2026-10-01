@@ -948,33 +948,46 @@ def industry_page(slug):
 # ---- platform -------------------------------------------------------------
 def platform_page():
     c = PLATFORM
-    o = [phero(c['h1'], c['hero'], btn('Request access', '/request-access/', 'primary') + btn('Data and models', '/data-and-models/', 'outline', False))]
+    o = [phero(c['h1'], c['hero'], btn('Request access', '/request-access/', 'primary') + btn('Data and models', '/data-and-models/', 'outline', False),
+               sub=c['sub'])]
+    # 1. every project starts with a brief: the demo, one example
+    h2, lede = c['brief']
+    o.append(band('dark', 'h-brief', head2('h-brief', h2, lede, show=True) + confirm('planner') + demo(DEMO[:1], 'single') +
+                  '<div class="dfoot rv"><p class="cap">Illustrative example. Names, data and numbers are made up.</p></div>'))
+    # 2. the shared bench
     h2, lede = c['bench']
-    o.append(band('dark', 'h-bench', head2('h-bench', h2, lede) + '<div class="wide rv">%s</div>' % bench_frame()))
+    o.append(band('cream', 'h-bench', confirm('outbound') + head2('h-bench', h2, lede, show=True) + '<div class="wide rv">%s</div>' % bench_frame()))
+    # 3. the right model for each step
     h2, lede, routes = c['routing']
     rl = ''.join('<li class="route" data-rv-item>%s<div><b>%s</b><span>%s</span></div></li>' % (ico(a, n), b, m) for n, (a, b, m) in enumerate(routes))
-    o.append(band('cream', 'h-route', split('<h2 id="h-route">%s</h2><ul class="routes" data-stagger>%s</ul>' % (kw(h2), rl),
-                                             dframe('routing', 'Each task to its model · every routing decision logged',
-                                                    'Four tasks on the left go through a router to four models on the right: reading to a long-context '
-                                                    'language model, code to a code model, structure to a structure model, drafting to a drafting model. '
-                                                    'A routing log fills in.'))))
+    o.append(band('dark', 'h-route', split('<h2 id="h-route">%s</h2><p class="lede">%s</p><ul class="routes" data-stagger>%s</ul>' % (kw(h2), lede, rl),
+                                            dframe('routing', 'Each task to its model · every routing decision logged',
+                                                   'Four tasks on the left go through a router to four models on the right: reading to a long-context '
+                                                   'language model, code to a code model, structure to a structure model, drafting to a drafting model. '
+                                                   'A routing log fills in.'))))
+    # 4. how a request becomes a result: five steps, the diagram follows the scroll
     h2, lede, st = c['cascade']
-    o.append(band('dark', 'h-casc', head2('h-casc', h2, lede) +
+    o.append(band('cream', 'h-casc', head2('h-casc', h2, lede) +
                   '<div class="how">%s<div class="rv">%s</div></div>' % (
                       steps_list(st, drive='dg-casc'),
-                      dframe('cascade', 'Request → access check → agents, logged → cited result',
-                             'A request travels from a person to an access check with a lock, then through three agents in turn, '
-                             'then lands as a cited result.', cid='dg-casc'))))
+                      dframe('cascade', 'Goal → signed brief → access check → agents and people, logged → cited result',
+                             'A goal travels from a person to a research brief that is signed, then to an access check with a lock, '
+                             'then through three agents and a person in turn, then lands as a cited result.', cid='dg-casc'))))
+    # 5. data, models, protocols and standards
     h2, lede, items = c['stack']
-    o.append(band('cream', 'h-stack', head2('h-stack', h2, lede) +
-                  icards([(a, b, c_, '/data-and-models/', 'See data and models') for a, b, c_ in items], cols=3)))
+    cards = ''.join('%s<a class="card icard" data-rv-item href="/data-and-models/">%s<h3>%s</h3><p>%s</p>%s</a>'
+                    % (confirm(k), ico(a, n), b, c_, tfake('See data and models')) for n, (a, b, c_, k) in enumerate(items))
+    o.append(band('dark', 'h-stack', head2('h-stack', h2, lede) + '<div class="grid grid--4 icards rv" data-stagger>%s</div>' % cards))
+    # 6. the tools you already use, and the AI you already trust
     h2, lede, tools = c['integrations']
-    o.append(band('dark', 'h-int', split('<h2 id="h-int">%s</h2><div class="tags tags--lg">%s</div>'
-                                         % (kw(h2), ''.join('<span class="tag">%s</span>' % t for t in tools)),
-                                         dframe('hub', 'Your project in the middle · data in, results out',
-                                                'A project in the centre, linked to an electronic lab notebook, LIMS, storage, Git, '
-                                                'team chat, single sign-on and a reference manager, with data flowing in and results out.'))))
-    o.append(cta('See it with your own <kw>data</kw>.', 'Tell us your field and what you want to do. We set up the workspace around it.'))
+    h3, text_ = c['own_ai']
+    o.append(band('cream', 'h-int', split('<h2 id="h-int">%s</h2><div class="tags tags--lg">%s</div>'
+                                          % (kw(h2), ''.join('<span class="tag">%s</span>' % t for t in tools)),
+                                          dframe('hub', 'Your project in the middle · data in, results out',
+                                                 'A project in the centre, linked to an electronic lab notebook, LIMS, storage, Git, '
+                                                 'team chat, single sign-on and a reference manager, with data flowing in and results out.')) +
+                  '%s<div class="aside rv"><h3>%s</h3><p class="body">%s</p></div>' % (confirm('mcp'), h3, text_)))
+    o.append(cta('See it with your own <kw>data</kw>.', 'Tell us your field and what you want to do. We set up the workspace around it.', kind='dark'))
     return ''.join(o)
 
 

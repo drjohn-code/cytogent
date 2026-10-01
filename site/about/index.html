@@ -1107,6 +1107,12 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
 /* cards and rows that carry a status pill */
 .card > .pill{align-self:flex-start}
 .doors__note{margin-top:28px;max-width:62ch}
+/* a short note under a split: a small heading and one paragraph */
+.aside{margin-top:36px;max-width:62ch;padding-top:24px;border-top:1px solid var(--line-dark)}
+.aside h3{margin-bottom:8px}
+.aside .body{font-size:15.5px}
+/* a hero subtitle on a full-height hero stays clear of the cell */
+@media (min-width:720px){.phero--sub:not(.phero--short) .phero__sub{max-width:520px}}
 </style><script>(function () {
 'use strict';
 var KEY = 'cg-consent', ID = 'G-H7WJPJ2WSP', d = document, state = null, loaded = false, bar = null, opener = null;
