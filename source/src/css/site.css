@@ -884,3 +884,31 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
 .contact__mail{font-size:clamp(28px,4.4vw,56px);font-weight:500;letter-spacing:-.03em;color:var(--on-dark);text-decoration:none;
   background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;padding-bottom:6px;transition:background-size var(--t) var(--ease),color var(--t) var(--ease)}
 .contact__mail:hover{color:var(--accent);background-size:100% 1px}
+
+/* ===========================================================
+   consent: the cookie bar. Fixed to the bottom, clear of the home indicator, compact on a phone.
+   Two buttons of equal size and weight; nothing is chosen in advance.
+   =========================================================== */
+.cookiebar{position:fixed;left:0;right:0;bottom:0;z-index:60;pointer-events:none;
+  padding:0 var(--gutter) calc(14px + env(safe-area-inset-bottom,0px))}
+.cookiebar[hidden]{display:none}
+.cookiebar:focus{outline:none}
+.cookiebar:focus-visible .cookiebar__in{outline:2px solid var(--focus);outline-offset:2px}
+.cookiebar__in{pointer-events:auto;max-width:calc(var(--maxw) - 2 * var(--gutter));margin-inline:auto;
+  display:flex;align-items:center;justify-content:space-between;gap:12px 28px;
+  background:var(--ink-800);border:1px solid var(--line-dark);border-radius:var(--r);padding:14px 16px 14px 22px;
+  box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.cookiebar__text{font-size:14px;line-height:1.5;color:var(--on-dark-2)}
+.cookiebar__text a{color:var(--accent);white-space:nowrap}
+.cookiebar__short{display:none}
+.cookiebar__actions{display:flex;gap:10px;flex:none}
+.cookiebar__actions .btn{min-width:150px;justify-content:center}
+@media (max-width:719px){
+  .cookiebar{padding-inline:12px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+  .cookiebar__in{flex-direction:column;align-items:stretch;padding:12px 14px 14px;border-radius:var(--r-sm)}
+  .cookiebar__text{font-size:13px;line-height:1.45}
+  .cookiebar__long{display:none}
+  .cookiebar__short{display:inline}
+  .cookiebar__actions .btn{flex:1 1 0;min-width:0}
+}
+.prose code{font-family:var(--mono);font-size:.92em;color:var(--on-dark)}

@@ -25,6 +25,17 @@ CSS = read(os.path.join(SRC, 'css', 'site.css'))
 CELL_JS = read(os.path.join(SRC, 'js', 'cell.js'))
 DG_JS = read(os.path.join(SRC, 'js', 'diagrams.js'))
 APP_JS = read(os.path.join(SRC, 'js', 'app.js'))
+
+
+def squeeze_js(js):
+    """Drop comments and indentation from a small hand-written script, so it can sit inline in the page."""
+    js = re.sub(r'/\*.*?\*/', '', js, flags=re.S)
+    lines = [l.strip() for l in js.split('\n')]
+    return '\n'.join(l for l in lines if l and not l.startswith('//'))
+
+
+# analytics consent: inlined into every page (not into the preview artifact), and pasted by hand into site/404.html
+CONSENT_JS = squeeze_js(read(os.path.join(SRC, 'js', 'consent.js')))
 MARK = read(os.path.join(STATIC, 'img', 'cytogent-mark-on-dark.svg'))   # the v1 mark, iridescent
 
 
@@ -223,7 +234,8 @@ def nav(current=''):
 def footer():
     cols = ''
     for title, items in FOOTER:
-        rows = ''.join('<li><a href="%s">%s</a></li>' % (h, t) for t, h in items)
+        rows = ''.join('<li><a href="%s"%s>%s</a></li>' % (h, ' data-cookie-settings' if t == 'Cookie settings' else '', t)
+                       for t, h in items)
         cols += '<div><h3>%s</h3><ul>%s</ul></div>' % (title, rows)
     return (
         '<footer class="foot"><div class="wrap">'
@@ -328,6 +340,7 @@ def page(path, title, desc, body, faq=None, crumbs=None, extra=None):
         '<link rel="preload" href="/fonts/Geist-Latin.woff2" as="font" type="font/woff2" crossorigin>',
         '<link rel="preload" href="/fonts/GeistMono-Latin.woff2" as="font" type="font/woff2" crossorigin>',
         '<style>%s</style>' % css,
+        '<script>%s</script>' % CONSENT_JS,
         jsonld(path, title, desc, faq, crumbs, extra),
     ]
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
@@ -1033,7 +1046,7 @@ def request_page():
 # ---- legal ----------------------------------------------------------------
 def legal_page(key):
     c = LEGAL[key]
-    body = ''.join('<h2>%s</h2>%s' % (h, p) for h, p in c['body'])
+    body = ''.join('<h2%s>%s</h2>%s' % (' id="%s"' % sec[2] if len(sec) > 2 else '', sec[0], sec[1]) for sec in c['body'])
     other = ('<a href="/privacy/">Privacy policy</a>' if key == 'terms' else '<a href="/terms/">Terms of service</a>')
     return (phero(c['h1'], c['hero'], '', short=True) +
             '<section class="band band--dark" aria-label="%s"><div class="wrap"><article class="prose rv">'
@@ -1170,6 +1183,10 @@ def build():
 
     art = artifact(built, 'Cytogent v3', body)
     open(os.path.join(ROOT, 'artifact.html'), 'w', encoding='utf-8').write(art)
+
+    p404 = os.path.join(os.path.dirname(ROOT), 'site', '404.html')
+    if os.path.exists(p404) and CONSENT_JS not in read(p404):
+        print('WARNING          site/404.html does not carry the current consent script (src/js/consent.js)')
 
     print('pages            %d' % (1 + len(built)))
     print('artifact.html    %d KB' % (os.path.getsize(os.path.join(ROOT, 'artifact.html')) // 1024))

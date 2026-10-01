@@ -626,17 +626,28 @@ LEGAL = {
     },
     "privacy": {
         "title": "Privacy Policy | Cytogent",
-        "desc": "Draft privacy policy for Cytogent, written with the GDPR in mind. WelloWork AB, Sweden, is the controller. Under legal review.",
+        "desc": "Draft privacy policy for Cytogent by WelloWork AB, Sweden, written with the GDPR in mind. Analytics cookies are set "
+                "only with your consent. Under legal review.",
         "h1": "Privacy <kw>policy</kw>.",
         "hero": ("membrane", "breathe", "The membrane of the Cytogent cell, at rest."),
         "body": [
             ("1. Controller", "<p>WelloWork AB, Sweden, is the controller for personal data collected through this website and the access request form.</p>"),
-            ("2. What we collect", "<ul><li>Access requests: name, work email, institution, organization or hospital, role, fields, ORCID if given, intended use, compliance needs, how you heard about us.</li><li>Website use: technical logs needed to run and secure the site. No advertising trackers.</li><li>Project data you bring to the workspace, where WelloWork acts as processor under a data processing agreement.</li></ul>"),
-            ("3. Why and on what legal basis", "<ul><li>Reviewing access requests and contacting you about them: our legitimate interest and steps before a contract (Art. 6(1)(b) and (f) GDPR).</li><li>Running and securing the service: legitimate interest (Art. 6(1)(f)).</li><li>Legal obligations, such as accounting: Art. 6(1)(c).</li></ul>"),
+            ("2. What we collect", "<ul><li>Access requests: name, work email, institution, organization or hospital, role, fields, ORCID if given, intended use, compliance needs, how you heard about us.</li><li>Website use: technical logs needed to run and secure the site. No advertising trackers.</li><li>Analytics, only if you accept it in the cookie banner: which pages are viewed and which buttons are used, collected with Google Analytics 4 (see section 7).</li><li>Project data you bring to the workspace, where WelloWork acts as processor under a data processing agreement.</li></ul>"),
+            ("3. Why and on what legal basis", "<ul><li>Reviewing access requests and contacting you about them: our legitimate interest and steps before a contract (Art. 6(1)(b) and (f) GDPR).</li><li>Running and securing the service: legitimate interest (Art. 6(1)(f)).</li><li>Website analytics: your consent (Art. 6(1)(a)), which you can withdraw at any time.</li><li>Legal obligations, such as accounting: Art. 6(1)(c).</li></ul>"),
             ("4. Retention", "<p>Access requests are kept until a decision is made and for a limited period after it. Account data is kept while the account exists and for a limited period after it closes.</p>"),
             ("5. Recipients and transfers", "<p>We use cloud and model providers as sub-processors. A list will be published on the security page. Where data leaves the EU or EEA, we rely on adequacy decisions or standard contractual clauses.</p>"),
             ("6. Your rights", "<p>You can ask for access, rectification, erasure, restriction and portability, and you can object to processing based on legitimate interest. You can complain to the Swedish Authority for Privacy Protection (IMY).</p>"),
-            ("7. Cookies", "<p>The site uses only technically necessary storage. No advertising cookies and no third-party trackers.</p>"),
+            # CONFIRM with a lawyer: the cookie and analytics text below, and the matching lines in sections 2 and 3
+            ("7. Cookies and analytics",
+             "<!-- CONFIRM: lawyer review of the cookie and analytics text -->"
+             "<p>We use one kind of optional cookie: Google Analytics 4, which helps us understand which pages are useful to "
+             "visitors. It runs only if you choose “Accept analytics” in the cookie banner. If you decline, no analytics cookies "
+             "are set and no analytics data is sent. You can change your choice at any time with “Cookie settings” in the footer. "
+             "We have turned off Google signals and ad personalisation, and we keep analytics data for 14 months. Google acts as "
+             "our processor; see <a href=\"https://policies.google.com/privacy\" rel=\"noopener\">Google's privacy policy</a> "
+             "for how it handles data. We store your cookie choice in your browser (key <code>cg-consent</code>) so we do not ask "
+             "again. This storage is necessary and contains no personal data.</p>",
+             "cookies"),
             ("8. Changes", "<p>We will post changes here with a new date.</p>"),
         ],
     },

@@ -328,5 +328,6 @@ FOOTER = [
     ("Solutions", [(s["nav"], "/solutions/%s/" % s["slug"]) for s in SOLUTIONS]),
     ("Industries", [(i["nav"], "/industries/%s/" % i["slug"]) for i in INDUSTRIES]),
     ("Company", [("About", "/about/"), ("Resources", "/resources/"), ("FAQ", "/resources/faq/"),
-                 ("Glossary", "/resources/glossary/"), ("Terms", "/terms/"), ("Privacy", "/privacy/")]),
+                 ("Glossary", "/resources/glossary/"), ("Terms", "/terms/"), ("Privacy", "/privacy/"),
+                 ("Cookie settings", "/privacy/#cookies")]),
 ]
