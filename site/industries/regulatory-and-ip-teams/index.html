@@ -1074,10 +1074,9 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
 /* ===========================================================
    v2 additions to existing patterns (tokens only)
    =========================================================== */
-/* hero: one small line under the buttons */
-.hero__note{margin-top:20px;font-size:14px;line-height:1.5;color:var(--on-dark-3)}
-.hero__content > .hero__support,.hero__content > .hero__note{max-width:470px}
-@media (max-width:719px){.hero__note{display:none}.hero__support{margin-top:16px;font-size:15.5px;line-height:1.5}.hero__actions{margin-top:24px}}
+/* hero: the support text stays clear of the cell */
+.hero__content > .hero__support{max-width:470px}
+@media (max-width:719px){.hero__support{margin-top:16px;font-size:15.5px;line-height:1.5}.hero__actions{margin-top:24px}}
 
 /* section head with its lede printed */
 .shead--wide .lede{margin-top:4px}
@@ -1132,14 +1131,6 @@ select.input{appearance:none;-webkit-appearance:none;padding-right:40px;backgrou
 .bstrip__q{font-size:clamp(19px,1.9vw,24px);line-height:1.35;letter-spacing:-.015em;color:var(--on-dark);max-width:44ch}
 .bstrip__t{font-size:15px;line-height:1.55;color:var(--on-dark-2);max-width:70ch}
 .bstrip__t a{color:var(--accent);text-underline-offset:3px;white-space:nowrap}
-
-/* about: the team. A circle portrait, or initials until the photo is there */
-.people{margin-top:44px}
-.person{gap:16px}
-.person__img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line-dark-2)}
-.av.person__img{font-size:24px;letter-spacing:.02em}
-.person h3{font-size:clamp(18px,1.4vw,20px)}
-.person__role{margin-top:4px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
 
 /* data page: a status legend directly above a wide diagram */
 .wide--tight{margin-top:18px}

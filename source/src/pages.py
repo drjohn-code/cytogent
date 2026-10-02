@@ -505,16 +505,6 @@ ABOUT = {
     "title": "About Cytogent and WelloWork AB",
     "desc": "Cytogent is an agentic workspace for life science research, built by a medical doctor and an AI engineer "
             "and operated by WelloWork AB in Sweden.",
-    # CONFIRM (team): full names, photos and LinkedIn URLs. A photo is used when the file exists in
-    # source/static/img/team/ (WebP, 320x320); until then the card shows initials. "sameAs" takes LinkedIn URLs.
-    "team": ("Built by a doctor and an AI <kw>engineer</kw>.",
-             "We started Cytogent to close the gap between what labs find and what industry can use.",
-             [{"name": "John", "role": "Co-founder", "photo": "john.webp", "staff": True, "sameAs": [],
-               "text": "Medical doctor and three-time health-tech founder. Leads the life-science and research side."},
-              {"name": "Navid", "role": "Co-founder", "photo": "navid.webp", "staff": True, "sameAs": [],
-               "text": "AI engineer with 10 years at large companies in Europe and Asia. Builds the platform."},
-              {"name": "Mumshad Mannambeth", "role": "Advisor", "photo": "mumshad-mannambeth.webp", "staff": False, "sameAs": [],
-               "text": "Founder and CEO of KodeKloud."}]),
     "h1": "We build the workspace where science and <kw>agents</kw> meet.",
     "hero": ("whole", "breathe", "The whole Cytogent cell at rest, breathing slowly."),
     "mission": ("Discovery is a team effort. Agents join the <kw>team</kw>.",

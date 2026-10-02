@@ -563,14 +563,13 @@ def home():
         '</div>'
         '<div class="wrap hero__content hero">'
         '<h1>Where scientists and AI agents do research <span class="nobr"><span class="kw">together</span>.</span></h1>'
-        '<p class="hero__support">Write what you want to find out, in your own words. Cytogent turns it into a research '
-        'brief you can sign. Then AI agents and your team plan and do the work, with every step cited.</p>'
+        '<p class="hero__support">Write your goal in plain words. Cytogent turns it into a research brief, '
+        'then AI agents and your team do the work.</p>'
         '<div class="hero__actions">%s%s</div>'
-        '%s<p class="hero__note">Runs on models from Anthropic, OpenAI, Google and xAI, plus life-science models.</p>'
         '</div>'
         '</section>'
         % (btn('Request access', '/request-access/', 'primary'),
-           btn('See an example', '#demo', 'outline', False), confirm('models')))
+           btn('See an example', '#demo', 'outline', False)))
 
     # ---- the live demo, right under the hero --------------------------------
     o.append(
@@ -1165,56 +1164,26 @@ def security_page():
 
 
 # ---- about ----------------------------------------------------------------
-def team_cards(people):
-    """Person cards: a circle photo when the file is in static/img/team/, initials until then."""
-    out = ''
-    for p_ in people:
-        photo = os.path.join(STATIC, 'img', 'team', p_['photo'])
-        if os.path.exists(photo):
-            face = ('<img class="person__img" src="/img/team/%s" alt="Portrait of %s" width="320" height="320" loading="lazy" decoding="async">'
-                    % (p_['photo'], p_['name']))
-        else:
-            ini = ''.join(w[0] for w in p_['name'].split())[:2].upper()
-            face = '<span class="av person__img" aria-hidden="true">%s</span>' % ini
-        out += ('<div class="card person" data-rv-item>%s<div><h3>%s</h3><p class="person__role">%s</p></div><p class="card__get">%s</p></div>'
-                % (face, p_['name'], p_['role'], p_['text']))
-    return '<div class="grid grid--3 people rv" data-stagger>%s</div>' % out
-
-
 def about_page():
     c = ABOUT
     o = [phero(c['h1'], c['hero'], btn('Request access', '/request-access/', 'primary') + btn('See the platform', '/platform/', 'outline', False))]
     o.append('<section class="band band--dark" aria-labelledby="h-def"><div class="wrap"><div class="def rv">'
              '<h2 id="h-def">What Cytogent <span class="nobr"><span class="kw">is</span>.</span></h2><p>%s</p></div></div></section>' % DEFINITION)
-    h2, lede, people = c['team']
-    o.append(band('cream', 'h-team', confirm('team') + head2('h-team', h2, lede, show=True) + team_cards(people)))
     h2, lede = c['mission']
-    o.append(band('dark', 'h-mis', split('<h2 id="h-mis">%s</h2>' % kw(h2),
+    o.append(band('cream', 'h-mis', split('<h2 id="h-mis">%s</h2>' % kw(h2),
                                          dframe('circle', 'Scientists ask · agents read, compute and draft · scientists judge and decide',
                                                 'A project in the centre with two people on the left and three agents on the right: '
                                                 'the people ask, the agents work, and the people review and decide.'))))
     h2, lede, items = c['principles']
-    o.append(band('cream', 'h-pr', head2('h-pr', h2, lede) + icards(items, cols=4)))
+    o.append(band('dark', 'h-pr', head2('h-pr', h2, lede) + icards(items, cols=4)))
     h2, p1, url = c['partner']
-    o.append(band('dark', 'h-kg', split('<h2 id="h-kg">%s</h2><p class="body body--lg">%s</p>' % (kw(h2), p1),
+    o.append(band('cream', 'h-kg', split('<h2 id="h-kg">%s</h2><p class="body body--lg">%s</p>' % (kw(h2), p1),
                                         '<a class="kg" href="%s" rel="noopener" aria-label="Kilogent, opens kilogent.com">%s</a>'
                                         % (url, KILOGENT_MARK))))
     h2, mail = c['contact']
-    o.append('<section class="band band--cream" aria-labelledby="h-cta"><div class="wrap"><div class="cta contact rv">'
+    o.append('<section class="band band--dark" aria-labelledby="h-cta"><div class="wrap"><div class="cta contact rv">'
              '<h2 id="h-cta">%s</h2><a class="contact__mail" href="mailto:%s">%s</a></div></div></section>' % (kw(h2), mail, mail))
     return ''.join(o)
-
-
-def people_jsonld():
-    """Person JSON-LD for the team. The founders work for the organization; the advisor is affiliated with it."""
-    out = []
-    for p_ in ABOUT['team'][2]:
-        d = {"@context": "https://schema.org", "@type": "Person", "name": p_['name'], "jobTitle": p_['role'],
-             "description": p_['text'], ("worksFor" if p_['staff'] else "affiliation"): {"@id": ORIGIN + "/#organization"}}
-        if p_['sameAs']:
-            d["sameAs"] = p_['sameAs']
-        out.append(d)
-    return out
 
 
 # ---- customers: the two pilots ----------------------------------------------
@@ -1415,7 +1384,7 @@ def inner_pages():
     P.append(('/data-and-models/', DATA['title'], DATA['desc'], data_page, None, [('Home', '/'), ('Data and models', '/data-and-models/')], None))
     P.append(('/security/', SECURITY_PAGE['title'], SECURITY_PAGE['desc'], security_page, SECURITY_PAGE['faq'], [('Home', '/'), ('Security', '/security/')], None))
     P.append(('/customers/', CUSTOMERS['title'], CUSTOMERS['desc'], customers_page, None, [('Home', '/'), ('Customers', '/customers/')], None))
-    P.append(('/about/', ABOUT['title'], ABOUT['desc'], about_page, None, [('Home', '/'), ('About', '/about/')], people_jsonld()))
+    P.append(('/about/', ABOUT['title'], ABOUT['desc'], about_page, None, [('Home', '/'), ('About', '/about/')], None))
     P.append(('/resources/', RESOURCES['title'], RESOURCES['desc'], resources_page, None, [('Home', '/'), ('Resources', '/resources/')], None))
     allfaq = [qa for g in faq_groups() for qa in g[1]]
     P.append(('/resources/faq/', FAQ_PAGE['title'], FAQ_PAGE['desc'], faq_page, allfaq, [('Home', '/'), ('Resources', '/resources/'), ('FAQ', '/resources/faq/')], None))
@@ -1526,7 +1495,7 @@ def build():
         shutil.copy(os.path.join(STATIC, 'fonts', f), os.path.join(DIST, 'fonts', f))
     for f in os.listdir(os.path.join(STATIC, 'img')):
         src_ = os.path.join(STATIC, 'img', f)
-        if os.path.isdir(src_):   # img/team/: the portraits
+        if os.path.isdir(src_):
             shutil.copytree(src_, os.path.join(DIST, 'img', f), ignore=shutil.ignore_patterns('.*', '*.md'))
         elif not f.startswith('.'):
             shutil.copy(src_, os.path.join(DIST, 'img', f))

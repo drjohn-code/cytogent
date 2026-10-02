@@ -84,7 +84,6 @@ Google Analytics 4 (`G-H7WJPJ2WSP`) loads only after a visitor chooses "Accept a
 | --- | --- |
 | `PILOTS_PUBLIC` in `source/src/content.py` | `False` keeps `/customers/` out of the nav, footer, sitemap and `llms.txt`, and marks it `noindex`. Set it to `True` once both pilot companies have agreed in writing. |
 | `FACTS_CHECKED` in `source/src/content.py` | The date printed as "checked on" and "Last checked" on the compare pages. Change it only after re-checking the sources listed on those pages. |
-| `source/static/img/team/` | Team portraits (`john.webp`, `navid.webp`, `mumshad-mannambeth.webp`, 320×320). The About page shows initials until a file is there. |
 
 ## Before launch
 

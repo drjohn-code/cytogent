@@ -26,7 +26,6 @@ for path in pages:
         try: types.append(json.loads(block)['@type'])
         except Exception: issues.append('%s: JSON-LD does not parse' % path)
     want = ['Organization', 'WebSite', 'SoftwareApplication', 'FAQPage'] if path == '/' else ['BreadcrumbList']
-    if path == '/about/': want.append('Person')
     if path == '/resources/glossary/': want.append('DefinedTermSet')
     if path.startswith('/compare/') or path == '/resources/faq/' or path.startswith('/solutions/'): want.append('FAQPage')
     for w in want:

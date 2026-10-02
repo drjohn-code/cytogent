@@ -36,7 +36,6 @@ CONFIRM = {
     "mcp": "MCP connectors and browser access are available to customers",
     "reply": "reply within five working days, with a first draft of the research brief",
     "pilots": "written permission from Cervixel and Eipha Biosciences to be named, and the wording",
-    "team": "founders' full names, photos and LinkedIn URLs",
     "legal": "lawyer review of the privacy text and the compare pages",
     "facts": "re-check the facts about other products before launch",
     "standards": "which of openEHR, FHIR, OMOP and SNOMED CT are live for customers (SNOMED CT needs a licence)",
