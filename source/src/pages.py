@@ -677,7 +677,7 @@ LEGAL = {
     "privacy": {
         "title": "Privacy Policy | Cytogent",
         "desc": "Draft privacy policy for Cytogent by WelloWork AB, Sweden, written with the GDPR in mind. Analytics cookies are set "
-                "only with your consent. Under legal review.",
+                "only with consent. Under legal review.",
         "h1": "Privacy <kw>policy</kw>.",
         "hero": ("membrane", "breathe", "The membrane of the Cytogent cell, at rest."),
         "body": [
@@ -893,7 +893,7 @@ VS_PAGES = {
 # ---------------------------------------------------------------------------
 CUSTOMERS = {
     "title": "Cytogent Pilots: CRISPR Diagnostics and Clinical Trials",
-    "desc": "Two active Cytogent pilots: CRISPR research for cervical cancer diagnosis with Cervixel, and a clinical "
+    "desc": "Two active pilots: CRISPR research for cervical cancer diagnosis with Cervixel, and a clinical "
             "trial for a vitiligo skin patch with Eipha Biosciences.",
     "h1": "Two pilots, from finding to industry-ready <kw>work</kw>.",
     "hero": ("whole", "divide", "The whole Cytogent cell stretches, pinches and divides: one becomes many."),

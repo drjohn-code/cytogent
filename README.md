@@ -6,11 +6,12 @@ Marketing site for [cytogent.com](https://cytogent.com), operated by WelloWork A
 
 | Path | What it is |
 | --- | --- |
-| `site/` | **The deployed site.** Plain static HTML, JS, fonts, images, OG images, `sitemap.xml`, `robots.txt`, `llms.txt`, `404.html`. No build step on the host. |
+| `site/` | **The deployed site.** Plain static HTML, minified JS with a content hash in each name, fonts, images, OG images, icons (`favicon.ico`, `apple-touch-icon.png`, `img/logo-512.png`), `sitemap.xml`, `robots.txt`, `llms.txt`, `404.html`. No build step on the host. |
 | `source/` | The Python generator that produces `site/`. Home copy: `src/content.py`. Inner-page copy: `src/pages.py`. Styles: `src/css/site.css`. Scripts: `src/js/` (`demo.js` is the live demo, `consent.js` is the cookie bar and analytics). |
 | `docs/` | `HANDOFF.md` (handoff, open items to confirm, pre-launch checklist), `V2_BRIEF.md` (the brief the v2 site was built from) and full-page screenshots of every route. |
 | `api/request-access.js` | Serverless function behind the request-access form. It emails each request to request@cytogent.com through [Resend](https://resend.com). |
-| `vercel.json` | Hosting config: serves `site/`, trailing slashes, security and cache headers. |
+| `source/lastmod.json` | The date each page last changed, and a hash of its content. The build updates it; commit it with `site/`. |
+| `vercel.json` | Hosting config: serves `site/`, trailing slashes, redirects (`cytogent.vercel.app` → `cytogent.com`), security and cache headers. |
 
 ## Deploy (Vercel)
 
@@ -56,7 +57,21 @@ python3 -m playwright install chromium
 ./make.sh
 ```
 
-`make.sh` builds into `source/dist/`, renders the hero poster and the OG images, and then syncs the result into `site/`. Commit `site/` along with your source changes.
+The build also needs Node.js: `make.sh` runs `npm ci` in `source/` the first time, to install terser (pinned in `source/package.json`).
+
+`make.sh` does this, in order:
+
+1. `build.py` builds every page into `source/dist/`, minifies the scripts with terser and names each one after a hash of its content (`/js/app.<hash>.js`), and writes `sitemap.xml`, `robots.txt` and `llms.txt`.
+2. `icons.py` renders `favicon.ico` (48×48), `apple-touch-icon.png` (180×180) and `img/logo-512.png` from the Cytogent mark.
+3. `og.py` renders the OG images.
+4. `tools/seo_check.py` checks the result (see below). If it finds a problem, the build stops and `site/` is not touched.
+5. The result is synced into `site/`.
+
+Commit `site/` and `source/lastmod.json` along with your source changes.
+
+### Sitemap dates
+
+Each URL in `sitemap.xml` has a `<lastmod>`: the day that page's content last changed. The build hashes each page's title, description and `<main>` HTML (not the inline CSS or scripts) and keeps the hash and the date in `source/lastmod.json`. The date changes only when the hash changes. A changed page gets today's date, or `CG_BUILD_DATE` if it is set (for example `CG_BUILD_DATE=2026-10-02 ./make.sh`). A change to the nav, the footer or the styles does not change any date.
 
 To check a build, serve `site/` locally and run the checks:
 
@@ -70,20 +85,49 @@ The checks expect the fresh build on port 8765. From `source/`:
 python3 -m http.server 8765 --directory dist
 ```
 
-Then, in another terminal, run `python3 verify_all.py`, `python3 tools/dg_layout_check.py` and `python3 tools/v2_check.py`. They need `source/_og_pages.json`, which `make.sh` writes. `python3 tools/shots_docs.py` renews the screenshots in `docs/screenshots/`.
+Then, in another terminal, run `python3 verify_all.py`, `python3 tools/dg_layout_check.py` and `python3 tools/v2_check.py`. They need `source/_og_pages.json`, which `make.sh` writes. `verify_all.py` and `v2_check.py` exit with 1 when they find a problem. `python3 tools/shots_docs.py` renews the screenshots in `docs/screenshots/`.
+
+### The SEO check
+
+`python3 tools/seo_check.py` (from `source/`) needs no browser and no server. It reads the HTML in `dist/` and fails when:
+
+- a title is missing or longer than 60 characters, or a description is missing, shorter than 70 or longer than 155 characters;
+- two pages share a title or a description;
+- the canonical is not `https://cytogent.com` + the page path;
+- a page does not have exactly one `<h1>`;
+- an `<img>` has no `alt` (`alt=""` is fine for a decorative image), no `width` and `height`, or points to a file that does not exist;
+- a link preview tag is missing (`og:title`, `og:description`, `og:url`, `og:image`, `og:image:alt`, `og:locale`, `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`, `twitter:image:alt`), or the image file does not exist;
+- a JSON-LD block does not parse;
+- `sitemap.xml` misses an indexable page, lists a `noindex` page, or has a URL without a date.
+
+It also checks `site/404.html`: a title, one `<h1>`, `alt` on images, and `noindex`.
+
+Any `<img>` added later needs `alt`, `width`, `height` and `loading="lazy"`, unless it is the largest thing on the first screen.
 
 ## Analytics and cookie consent
 
 Google Analytics 4 (`G-H7WJPJ2WSP`) loads only after a visitor chooses "Accept analytics" in the cookie bar. Before that, the site makes no request to Google. The script is `source/src/js/consent.js`; the build inlines it into every page.
 
-`site/404.html` is written by hand and is not rebuilt, so it carries its own copy of that script. If you change `consent.js`, paste the new version into `site/404.html` too. The build prints a warning when the two differ.
+`site/404.html` is written by hand and is not rebuilt, so it carries its own copy of that script and its own icon links. If you change `consent.js`, paste the new version into `site/404.html` too. The build prints a warning when the two differ.
 
 ## Switches in the copy
 
 | Where | What it does |
 | --- | --- |
 | `PILOTS_PUBLIC` in `source/src/content.py` | `False` keeps `/customers/` out of the nav, footer, sitemap and `llms.txt`, and marks it `noindex`. Set it to `True` once both pilot companies have agreed in writing. |
+| `SITE['linkedin']` in `source/src/content.py` | The Cytogent LinkedIn page. The footer link and the JSON-LD (`sameAs`) read it from here. |
+| `SITE['google_site_verification']` in `source/src/content.py` | Empty. If you ever verify Search Console with the HTML-tag method, paste the token here and rebuild: the home page then gets the `google-site-verification` meta tag. Not needed with DNS verification. |
 | `FACTS_CHECKED` in `source/src/content.py` | The date printed as "checked on" and "Last checked" on the compare pages. Change it only after re-checking the sources listed on those pages. |
+
+## Google Search Console
+
+Done by hand, once:
+
+1. In [Search Console](https://search.google.com/search-console), add a **Domain** property for `cytogent.com`.
+2. Copy the TXT record it shows. In Cloudflare → cytogent.com → **DNS → Records**, add a record of type **TXT**, name `@`, with that value. Then click **Verify** in Search Console (DNS can take a few minutes).
+3. **Sitemaps**: submit `https://cytogent.com/sitemap.xml`.
+4. **URL inspection**: inspect `https://cytogent.com/` and click **Request indexing**.
+5. After about a week, open **Indexing → Pages** and check that the 26 pages are indexed. Pages listed as "Duplicate" or "Alternate page with proper canonical tag" on `cytogent.vercel.app` are expected until the redirect has been seen.
 
 ## Before launch
 

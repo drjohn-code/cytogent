@@ -1,0 +1,110 @@
+{
+ "/": {
+  "date": "2026-10-02",
+  "hash": "38c94a3ecb265892"
+ },
+ "/about/": {
+  "date": "2026-10-02",
+  "hash": "7f1473d2baa20317"
+ },
+ "/compare/": {
+  "date": "2026-10-02",
+  "hash": "bc639aa1757a95e1"
+ },
+ "/compare/chatgpt/": {
+  "date": "2026-10-02",
+  "hash": "7b3911cd726eb9df"
+ },
+ "/compare/dust/": {
+  "date": "2026-10-02",
+  "hash": "a71478fdeb591645"
+ },
+ "/compare/grok/": {
+  "date": "2026-10-02",
+  "hash": "11f8ed946b2bc89a"
+ },
+ "/customers/": {
+  "date": "2026-10-02",
+  "hash": "5c7dee4d69b435e5"
+ },
+ "/data-and-models/": {
+  "date": "2026-10-02",
+  "hash": "c02655a0aac1285c"
+ },
+ "/industries/cro-and-clinical-teams/": {
+  "date": "2026-10-02",
+  "hash": "6920907ea214ba4d"
+ },
+ "/industries/hospitals-and-academic-labs/": {
+  "date": "2026-10-02",
+  "hash": "91b3e5c0c9ed7fe2"
+ },
+ "/industries/pharma-and-biotech/": {
+  "date": "2026-10-02",
+  "hash": "144e11d7e9a293dd"
+ },
+ "/industries/regulatory-and-ip-teams/": {
+  "date": "2026-10-02",
+  "hash": "986fae67ee1112e9"
+ },
+ "/platform/": {
+  "date": "2026-10-02",
+  "hash": "5ad5594ce8882ac9"
+ },
+ "/privacy/": {
+  "date": "2026-10-02",
+  "hash": "11ef3f3c4bf39b9e"
+ },
+ "/request-access/": {
+  "date": "2026-10-02",
+  "hash": "0a25606e84b805b7"
+ },
+ "/resources/": {
+  "date": "2026-10-02",
+  "hash": "9014ad8b29010820"
+ },
+ "/resources/faq/": {
+  "date": "2026-10-02",
+  "hash": "2f5171a838117a4a"
+ },
+ "/resources/glossary/": {
+  "date": "2026-10-02",
+  "hash": "1d315852bd009463"
+ },
+ "/security/": {
+  "date": "2026-10-02",
+  "hash": "acfda25571042b30"
+ },
+ "/solutions/clinical-trials/": {
+  "date": "2026-10-02",
+  "hash": "4857f1ac0e2d1aad"
+ },
+ "/solutions/crispr-genome-editing/": {
+  "date": "2026-10-02",
+  "hash": "bf642edd61524067"
+ },
+ "/solutions/in-silico-studies/": {
+  "date": "2026-10-02",
+  "hash": "e78e1016194e0a74"
+ },
+ "/solutions/literature-and-evidence/": {
+  "date": "2026-10-02",
+  "hash": "97e2e54a7055c541"
+ },
+ "/solutions/patent-documentation/": {
+  "date": "2026-10-02",
+  "hash": "011f5fb124d40a85"
+ },
+ "/solutions/protein-design/": {
+  "date": "2026-10-02",
+  "hash": "8aac37599c77110f"
+ },
+ "/solutions/regulatory-documentation/": {
+  "date": "2026-10-02",
+  "hash": "808193cc106e37d5"
+ },
+ "/terms/": {
+  "date": "2026-10-02",
+  "hash": "fa4a27b65796d9da"
+ }
+}

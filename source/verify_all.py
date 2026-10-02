@@ -47,7 +47,7 @@ with sync_playwright() as p:
         for a_, b_ in zip(hs, hs[1:]):
             if b_ > a_ + 1: bad('heading skip %s' % hs); break
         if not (10 <= len(meta['title']) <= 60): bad('title length %d' % len(meta['title']))
-        if not (70 <= len(meta['desc']) <= 160): bad('desc length %d' % len(meta['desc']))
+        if not (70 <= len(meta["desc"]) <= 155): bad('desc length %d' % len(meta['desc']))
         if not meta['canonical'].endswith(path): bad('canonical %s' % meta['canonical'])
         if 'BAD' in meta['ld']: bad('json-ld parse')
         if path != '/' and 'BreadcrumbList' not in meta['ld']: bad('no breadcrumb')
@@ -81,3 +81,4 @@ with sync_playwright() as p:
         print('%-44s ok' % path if not [i for i in issues if i.startswith(path + ':')] else '%-44s CHECK' % path, flush=True)
     b.close()
 print('\n'.join(issues) if issues else 'ALL CHECKS PASSED')
+sys.exit(1 if issues else 0)
