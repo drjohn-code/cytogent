@@ -1,5 +1,5 @@
 """v2 acceptance checks that verify_all.py does not cover.
-- titles and descriptions: unique across the site; titles up to 60 characters; descriptions listed when outside 140-160
+- titles and descriptions: unique across the site; titles up to 60 characters; descriptions 70 to 155 characters
 - JSON-LD: every block parses, and each page carries the types it should
 - sitemap.xml and llms.txt list every public URL, and every sitemap URL has a <lastmod>
 - no request to Google on any page before the visitor accepts analytics
@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST = os.path.join(ROOT, 'dist'); BASE = 'http://127.0.0.1:8765'; ORIGIN = 'https://cytogent.com'
 pages = [p['path'] for p in json.load(open(os.path.join(ROOT, '_og_pages.json')))]
-issues, notes = [], []
+issues = []
 titles, descs, public = {}, {}, []
 for path in pages:
     html = open(os.path.join(DIST, path.strip('/'), 'index.html'), encoding='utf-8').read()
@@ -19,7 +19,7 @@ for path in pages:
     noindex = '<meta name="robots" content="noindex">' in html
     if not noindex: public.append(path)
     if len(title) > 60: issues.append('%s: title is %d characters' % (path, len(title)))
-    if not 140 <= len(desc) <= 160: notes.append('%s: description is %d characters' % (path, len(desc)))
+    if not 70 <= len(desc) <= 155: issues.append('%s: description is %d characters' % (path, len(desc)))
     titles.setdefault(title, []).append(path); descs.setdefault(desc, []).append(path)
     types = []
     for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S):
@@ -60,5 +60,5 @@ with sync_playwright() as p:
         ctx.close()
     b.close()
 print('%d pages, %d public, %d sitemap URLs' % (len(pages), len(public), len(locs)))
-if notes: print('descriptions outside 140-160 characters (kept from the earlier site unless listed in the brief):\n  ' + '\n  '.join(notes))
 print('\n'.join(issues) if issues else 'ALL V2 CHECKS PASSED')
+sys.exit(1 if issues else 0)

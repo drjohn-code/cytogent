@@ -556,6 +556,9 @@ a.card:hover::after,.flow:hover::after,.door:hover::after{transform:scaleX(1)}
   display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;
   font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--on-dark-3);
 }
+/* the LinkedIn link keeps the row's type; padding gives it a 24px target without moving the row */
+.foot__legal a{display:inline-flex;align-items:center;gap:7px;font-size:inherit;padding-block:5px;margin-block:-5px}
+.foot__legal svg{width:12px;height:12px;flex:none}
 .ph{color:var(--on-dark-3);border-bottom:1px dashed rgba(179,166,255,.5)}
 
 /* ===========================================================
