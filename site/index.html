@@ -433,7 +433,7 @@ a.card:hover::after,.flow:hover::after,.door:hover::after{transform:scaleX(1)}
 .story__steps{display:grid;gap:0}
 .sstep{
   padding:28px 0 28px 26px;border-left:1px solid var(--line-dark);position:relative;
-  opacity:.42;transition:opacity 500ms var(--ease);
+  opacity:.68;transition:opacity 500ms var(--ease);   /* dimmed, but still AA: 4.8:1 for the text */
 }
 .sstep[data-on="true"]{opacity:1}
 .sstep::before{
@@ -441,7 +441,7 @@ a.card:hover::after,.flow:hover::after,.door:hover::after{transform:scaleX(1)}
   transform:scaleY(0);transform-origin:top;transition:transform 500ms var(--ease);
 }
 .sstep[data-on="true"]::before{transform:scaleY(1)}
-.sstep__n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--on-dark-3);display:block;margin-bottom:10px}
+.sstep__n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--on-dark-2);display:block;margin-bottom:10px}
 .sstep h3{margin:0 0 8px;font-size:clamp(20px,2vw,26px);font-weight:400;letter-spacing:-.022em}
 .sstep p{font-size:15.5px;line-height:1.6;color:var(--on-dark-2);max-width:46ch}
 .sstep__data{

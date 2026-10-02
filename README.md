@@ -1,14 +1,14 @@
 # Cytogent website
 
-Marketing site for [cytogent.com](https://cytogent.com), operated by WelloWork AB. It has 22 static pages: home, platform, data and models, security, about, resources (hub, FAQ, glossary), request access, terms, privacy, 7 solution pages and 4 industry pages.
+Marketing site for [cytogent.com](https://cytogent.com), operated by WelloWork AB. It has 27 static pages: home, platform, compare (a hub and 3 product pages), customers, data and models, security, about, resources (hub, FAQ, glossary), request access, terms, privacy, 7 solution pages and 4 industry pages.
 
 ## Layout
 
 | Path | What it is |
 | --- | --- |
 | `site/` | **The deployed site.** Plain static HTML, JS, fonts, images, OG images, `sitemap.xml`, `robots.txt`, `llms.txt`, `404.html`. No build step on the host. |
-| `source/` | The Python generator that produces `site/`. Home copy: `src/content.py`. Inner-page copy: `src/pages.py`. Styles: `src/css/site.css`. Scripts: `src/js/`. |
-| `docs/` | `HANDOFF.md` (design handoff and pre-launch checklist) and full-page screenshots of every route. |
+| `source/` | The Python generator that produces `site/`. Home copy: `src/content.py`. Inner-page copy: `src/pages.py`. Styles: `src/css/site.css`. Scripts: `src/js/` (`demo.js` is the live demo, `consent.js` is the cookie bar and analytics). |
+| `docs/` | `HANDOFF.md` (handoff, open items to confirm, pre-launch checklist), `V2_BRIEF.md` (the brief the v2 site was built from) and full-page screenshots of every route. |
 | `api/request-access.js` | Serverless function behind the request-access form. It emails each request to request@cytogent.com through [Resend](https://resend.com). |
 | `vercel.json` | Hosting config: serves `site/`, trailing slashes, security and cache headers. |
 
@@ -64,11 +64,36 @@ To check a build, serve `site/` locally and run the checks:
 python3 -m http.server 8000 --directory site
 ```
 
-Then, in another terminal, run `source/verify_all.py` and `source/tools/dg_layout_check.py`. They need `source/_og_pages.json`, which `make.sh` writes.
+The checks expect the fresh build on port 8765. From `source/`:
+
+```bash
+python3 -m http.server 8765 --directory dist
+```
+
+Then, in another terminal, run `python3 verify_all.py`, `python3 tools/dg_layout_check.py` and `python3 tools/v2_check.py`. They need `source/_og_pages.json`, which `make.sh` writes. `python3 tools/shots_docs.py` renews the screenshots in `docs/screenshots/`.
+
+## Analytics and cookie consent
+
+Google Analytics 4 (`G-H7WJPJ2WSP`) loads only after a visitor chooses "Accept analytics" in the cookie bar. Before that, the site makes no request to Google. The script is `source/src/js/consent.js`; the build inlines it into every page.
+
+`site/404.html` is written by hand and is not rebuilt, so it carries its own copy of that script. If you change `consent.js`, paste the new version into `site/404.html` too. The build prints a warning when the two differ.
+
+## Switches in the copy
+
+| Where | What it does |
+| --- | --- |
+| `PILOTS_PUBLIC` in `source/src/content.py` | `False` keeps `/customers/` out of the nav, footer, sitemap and `llms.txt`, and marks it `noindex`. Set it to `True` once both pilot companies have agreed in writing. |
+| `FACTS_CHECKED` in `source/src/content.py` | The date printed as "checked on" and "Last checked" on the compare pages. Change it only after re-checking the sources listed on those pages. |
+| `source/static/img/team/` | Team portraits (`john.webp`, `navid.webp`, `mumshad-mannambeth.webp`, 320×320). The About page shows initials until a file is there. |
 
 ## Before launch
 
-See the checklist in [`docs/HANDOFF.md`](docs/HANDOFF.md#please-check-before-launch). The main open items:
+See the open items in [`docs/HANDOFF.md`](docs/HANDOFF.md#open-items-to-confirm). Every one is also marked in the built HTML as `<!-- CONFIRM: … -->`. The main ones:
+
+- **Pilot permission**: Cervixel and Eipha Biosciences are named on the home page. Confirm in writing, then set `PILOTS_PUBLIC`.
+- **Product claims** marked CONFIRM: life-science models, MCP connectors, health data standards, ScienceDirect, encryption at rest.
+- **Compare pages and privacy text** need legal review, and the competitor facts need a re-check on launch day.
+- **Google Analytics admin**: set data retention to 14 months.
 
 - **Request-access email** needs the one-time setup above (Email Routing, Resend, `RESEND_API_KEY`).
 - **Terms and Privacy** are v1 drafts that still need legal review.

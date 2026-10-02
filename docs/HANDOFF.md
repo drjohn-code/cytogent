@@ -1,4 +1,153 @@
-# Cytogent v3 — the full site (22 pages)
+# Cytogent website v2 — handoff
+
+Built from [`docs/V2_BRIEF.md`](V2_BRIEF.md), in the seven phases it lists, one commit per phase.
+
+## Problem
+
+The site said what other agent workspaces also say. It did not show why a research team should choose Cytogent.
+
+## Solution
+
+- A live demo of a research brief sits right under the home hero.
+- The site now explains the research brief, and that agents give tasks to people.
+- A fair "if you have to choose" comparison: a table on home, a compare hub and three product pages.
+- Pilots and the team are on the site.
+- Google Analytics 4 loads only after cookie consent.
+
+## Outcome
+
+27 pages (was 22). All of them pass the page checks and the diagram layout check. The design system is unchanged: every new component uses the existing tokens and patterns.
+
+---
+
+## Open items to confirm
+
+Each item below is in the build as the brief wrote it, and is marked in the HTML with `<!-- CONFIRM: … -->`. Search the built pages for `CONFIRM` to find every place. The notes live in `CONFIRM` in `source/src/content.py`.
+
+| # | Item | Where it shows | What to do if it is not true |
+| --- | --- | --- | --- |
+| 1 | **Planner** is the name of the agent that asks questions and plans. | Demo, how-it-works diagram, solution pages | Rename `Planner` in `content.DEMO_AGENTS`, `pages.PLANNER` and `diagrams.js`. |
+| 2 | **Life-science models are live** (structure, docking, protein design, CRISPR checks). | Home hero line, compare tables, compare cards, FAQ | Change "Built in" to "In progress" in `content.COMPARE` and `pages._vs_rows`. |
+| 3 | **Trained models** status (variant effect, binding affinity, assay QC). | Home and Data pages show "In progress" | Remove the pill if they are live. |
+| 4 | **Encryption at rest.** The old site said Done; the deck says in transit only. | Home and Security now say "In progress" for at rest | Set it back to `done` in `content.SECURITY` and `pages.SECURITY_PAGE` if it is live. |
+| 5 | **"Anything that leaves the project waits for a yes."** | Home (people and agents), Platform (bench), FAQ | Remove the sentence. |
+| 6 | **MCP connectors and browser access** are available to customers. | Platform ("Use the AI you already trust"), FAQ, Dust page | Remove or mark as planned. |
+| 7 | **Reply within five working days, with a first research brief draft.** | Home access section, FAQ, request form, success message | Change the wording in `content.FAQ`, `build.home()` and `build.request_page()`. |
+| 8 | **Written permission from Cervixel and Eipha Biosciences**, and the wording on `/customers/`. | Home "Pilots" section, `/customers/` | See "Pilots" below. |
+| 9 | **Founders' full names, photos and LinkedIn URLs.** | About (team), Person JSON-LD | See "Team" below. |
+| 10 | **Lawyer review** of the privacy text and the compare pages. | `/privacy/`, `/compare/…` | — |
+| 11 | **Competitor facts.** Checked on 2 October 2026 (see "Compare pages" below). | Compare tables and pages | Re-check before launch, then update `content.FACTS_CHECKED`. |
+| 12 | **Health data standards**: which of openEHR, FHIR, OMOP and SNOMED CT are live. SNOMED CT needs a licence. | Home, Platform, Data, hospitals page, FAQ, glossary, compare hub | Mark the ones that are not live. |
+| 13 | **ScienceDirect**: Elsevier licence, AI reading and citing allowed, and permission to name it. | Home, Platform, Data, literature page, FAQ | Remove the ScienceDirect sentences. |
+| 14 | **"xAI" in our own copy.** The company behind Grok now signs its pages "SpaceXAI". The brief's copy says "Anthropic, OpenAI, Google and xAI". | Home hero line, Platform, FAQ, compare pages | Decide whether to rename it across the site. The Grok page already names the models, not the company. |
+
+### Manual steps (not in the code)
+
+- **Google Analytics admin:** set data retention to 14 months. The privacy text says 14 months.
+- **Google Analytics admin:** check that Google signals is off for the property. The tag also turns it off.
+- If a Content-Security-Policy is added to `vercel.json` later, allow `https://www.googletagmanager.com` and `https://*.google-analytics.com`.
+
+---
+
+## What changed, page by page
+
+| Page | Change |
+| --- | --- |
+| `/` | Hero text and buttons (animation unchanged). New: demo, research brief, people and agents, pilots. How it works is four steps. The story has seven steps. "Why Cytogent" is the new comparison table. Data, security, access, FAQ and CTA follow the brief. |
+| `/platform/` | New H1 and subtitle. New first section with the demo (one example). Five-step "request to result". Health data standards. "Use the AI you already trust". |
+| `/compare/` | New. Hub page with the full table. |
+| `/compare/chatgpt/`, `/compare/grok/`, `/compare/dust/` | New. Same template, with sources and a "Last checked" date. |
+| `/customers/` | New. Built, but hidden until permission is confirmed (see below). |
+| `/about/` | New definition. Team section with Person JSON-LD. |
+| `/request-access/` | New first field "What do you want to find out?" in all three forms. New success message. The API requires the field and puts it first in the email. |
+| `/privacy/` | Section 7 is now "Cookies and analytics" (`#cookies`). |
+| 7 solution pages | "Starts with a research brief" strip. The Planner joins the team (the heading is now "Four agents, one result"). Links to `/compare/` and one industry page. |
+| 4 industry pages | "Why a specialised workspace?" before the CTA. |
+| `/resources/faq/` | Three new answers; home answers follow the new home FAQ. |
+| `/resources/glossary/` | Eight new terms (36 in total). |
+| `/data-and-models/`, `/security/` | Statuses from the brief, health data standards, analytics with consent. |
+| `llms.txt`, `sitemap.xml` | New sections and URLs. Every sitemap URL has `<lastmod>`. |
+
+## Analytics and consent
+
+- `source/src/js/consent.js` is inlined into every page by the build. `site/404.html` carries a hand-pasted copy; the build prints a warning if the two differ.
+- Before a choice: no request to Google, no cookie. "Accept analytics" loads the tag. "Decline" stores the choice. "Cookie settings" in the footer reopens the bar. Declining after an earlier yes stops Analytics and removes its cookies.
+- Events go through `window.cgTrack(name, params)`, which does nothing without consent: `generate_lead`, `demo_select_example`, `demo_step`, `demo_complete`, `cta_click`.
+- The preview artifact has no analytics.
+
+## The demo
+
+- Copy: `DEMO` in `source/src/content.py`. Markup: `demo()` in `source/build.py`. Script: `source/src/js/demo.js`. Styles: the `demo` block in `site.css`.
+- Picking an example plays it once through to the File step and then stops. This is how `demo_complete` can fire after a tab click. Clicking a step stops everything at that step.
+- On phones the feed is a short window on the newest messages, with "Show all" above it.
+
+## Pilots: one switch
+
+`PILOTS_PUBLIC` in `source/src/content.py` is `False`, because permission is not confirmed yet.
+
+- While it is `False`: `/customers/` is built with `noindex`, and it is left out of the nav, the footer, the sitemap and `llms.txt`.
+- The home "Pilots" section stays visible and names both companies, as the brief asks (rule 6). **If permission is not in writing, remove that section before the branch goes live**, or do not merge yet.
+- Set it to `True` and rebuild to list the page everywhere.
+
+## Team
+
+- Names are "John" and "Navid" until the full names are confirmed.
+- Photos: put `john.webp`, `navid.webp` and `mumshad-mannambeth.webp` (WebP, 320×320) in `source/static/img/team/` and rebuild. Until then each card shows initials.
+- LinkedIn URLs go in `sameAs` in `ABOUT["team"]` in `source/src/pages.py`.
+- In the JSON-LD the two founders have `worksFor`; the advisor has `affiliation`, because he does not work for WelloWork AB.
+
+## Compare pages: what was checked
+
+Facts about other products were checked against their own public pages on **2 October 2026**. Where the brief and the public pages differed, the text follows the public pages:
+
+| Brief | Now | Why |
+| --- | --- | --- |
+| Dust: "100+ tools" | "70+ connectors" | Dust's home page says 70+ connectors. |
+| Dust table: "Human steps in workflows" | "Approval per tool" | Dust describes approval set per tool. |
+| Dust table: life-science models "Via plugins" | "Via connectors" | Dust's word is connectors. |
+| Grok: "Team Bots let a whole team share bots…" | "A Team Bot lets a whole team share one Bot… It is in public beta." | The docs describe one shared Bot, in public beta. |
+| Grok: "A plugin catalog" | "A plugin Marketplace" | The vendor's word. |
+| Grok table: models "xAI" | "Grok models" | The vendor now signs as SpaceXAI. |
+| Grok: "…several providers, including xAI, so…" | "…several providers, so…" | Same reason. |
+| ChatGPT: "Custom rules decide…" | "Custom rules let you set…" | The rules are optional instructions set by the user. |
+| ChatGPT: "…Slack or Teams" | "…Slack or Microsoft Teams" | Full product name. |
+| Hub: "connect to thousands of apps" | "connect to many apps" | Only one of the three products states thousands. |
+
+Not checked one by one: the short table cells that describe other products in general terms ("General plan step", "Per answer", "General writing", "Via plugins", "Always-on agents: Yes" for Dust). They are the brief's wording. A lawyer should look at them with item 10.
+
+## Decisions made while building
+
+- **Eyebrows are not printed.** The current design prints section titles only, so the eyebrows in the brief stay in the source as before. **Ledes are printed** where the brief gives one for a new or changed section, because those sections need the text.
+- **Meta descriptions.** Every new or changed page has a description of 140 to 160 characters. Pages the brief said to keep (solutions, industries and a few others) still have their old, shorter descriptions.
+- **Encryption at rest** is set to "In progress", following the deck. The security diagram caption says so too.
+- **The privacy policy** also got one line each in sections 2 and 3 (analytics data, and consent as the legal basis), so it agrees with the new section 7.
+- **Inactive story steps are less dim** (68% instead of 42%, and their number uses the lighter grey). At 42% their text missed AA contrast, which the acceptance checks ask for.
+- **"Which AI models do the agents use?"** on the FAQ page is replaced by the brief's "Which AI models does Cytogent use?", which answers the same question.
+
+## Checks
+
+Run from `source/`, with `dist/` served on port 8765 (`python3 -m http.server 8765 --directory dist`):
+
+- `python3 verify_all.py`: contrast, one H1, heading order, title and description length, canonical, JSON-LD, links and anchors, phone overflow, reduced motion, console errors.
+- `python3 tools/dg_layout_check.py`: every diagram at four widths. The only findings left are tags in the "scattered files" diagram passing each other while they move, which is the animation itself.
+- `python3 tools/v2_check.py`: v2 acceptance checks (unique titles and descriptions, sitemap and `llms.txt` coverage, JSON-LD types, no request to Google before consent on any page).
+- `python3 tools/shots_docs.py`: renews `docs/screenshots/`.
+- `source/verify.py` was missing from the repository (it is imported by `verify_all.py`). It is added again.
+
+Results on the final build (2 October 2026):
+
+| Check | Result |
+| --- | --- |
+| `verify_all.py`, 27 pages | All passed |
+| `dg_layout_check.py`, 192 diagram sizes | Only the known "scattered files" animation findings (49). Two older findings on phones (flow, encrypt) are fixed. |
+| `v2_check.py` | All passed. Four kept descriptions are 135 to 139 characters. |
+| Lighthouse, Home, mobile | Performance 92, accessibility 100, best practices 100, SEO 100. Measured with gzip on, as the host serves it. Without compression (plain `http.server`) performance reads 78; the old site read 82 the same way and 92 with gzip. |
+| Consent | No request to Google before "Accept analytics" on any page, including `404.html`. |
+| `generate_lead` | Fires once, only when the request was sent. |
+
+---
+
+# Earlier handoff: v3, the full site (22 pages)
 
 ## Problem
 
