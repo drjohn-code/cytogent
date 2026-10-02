@@ -17,7 +17,7 @@ What changed, and where:
 | Scripts | Minified with terser (156 KB → 87 KB) and named after a hash of their content (`/js/app.<hash>.js`). Vercel caches `/js/` for a year. The preview artifact still inlines the source files. | `publish_js()` in `build.py`, `package.json`, `vercel.json` |
 | Hero poster | `poster.py` is removed, with `hero-poster.jpg` and `.webp`. Nothing used them, and as a picture behind the home hero the WebP made LCP worse (1.8 s → 2.55 s in Lighthouse, mobile), because it became the largest element. | — |
 | Fonts | Both preloads stay. Geist Mono shows on the first screen only on the glossary, but every page uses it further down, so the browser downloads it at the first layout anyway. Without the preload it starts later, and Lighthouse's FCP got worse (0.8 s → 1.05–1.5 s on mobile). | `page()` in `build.py` |
-| One host | `cytogent.vercel.app` redirects (308) to `cytogent.com`. The rule matches only that host, not preview URLs. | `vercel.json` |
+| One host | `cytogent.vercel.app` redirects (308) to `cytogent.com`, path kept. The rule matches only that host, not preview URLs. Its source is `/(.*)`, not `/:path*`: with `trailingSlash: true`, `/:path*` does not match `/` or page URLs that end in `/`. | `vercel.json` |
 | Search Console | `SITE['google_site_verification']` is empty. If it is set, the home page gets the meta tag. The steps to do by hand are in the README. | `src/content.py`, `page()` |
 
 ### Speed (Lighthouse 13.5, mobile)

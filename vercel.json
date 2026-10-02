@@ -7,9 +7,9 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "cytogent.vercel.app" }],
-      "destination": "https://cytogent.com/:path*",
+      "destination": "https://cytogent.com/$1",
       "permanent": true
     },
     { "source": "/index.html", "destination": "/", "permanent": true }
