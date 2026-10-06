@@ -1179,12 +1179,18 @@ a.nvb:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
 .nvline{margin-top:6px}
 .nvline .tlink{line-height:1.45}
 
-/* about: the badge on a flat card, beside the text */
-.nvabout{display:flex;flex-direction:column;gap:14px}
-.nvcardbox{display:grid;place-items:center;background:var(--ink-800);border:1px solid var(--line-dark);border-radius:var(--r);
-  padding:clamp(32px,5vw,64px) 24px}
-.nvcardbox .nvb--lg{width:clamp(200px,24vw,300px)}
-.nvabout .nvlegal{margin-top:0}
+/* about: Cytogent's lockup and the badge side by side on the plain ground, no box, like the Kilogent mark */
+.nvabout{display:flex;flex-direction:column;gap:18px;align-items:center;padding:clamp(8px,2vw,24px) 0}
+.nvpair{display:flex;align-items:center;justify-content:center;gap:clamp(18px,2.4vw,30px)}
+.nvpair__cg{display:inline-flex;align-items:center;gap:11px;color:var(--on-dark)}
+.nvpair__cg svg{height:clamp(38px,3.6vw,48px);width:auto}
+.nvpair__cg b{font:500 clamp(26px,2.5vw,34px)/1 var(--sans);letter-spacing:-.03em}
+.nvpair__sep{width:1px;height:clamp(44px,4vw,56px);background:var(--line-dark-2);flex:none}
+.nvpair .nvb--lg{width:clamp(180px,16vw,220px)}
+.nvabout .nvlegal{margin-top:0;text-align:center}
+/* stacked, with a short horizontal hairline, where the column is too narrow for the pair: phones, and the
+   two-column split between 900 and 1059px */
+@media (max-width:479px),(min-width:900px) and (max-width:1059px){.nvpair{flex-direction:column;gap:14px}.nvpair__sep{width:64px;height:1px}}
 
 /* footer: the small badge under the description, the legal line last */
 .foot__brand .nvb{margin-top:6px}

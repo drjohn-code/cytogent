@@ -465,7 +465,8 @@ def built_on_nvidia(mode='compact'):
                       % (' nvcard--next' if state else '', ico(icon_, col=MINT), title,
                          '<div class="tags">%s</div>' % ''.join('<span class="tag">%s</span>' % t_ for t_ in tags),
                          '<p>%s</p>' % txt if txt else '', pill(state) if state else ''))
-        body += '<div class="grid grid--3 icards rv" data-stagger>%s</div>' % cards + nv_legal('rv')
+        # no legal line here (founder's call): the footer carries it on every page
+        body += '<div class="grid grid--3 icards rv" data-stagger>%s</div>' % cards
     return ('%s<section class="band band--dark band--nv band--nv-%s" id="%s" aria-labelledby="h-nvidia"><div class="wrap">%s</div></section>'
             % (confirm('nvidia'), mode, NV.ANCHOR, body))
 
@@ -1477,7 +1478,10 @@ def about_page():
     h2, p1, more = NVIDIA['about']
     o.append(band('dark band--nv', 'h-nv', split(
         '<h2 id="h-nv">%s</h2><p class="body body--lg">%s</p>%s' % (kw(h2), p1, tlink(more, NV.MORE_HREF)),
-        '<div class="nvabout"><div class="nvcardbox">%s</div>%s</div>' % (nv_badge('lg'), nv_legal()))))
+        # the two marks side by side on the plain ground, like the Kilogent mark below: Cytogent's lockup, a hairline, the badge
+        '<div class="nvabout"><div class="nvpair">'
+        '<span class="nvpair__cg" aria-label="Cytogent">%s<b>Cytogent</b></span><i class="nvpair__sep" aria-hidden="true"></i>%s'
+        '</div>%s</div>' % (logo_mark('nvabout'), nv_badge('lg'), nv_legal()))))
     h2, p1, url = c['partner']
     o.append(band('cream', 'h-kg', split('<h2 id="h-kg">%s</h2><p class="body body--lg">%s</p>' % (kw(h2), p1),
                                         '<a class="kg" href="%s" rel="noopener" aria-label="Kilogent, opens kilogent.com">%s</a>'

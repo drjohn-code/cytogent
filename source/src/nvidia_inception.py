@@ -5,11 +5,15 @@ Every NVIDIA component in build.py reads from here. To swap the badge, drop the 
 source/static/brand/ and change BADGE_SRC, BADGE_WIDTH and BADGE_HEIGHT. Set BADGE_SRC to None and the
 site shows a text pill with MEMBER_LINE instead of the image.
 
-The badge is NVIDIA's own artwork, unaltered: nvidia-inception-program-badge-rgb-for-screen.svg from the
-"Inception Badges" kit (8 Aug 2023), linked from the member badge guidelines at
-https://design.nvidia.com/partners/inception/nvidia-inception-program/member-badge
-The file draws its white box and keeps its own clear space (a transparent margin about the height of the
-"n" in the NVIDIA logo), so it works on the dark ground as it is: no recolour, no box, no effects.
+Two badge files live in source/static/brand/:
+  nvidia-inception-program-badge.svg          NVIDIA's own file, unaltered: nvidia-inception-program-badge-rgb-for-screen.svg
+                                              from the "Inception Badges" kit (8 Aug 2023), linked from the member badge
+                                              guidelines at design.nvidia.com/partners/inception/nvidia-inception-program/member-badge.
+                                              It draws its own white box; this is NVIDIA's treatment for dark backgrounds too.
+  nvidia-inception-program-badge-on-dark.svg  Derived from that file for the site's dark ground: white box removed, black made
+                                              white, NVIDIA green untouched, same layout and clear space. Not a file from NVIDIA's
+                                              kit. Chosen by the founder; switch BADGE_SRC back to the boxed file if NVIDIA asks.
+Both share the same viewBox, so BADGE_WIDTH and BADGE_HEIGHT hold for either.
 """
 
 PROGRAM_NAME = "NVIDIA Inception Program"
@@ -17,7 +21,8 @@ MEMBER_LINE = "Member of the NVIDIA Inception Program"
 COMPANY_LINE = "WelloWork AB, the company behind Cytogent"
 
 # the badge as served (copied from source/static/brand/ by the build); its size is the file's viewBox
-BADGE_SRC = "/brand/nvidia-inception-program-badge.svg"
+BADGE_SRC_BOXED = "/brand/nvidia-inception-program-badge.svg"       # NVIDIA's file, white box
+BADGE_SRC = "/brand/nvidia-inception-program-badge-on-dark.svg"     # the transparent version the site shows
 BADGE_WIDTH = 500
 BADGE_HEIGHT = 216
 BADGE_ALT = "NVIDIA Inception Program member badge"

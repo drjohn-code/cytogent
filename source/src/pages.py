@@ -542,9 +542,8 @@ NVIDIA = {
                                           "affinity, assay QC.", "progress"),
     ],
     "about": ("Member of the NVIDIA Inception <kw>Program</kw>.",
-              "WelloWork AB, the company behind Cytogent, is part of the NVIDIA Inception Program, NVIDIA's free program "
-              "for AI startups. We build the science side of the workspace on NVIDIA BioNeMo, NIM microservices and "
-              "Parabricks.",
+              "WelloWork AB, the company behind Cytogent, is part of the NVIDIA Inception Program. We build the science "
+              "side of the workspace on NVIDIA BioNeMo, NIM microservices and Parabricks.",
               "See the models we use"),
     "solution_lines": {
         "protein-design": "Runs on NVIDIA BioNeMo NIM microservices: OpenFold, ESM, RFdiffusion and ProteinMPNN.",
