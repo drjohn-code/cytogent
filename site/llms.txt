@@ -90,4 +90,4 @@ Cytogent is a research tool. It is not a medical device and makes no clinical de
 - EU data residency: in progress
 - Access: by request only
 - Contact: info@cytogent.com
-- NVIDIA Inception Program: WelloWork AB, the company behind Cytogent, is a member. Science models run through NVIDIA BioNeMo NIM microservices (OpenFold, DiffDock, ESM, RFdiffusion, ProteinMPNN) and NVIDIA Parabricks. NVIDIA, BioNeMo, NIM and Parabricks are trademarks of NVIDIA Corporation. Inception Program membership does not imply NVIDIA endorsement.
+- NVIDIA Inception Program: WelloWork AB, the company behind Cytogent, is a member. Science models run through NVIDIA BioNeMo NIM microservices (OpenFold, DiffDock, ESM, RFdiffusion, ProteinMPNN) and NVIDIA Parabricks.

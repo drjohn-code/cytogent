@@ -239,7 +239,7 @@ def shead(eyebrow, h2, lede, split=True, level=2, show=False):
 
 
 # ----------------------------------------------------------------- NVIDIA ---
-def nv_badge(size='md', href=None, show_legal=False, label=None, eager=False):
+def nv_badge(size='md', href=None, label=None, eager=False):
     """The NVIDIA Inception Program member badge, shown as NVIDIA made it: no box, no effects. Its width is set per
     size in CSS and its height follows from the width and height attributes, so nothing shifts when it loads.
     Without a badge file (NV.BADGE_SRC None) it falls back to a text pill with the member line."""
@@ -252,11 +252,7 @@ def nv_badge(size='md', href=None, show_legal=False, label=None, eager=False):
     if href and label:
         attrs += ' aria-label="%s"' % label
     out = '<%s class="nvb nvb--%s"%s>%s</%s>' % (tag, size, attrs, art, tag)
-    return '<div class="nvb__wrap">%s%s</div>' % (out, nv_legal()) if show_legal else out
-
-
-def nv_legal(cls=''):
-    return '<p class="nvlegal%s">%s</p>' % (' ' + cls if cls else '', NV.LEGAL_LINE)
+    return out
 
 
 def nv_stack(uid='nvs'):
@@ -449,7 +445,7 @@ def nv_stack(uid='nvs'):
 def built_on_nvidia(mode='compact'):
     """The "Built on NVIDIA technology" section. compact (home): badge, title, lead, the five model tags and a link,
     beside the illustration. full (data and models): badge, title and lead beside the illustration, then all six
-    cards and the legal line. The section id is the anchor the trust row and the other pages point to."""
+    cards. The section id is the anchor the trust row and the other pages point to."""
     c = NVIDIA
     full = mode == 'full'
     text_ = (nv_badge('lg' if full else 'md') +
@@ -465,7 +461,6 @@ def built_on_nvidia(mode='compact'):
                       % (' nvcard--next' if state else '', ico(icon_, col=MINT), title,
                          '<div class="tags">%s</div>' % ''.join('<span class="tag">%s</span>' % t_ for t_ in tags),
                          '<p>%s</p>' % txt if txt else '', pill(state) if state else ''))
-        # no legal line here (founder's call): the footer carries it on every page
         body += '<div class="grid grid--3 icards rv" data-stagger>%s</div>' % cards
     return ('%s<section class="band band--dark band--nv band--nv-%s" id="%s" aria-labelledby="h-nvidia"><div class="wrap">%s</div></section>'
             % (confirm('nvidia'), mode, NV.ANCHOR, body))
@@ -642,10 +637,10 @@ def footer():
         '<div class="foot__brand"><a class="foot__logo" href="/">%s<b>Cytogent</b></a><p>%s</p>%s</div>%s</div>'
         '<div class="foot__legal"><span>&copy; 2026 WelloWork AB</span>'
         '<a href="%s" target="_blank" rel="noopener" aria-label="Cytogent on LinkedIn, opens linkedin.com">%sLinkedIn</a></div>'
-        '%s</div></footer>'
+        '</div></footer>'
         % (logo_mark('foot'),
            TAGLINE, nv_badge('sm', '/about/', label='%s. About WelloWork AB' % NV.MEMBER_LINE), cols,
-           SITE['linkedin'], LINKEDIN_ICON, nv_legal('foot__tm'))
+           SITE['linkedin'], LINKEDIN_ICON)
     )
 
 
@@ -1481,7 +1476,7 @@ def about_page():
         # the two marks side by side on the plain ground, like the Kilogent mark below: Cytogent's lockup, a hairline, the badge
         '<div class="nvabout"><div class="nvpair">'
         '<span class="nvpair__cg" aria-label="Cytogent">%s<b>Cytogent</b></span><i class="nvpair__sep" aria-hidden="true"></i>%s'
-        '</div>%s</div>' % (logo_mark('nvabout'), nv_badge('lg'), nv_legal()))))
+        '</div></div>' % (logo_mark('nvabout'), nv_badge('lg')))))
     h2, p1, url = c['partner']
     o.append(band('cream', 'h-kg', split('<h2 id="h-kg">%s</h2><p class="body body--lg">%s</p>' % (kw(h2), p1),
                                         '<a class="kg" href="%s" rel="noopener" aria-label="Kilogent, opens kilogent.com">%s</a>'
@@ -1823,8 +1818,7 @@ def seo_files(dates):
              '- Data: project data is isolated and never trains shared models',
              '- EU data residency: in progress', '- Access: by request only', '- Contact: info@cytogent.com',
              '- %s: WelloWork AB, the company behind Cytogent, is a member. Science models run through NVIDIA BioNeMo NIM '
-             'microservices (OpenFold, DiffDock, ESM, RFdiffusion, ProteinMPNN) and NVIDIA Parabricks. %s'
-             % (NV.PROGRAM_NAME, NV.LEGAL_LINE), '']
+             'microservices (OpenFold, DiffDock, ESM, RFdiffusion, ProteinMPNN) and NVIDIA Parabricks.' % NV.PROGRAM_NAME, '']
     return '\n'.join(sm), robots, '\n'.join(llms)
 
 

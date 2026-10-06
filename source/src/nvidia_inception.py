@@ -10,8 +10,8 @@ Two badge files live in source/static/brand/:
                                               from the "Inception Badges" kit (8 Aug 2023), linked from the member badge
                                               guidelines at design.nvidia.com/partners/inception/nvidia-inception-program/member-badge.
                                               It draws its own white box; this is NVIDIA's treatment for dark backgrounds too.
-  nvidia-inception-program-badge-on-dark.svg  Derived from that file for the site's dark ground: white box removed, black made
-                                              white, NVIDIA green untouched, same layout and clear space. Not a file from NVIDIA's
+  nvidia-inception-program-badge-on-dark.svg  Derived from that file for the site's dark ground: white box and frame removed,
+                                              black made white, NVIDIA green untouched, same layout and clear space. Not a file from NVIDIA's
                                               kit. Chosen by the founder; switch BADGE_SRC back to the boxed file if NVIDIA asks.
 Both share the same viewBox, so BADGE_WIDTH and BADGE_HEIGHT hold for either.
 """
@@ -26,9 +26,6 @@ BADGE_SRC = "/brand/nvidia-inception-program-badge-on-dark.svg"     # the transp
 BADGE_WIDTH = 500
 BADGE_HEIGHT = 216
 BADGE_ALT = "NVIDIA Inception Program member badge"
-
-LEGAL_LINE = ("NVIDIA, BioNeMo, NIM and Parabricks are trademarks of NVIDIA Corporation. "
-              "Inception Program membership does not imply NVIDIA endorsement.")
 
 # where "read more" points from other pages
 ANCHOR = "nvidia"
