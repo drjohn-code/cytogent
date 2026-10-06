@@ -250,11 +250,22 @@
     $$('input, select, textarea', f).forEach(function (c) { c.addEventListener('input', function () { if (c.getAttribute('aria-invalid')) { setInvalid(c, c.checkValidity() ? '' : message(c)); } }); });
   }
 
+  /* ---------- SVG illustrations (the NVIDIA stack): animate only while on screen ---------- */
+  function svgPlay(scope) {
+    var figs = $$('[data-nvstack]', scope);
+    if (!figs.length || reduce) { return; }
+    if (!('IntersectionObserver' in window)) { figs.forEach(function (f) { f.dataset.play = 'true'; }); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.target.dataset.play = e.isIntersecting ? 'true' : 'false'; });
+    }, { threshold: 0.05 });
+    figs.forEach(function (f) { f.dataset.play = 'false'; io.observe(f); });
+  }
+
   function mount(scope) {
     scope = scope || d;
     scrollJobs = []; byId = {}; byCanvas = [];
     closeSheet();
-    reveal(scope); heroes(scope); diagrams(scope); steps(scope); story(scope); form(scope);
+    reveal(scope); heroes(scope); diagrams(scope); steps(scope); story(scope); form(scope); svgPlay(scope);
     if (window.CytogentDemo) { window.CytogentDemo.mount(scope); }
     onScroll();
   }

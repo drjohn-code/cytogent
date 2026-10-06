@@ -41,6 +41,7 @@ CONFIRM = {
     "standards": "which of openEHR, FHIR, OMOP and SNOMED CT are live for customers (SNOMED CT needs a licence)",
     "sciencedirect": "Elsevier licence for ScienceDirect: API access, AI reading and citing, and naming it on the site",
     "eu": "EU data residency status",
+    "nvidia": "which NVIDIA BioNeMo NIM models (OpenFold, DiffDock, ESM, RFdiffusion, ProteinMPNN) and Parabricks are live for customers",
 }
 
 # --------------------------------------------------------------------------
@@ -570,6 +571,11 @@ FAQ = [
      "Those tools run always-on agents for any kind of work, and Cytogent does too. The difference is focus. Cytogent "
      "plans from a research brief, knows trial, regulatory and patent formats, records scientist sign-off at each "
      "checkpoint, and keeps every claim linked to a source you can open."),
+    ("Which science models does Cytogent use?",
+     "Cytogent runs life-science models through NVIDIA BioNeMo NIM microservices: OpenFold for structure prediction, "
+     "DiffDock for docking, ESM for protein embeddings, and RFdiffusion with ProteinMPNN for protein design. NVIDIA "
+     "Parabricks handles genomics. WelloWork AB, the company behind Cytogent, is a member of the NVIDIA Inception "
+     "Program. Membership does not imply NVIDIA endorsement."),
     ("What is a research brief?",
      "A one-page plan you sign before agents start. It holds the question, hypothesis, data, controls, endpoints, "
      "limits, rules and owner. You write the goal in your own words, and Cytogent asks only the questions that change "
@@ -616,6 +622,7 @@ FAQ_CONFIRM = {
     "Can I connect my own tools and agents?": "mcp",
     "Which health data standards does Cytogent use?": "standards",
     "Can Cytogent and Dust work together?": "mcp",
+    "Which science models does Cytogent use?": "nvidia",
 }
 
 # --------------------------------------------------------------------------

@@ -522,6 +522,41 @@ ABOUT = {
 }
 
 # ---------------------------------------------------------------------------
+# NVIDIA: the "Built on NVIDIA technology" section (home: compact, data and models: full), the About section,
+# and one line each on two solution pages and the platform page. Badge, program name and legal line: nvidia_inception.py.
+# Wording: "NVIDIA Inception Program" in titles, "the NVIDIA Inception Program" in body text. The member is the company.
+# ---------------------------------------------------------------------------
+NVIDIA = {
+    "h2": "Built on NVIDIA <kw>technology</kw>.",
+    "lead": ("WelloWork AB, the company behind Cytogent, is a member of the NVIDIA Inception Program. The science "
+             "models our agents use run on NVIDIA GPUs and NVIDIA BioNeMo NIM microservices."),
+    "more": "See data and models",
+    # (icon, title, model tags, text, mode): mode 'next' is the mint card with its status
+    "cards": [
+        ("fold", "Structure prediction", ["OpenFold", "BioNeMo NIM"], "", None),
+        ("dock", "Docking", ["DiffDock", "BioNeMo NIM"], "", None),
+        ("embed", "Protein embeddings", ["ESM", "BioNeMo NIM"], "", None),
+        ("design", "Protein design", ["RFdiffusion", "ProteinMPNN", "BioNeMo NIM"], "", None),
+        ("genomics", "Genomics", ["Parabricks"], "Fast alignment and variant calling.", None),
+        ("next", "Next", ["NVIDIA GPUs"], "Our own models, trained and served on NVIDIA GPUs: variant effect, binding "
+                                          "affinity, assay QC.", "progress"),
+    ],
+    "about": ("Member of the NVIDIA Inception <kw>Program</kw>.",
+              "WelloWork AB, the company behind Cytogent, is part of the NVIDIA Inception Program, NVIDIA's free program "
+              "for AI startups. We build the science side of the workspace on NVIDIA BioNeMo, NIM microservices and "
+              "Parabricks.",
+              "See the models we use"),
+    "solution_lines": {
+        "protein-design": "Runs on NVIDIA BioNeMo NIM microservices: OpenFold, ESM, RFdiffusion and ProteinMPNN.",
+        "in-silico-studies": "Docking runs on DiffDock through NVIDIA BioNeMo NIM microservices.",
+    },
+    "platform_line": "Science steps go to life-science models on NVIDIA BioNeMo NIM microservices.",
+    # the "NVIDIA stack" illustration
+    "stack_caption": "NVIDIA GPUs → BioNeMo NIM models → Cytogent agents",
+    "stack_log": [("12:05", "predict structure", "OpenFold"), ("12:06", "dock ligand", "DiffDock")],
+}
+
+# ---------------------------------------------------------------------------
 # Resources, FAQ, glossary
 # ---------------------------------------------------------------------------
 RESOURCES = {

@@ -20,7 +20,8 @@ from content import (SITE, DEFINITION, TAGLINE, FACTS_CHECKED, CONFIRM, SOLUTION
 from pages import (SOLUTION_PAGES, INDUSTRY_PAGES, PLATFORM, DATA, SECURITY_PAGE, ABOUT, RESOURCES,  # noqa: E402
                    FAQ_PAGE, FAQ_MORE, GLOSSARY_PAGE, GLOSSARY, REQUEST, LEGAL,
                    COMPARE_HUB, VS_PAGES, VS_FURTHER,
-                   CUSTOMERS, BRIEF_STRIP, PLANNER, WHY_SPECIALISED)
+                   CUSTOMERS, BRIEF_STRIP, PLANNER, WHY_SPECIALISED, NVIDIA)
+import nvidia_inception as NV  # noqa: E402
 
 read = lambda p: open(p, encoding='utf-8').read()
 ORIGIN = SITE['origin']
@@ -107,6 +108,18 @@ ICONS = {
     'quote': '<path d="M9.5 7C6.5 8 5 10.5 5 14v3h4.5v-4.5H7M19 7c-3 1-4.5 3.5-4.5 7v3H19v-4.5h-2.5"/>',
     'agent': '<rect x="4" y="4" width="16" height="16" rx="5.5"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>',
     'arrow': '<path d="M4 12h15M14 7l5 5-5 5"/>',
+    # the science models (Built on NVIDIA technology)
+    'fold': '<path d="M3.5 11.5c0-3.2 1.6-5.5 3.2-5.5s1.1 6.6 2.7 6.6 1.1-6.6 2.7-6.6 1.1 6.6 2.7 6.6 1.1-6.6 2.7-6.6 2.9 2.3 2.9 5.5"/>'
+             '<path d="M3.5 18h13.2"/><path d="M16.2 15.4l3.3 2.6-3.3 2.6"/>',
+    'dock': '<path d="M3.5 11h5v1.2a3.5 3.5 0 007 0V11h5v8.5h-17z"/><circle cx="12" cy="8.4" r="2.1"/><path d="M12 3.4v2.9"/>',
+    'embed': '<circle cx="6" cy="6" r="1.1"/><circle cx="12" cy="6" r="1.1"/><circle cx="18" cy="6" r="1.1"/>'
+             '<circle cx="6" cy="12" r="1.1"/><circle cx="12" cy="12" r="2.2"/><circle cx="18" cy="12" r="1.1"/>'
+             '<circle cx="6" cy="18" r="1.1"/><circle cx="12" cy="18" r="1.1"/><circle cx="18" cy="18" r="1.1"/>',
+    'design': '<path d="M3.5 3.5c0 4.3 7.5 4.3 7.5 8.5s-7.5 4.2-7.5 8.5"/><path d="M11 3.5c0 4.3-7.5 4.3-7.5 8.5s7.5 4.2 7.5 8.5"/>'
+              '<path d="M5.2 7.5h4.1M5.2 16.5h4.1"/><path d="M14 20.5l.8-3.3 4.6-4.6a1.6 1.6 0 012.3 2.3l-4.6 4.6z"/>',
+    'genomics': '<path d="M3.5 3.5c0 4.3 7.5 4.3 7.5 8.5s-7.5 4.2-7.5 8.5"/><path d="M11 3.5c0 4.3-7.5 4.3-7.5 8.5s7.5 4.2 7.5 8.5"/>'
+                '<path d="M5.2 7.5h4.1M5.2 16.5h4.1"/><path d="M14.5 20.5v-5M17.5 20.5V8.5M20.5 20.5v-8"/>',
+    'next': '<circle cx="12" cy="12" r="8.5"/><path d="M7.8 12h8.2M12.8 8.6l3.4 3.4-3.4 3.4"/>',
 }
 KILOGENT_MARK = ('<svg class="kg__mark" viewBox="0 0 64 64" fill="none" aria-hidden="true" style="overflow:visible">'
                  '<circle class="kg__person" cx="21" cy="33" r="14.5" stroke="#fff" stroke-width="4.5"/>'
@@ -114,6 +127,7 @@ KILOGENT_MARK = ('<svg class="kg__mark" viewBox="0 0 64 64" fill="none" aria-hid
                  '<g class="kg__eyes"><rect x="36" y="28" width="3.6" height="7" rx="1.8" fill="#191723"/>'
                  '<rect x="45.4" y="28" width="3.6" height="7" rx="1.8" fill="#191723"/></g></g></svg>')
 ICON_COLS = ['#B3A6FF', '#35C9F2', '#FF4D9D', '#FFB020', '#2EE6C5', '#7B61FF']
+MINT = '#7CF2D2'   # the mint of the cell's palette (cell.js P.mint): the NVIDIA section's icons, accent and pulse
 
 
 def _svgdraw(paths):
@@ -126,11 +140,11 @@ def icon(name):
             'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg>' % ICONS[name])
 
 
-def ico(name, n=0, cls=''):
-    """An icon in a squircle tile, the way Kilogent draws its agents. n picks the tile colour."""
+def ico(name, n=0, cls='', col=None):
+    """An icon in a squircle tile, the way Kilogent draws its agents. n picks the tile colour; col overrides it."""
     return ('<span class="ico%s" style="--ic:%s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
             'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg></span>'
-            % (' ' + cls if cls else '', ICON_COLS[n % len(ICON_COLS)], _svgdraw(ICONS[name])))
+            % (' ' + cls if cls else '', col or ICON_COLS[n % len(ICON_COLS)], _svgdraw(ICONS[name])))
 
 
 # ------------------------------------------------------------ components ---
@@ -220,6 +234,243 @@ def shead(eyebrow, h2, lede, split=True, level=2, show=False):
     # the lede is printed only where a section needs it to be understood (show=True).
     return ('<div class="shead%s rv"><div class="shead__top"><h%d>%s</h%d></div>%s</div>'
             % (' shead--wide' if show else '', level, h2, level, '<p class="lede">%s</p>' % lede if show else ''))
+
+
+# ----------------------------------------------------------------- NVIDIA ---
+def nv_badge(size='md', href=None, show_legal=False, label=None, eager=False):
+    """The NVIDIA Inception Program member badge, shown as NVIDIA made it: no box, no effects. Its width is set per
+    size in CSS and its height follows from the width and height attributes, so nothing shifts when it loads.
+    Without a badge file (NV.BADGE_SRC None) it falls back to a text pill with the member line."""
+    if NV.BADGE_SRC:
+        art = ('<img class="nvb__img" src="%s" width="%d" height="%d" alt="%s" decoding="async"%s>'
+               % (NV.BADGE_SRC, NV.BADGE_WIDTH, NV.BADGE_HEIGHT, NV.BADGE_ALT, '' if eager else ' loading="lazy"'))
+    else:
+        art = '<span class="nvpill">%s</span>' % NV.MEMBER_LINE
+    tag, attrs = ('a', ' href="%s"' % href) if href else ('span', '')
+    if href and label:
+        attrs += ' aria-label="%s"' % label
+    out = '<%s class="nvb nvb--%s"%s>%s</%s>' % (tag, size, attrs, art, tag)
+    return '<div class="nvb__wrap">%s%s</div>' % (out, nv_legal()) if show_legal else out
+
+
+def nv_legal(cls=''):
+    return '<p class="nvlegal%s">%s</p>' % (' ' + cls if cls else '', NV.LEGAL_LINE)
+
+
+def nv_stack(uid='nvs'):
+    """The NVIDIA stack: GPUs at the bottom, BioNeMo NIM microservices in the middle, Cytogent agents on top, joined by
+    thin buses. A pulse runs up one route at a time (GPU -> model -> Analyst) while the run log marks the line it
+    belongs to. Pure SVG and CSS; the timings come from the route lengths. app.js pauses it off screen;
+    with reduced motion it shows its last frame, both routes lit."""
+    W, H = 440, 366
+    INK, INK2, INK3, BASE = '#ECF0FF', '#A9B3D1', '#8792B5', '#0A0C1A'
+    LILAC = '#B39DFF'
+    CW = 0.6                     # Geist Mono advance, in em
+    FS = 10.5                    # chip text
+    TRUNK = 220
+
+    def ln(pts):
+        return sum(((pts[i + 1][0] - pts[i][0]) ** 2 + (pts[i + 1][1] - pts[i][1]) ** 2) ** .5 for i in range(len(pts) - 1))
+
+    def d(pts):
+        return 'M' + ' L'.join('%.1f %.1f' % p for p in pts)
+
+    o = []
+    # ground: the diagrams' dark radial field with star dots
+    o.append('<defs><radialGradient id="%s-g" cx="50%%" cy="50%%" r="75%%"><stop offset="0" stop-color="#12102e"/>'
+             '<stop offset="1" stop-color="#05060e"/></radialGradient>' % uid)
+    for c in (ICON_COLS[0], ICON_COLS[1], ICON_COLS[2], MINT):
+        o.append('<radialGradient id="%s-h%s"><stop offset="0" stop-color="%s" stop-opacity=".55"/>'
+                 '<stop offset="1" stop-color="%s" stop-opacity="0"/></radialGradient>' % (uid, c[1:], c, c))
+    o.append('<filter id="%s-blur" x="-50%%" y="-50%%" width="200%%" height="200%%"><feGaussianBlur stdDeviation="2.6"/></filter></defs>' % uid)
+    o.append('<rect width="%d" height="%d" fill="url(#%s-g)"/>' % (W, H, uid))
+    seed, stars = 7, []
+    for _ in range(54):
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff; x = seed / 0x7fffffff * W
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff; y = seed / 0x7fffffff * H
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff; r = 0.5 + seed / 0x7fffffff * 1.0
+        if y > 304 and x < 300:
+            continue   # keep the run log clear
+        stars.append('<circle cx="%.1f" cy="%.1f" r="%.2f" fill="%s"/>' % (x, y, r, ['#7B61FF', '#4F7BFF', LILAC, '#5B4BFF'][_ % 4]))
+    o.append('<g opacity=".45">%s</g>' % ''.join(stars))
+
+    def label(s, y):
+        return ('<text class="nvs__k" x="20" y="%d" fill="%s">%s</text>' % (y, INK3, s))
+
+    # ---- geometry
+    agents = [('Reader', 110, ICON_COLS[0]), ('Analyst', TRUNK, ICON_COLS[1]), ('Writer', 330, ICON_COLS[2])]
+    AY, AS = 70, 30                                   # agent centre, squircle size
+    BUS_A, BUS_T, BUS_B, BUS_G = 104, 148, 206, 244   # agents bus, NIM top bus, NIM bottom bus, GPU bus
+    CY = 177                                          # chip row centre
+    GY, GW, GH = 256, 34, 22                          # GPU row top, chip size
+    models = [(m, m.split(' + ')) for m in NV.MODELS]  # a model with a + sits on two lines
+    widths = [max(len(p) for p in parts) * FS * CW + 18 for _, parts in models]
+    gap = 9
+    x = (W - sum(widths) - gap * (len(widths) - 1)) / 2
+    chips = []
+    for (name, parts), w in zip(models, widths):
+        h = 22 if len(parts) == 1 else 34
+        chips.append({'name': name, 'parts': parts, 'x': x, 'w': w, 'h': h, 'cx': x + w / 2, 'top': CY - h / 2, 'bot': CY + h / 2})
+        x += w + gap
+    C = dict((c['name'], c) for c in chips)
+    gx0 = (W - (6 * GW + 5 * 16)) / 2
+    gpus = [gx0 + i * (GW + 16) + GW / 2 for i in range(6)]
+
+    # ---- buses and stubs (the routes are drawn on top of these)
+    lines = []
+    lines.append((agents[0][1], BUS_A, agents[-1][1], BUS_A))
+    for _, ax, _c in agents:
+        lines.append((ax, AY + AS / 2, ax, BUS_A))
+    lines.append((TRUNK, BUS_A, TRUNK, BUS_T))
+    lines.append((chips[0]['cx'], BUS_T, chips[-1]['cx'], BUS_T))
+    lines.append((chips[0]['cx'], BUS_B, chips[-1]['cx'], BUS_B))
+    for c in chips:
+        lines.append((c['cx'], BUS_T, c['cx'], c['top']))
+        lines.append((c['cx'], c['bot'], c['cx'], BUS_B))
+    lines.append((TRUNK, BUS_B, TRUNK, BUS_G))
+    lines.append((gpus[0], BUS_G, gpus[-1], BUS_G))
+    for g in gpus:
+        lines.append((g, BUS_G, g, GY))
+    o.append('<g stroke="%s" stroke-opacity=".34" stroke-width="1" fill="none">%s</g>' % (
+        LILAC, ''.join('<path d="M%.1f %.1fL%.1f %.1f"/>' % l for l in lines)))
+
+    # ---- routes: (key, gpu index, model, agent x)
+    routes = [('a', 1, NVIDIA['stack_log'][0][2]), ('b', 4, NVIDIA['stack_log'][1][2])]
+    CYCLE, TRAVEL = 10.0, 0.34       # seconds per full loop; share of a loop the pulse spends travelling
+    span = 1.0 / len(routes)
+    css, lit = [], {}
+
+    def pct(v):
+        return '%.2f%%' % (v * 100)
+
+    def window(key, on, off):
+        """opacity 0 -> 1 between on and off (fractions of the loop)."""
+        e = 0.012
+        css.append('@keyframes %s-%s{0%%,%s{opacity:0}%s,%s{opacity:1}%s,100%%{opacity:0}}.%s-%s{animation-name:%s-%s}'
+                   % (uid, key, pct(max(on - e, 0)), pct(on), pct(off), pct(min(off + e, 1)), uid, key, uid, key))
+        return '%s-%s' % (uid, key)
+
+    for n, (key, gi, model) in enumerate(routes):
+        c, g = C[model], gpus[gi]
+        pts = [(g, GY), (g, BUS_G), (TRUNK, BUS_G), (TRUNK, BUS_B), (c['cx'], BUS_B), (c['cx'], c['bot'])]
+        to_chip = ln(pts)
+        pts += [(c['cx'], c['top']), (c['cx'], BUS_T), (TRUNK, BUS_T), (TRUNK, AY + AS / 2)]
+        total = ln(pts)
+        t0, t1 = n * span, n * span + TRAVEL
+        at_chip = t0 + TRAVEL * to_chip / total
+        css.append('@keyframes %s-p%s{0%%,%s{stroke-dashoffset:4}%s,100%%{stroke-dashoffset:-100}}' % (uid, key, pct(t0), pct(t1)))
+        lit['gpu' + key] = (gi, window('g' + key, t0, t0 + TRAVEL * 0.25))
+        lit['chip' + key] = (model, window('c' + key, at_chip, t0 + span - 0.03))
+        lit['agent' + key] = window('a' + key, t1, t0 + span - 0.03)
+        lit['log' + key] = window('l' + key, t0, t0 + span - 0.03)
+        lit['path' + key] = d(pts)
+
+    # the agent lights for both routes belong to the Analyst; one element, two windows
+    def agent_svg(name, ax, col):
+        s, r = AS, AS * 0.3
+        on = ''
+        if ax == TRUNK:
+            on = ''.join('<rect class="nvs__on %s" x="%.1f" y="%.1f" width="%d" height="%d" rx="%.1f" fill="none" stroke="%s" '
+                         'stroke-width="1.6" filter="url(#%s-blur)"/>' % (lit['agent' + k], ax - s / 2, AY - s / 2, s, s, r, MINT, uid)
+                         for k in ('a', 'b'))
+        dots = ''.join('<circle cx="%.1f" cy="%d" r="%.2f" fill="%s" fill-opacity=".8"/>' % (ax + k * s * 0.17, AY, s * 0.055, col) for k in (-1, 0, 1))
+        return ('<circle cx="%.1f" cy="%d" r="%d" fill="url(#%s-h%s)"/>' % (ax, AY, s * 0.95, uid, col[1:]) + on +
+                '<rect x="%.1f" y="%.1f" width="%d" height="%d" rx="%.1f" fill="%s"/>' % (ax - s / 2, AY - s / 2, s, s, r, BASE) +
+                '<rect x="%.1f" y="%.1f" width="%d" height="%d" rx="%.1f" fill="%s" fill-opacity=".16" stroke="%s" stroke-width="1.4"/>'
+                % (ax - s / 2, AY - s / 2, s, s, r, col, col) + dots +
+                '<text class="nvs__n" x="%.1f" y="%d" text-anchor="middle" fill="%s">%s</text>' % (ax, AY - s / 2 - 9, INK, name))
+
+    # ---- pulses: a short bright dash with a soft copy behind it
+    for key, _, _ in routes:
+        for glow in (True, False):
+            o.append('<path class="nvs__pulse" style="animation-name:%s-p%s" d="%s" pathLength="100" fill="none" stroke="%s" '
+                     'stroke-width="%s" stroke-linecap="round" stroke-dasharray="4 400" stroke-dashoffset="4"%s/>'
+                     % (uid, key, lit['path' + key], MINT if glow else INK, '5' if glow else '1.8',
+                        ' filter="url(#%s-blur)"' % uid if glow else ''))
+
+    # ---- agents
+    o.append(label('CYTOGENT AGENTS', 22))
+    o.append(''.join(agent_svg(*a) for a in agents))
+
+    # ---- NIM chips
+    o.append(label('BIONEMO NIM MICROSERVICES', 128))
+    for c in chips:
+        ons = ''.join('<rect class="nvs__on %s" x="%.1f" y="%.1f" width="%.1f" height="%d" rx="11" fill="%s" fill-opacity=".14" '
+                      'stroke="%s" stroke-width="1.2"/>' % (v[1], c['x'], c['top'], c['w'], c['h'], MINT, MINT)
+                      for k, v in lit.items() if k.startswith('chip') and v[0] == c['name'])
+        texts = ''.join('<text class="nvs__c" x="%.1f" y="%.1f" text-anchor="middle" fill="%s">%s</text>'
+                        % (c['cx'], CY + (i - (len(c['parts']) - 1) / 2) * 13 + 3.6, INK2,
+                           ('+ ' if i else '') + html.escape(p)) for i, p in enumerate(c['parts']))
+        o.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%d" rx="11" fill="%s"/>'
+                 '<rect x="%.1f" y="%.1f" width="%.1f" height="%d" rx="11" fill="%s" fill-opacity=".12" stroke="%s" stroke-opacity=".5"/>%s%s'
+                 % (c['x'], c['top'], c['w'], c['h'], BASE, c['x'], c['top'], c['w'], c['h'], INK3, INK3, ons, texts))
+
+    # ---- GPUs: small chips with pins at the sides
+    o.append(label('NVIDIA GPUS', 228))
+    for i, g in enumerate(gpus):
+        x0 = g - GW / 2
+        pins = ''.join('<path d="M%.1f %.1fh-4M%.1f %.1fh4"/>' % (x0, GY + yy, x0 + GW, GY + yy) for yy in (7, 15))
+        ons = ''.join('<rect class="nvs__on %s" x="%.1f" y="%d" width="%d" height="%d" rx="3" fill="%s" fill-opacity=".16" stroke="%s"/>'
+                      % (v[1], x0, GY, GW, GH, MINT, MINT) for k, v in lit.items() if k.startswith('gpu') and v[0] == i)
+        o.append('<g stroke="%s" stroke-opacity=".55" fill="none">%s</g>'
+                 '<rect x="%.1f" y="%d" width="%d" height="%d" rx="3" fill="%s" stroke="%s" stroke-opacity=".55"/>%s'
+                 '<rect x="%.1f" y="%d" width="14" height="10" rx="1.5" fill="none" stroke="%s" stroke-opacity=".45"/>'
+                 % (INK3, pins, x0, GY, GW, GH, BASE, INK3, ons, g - 7, GY + 6, INK3))
+
+    # ---- run log
+    o.append('<path d="M20 298H420" stroke="%s" stroke-opacity=".12"/>' % INK)
+    for n, (t, what, model) in enumerate(NVIDIA['stack_log']):
+        y = 322 + n * 21
+        key = routes[n][0]
+        o.append('<g class="nvs__log"><circle cx="24" cy="%.1f" r="2.4" fill="%s" fill-opacity=".35"/>'
+                 '<circle class="nvs__on %s" cx="24" cy="%.1f" r="2.6" fill="%s"/>'
+                 '<text class="nvs__l" x="34" y="%d"><tspan fill="%s">%s</tspan><tspan fill="%s" dx="9">%s →</tspan>'
+                 '<tspan fill="%s" dx="6">%s</tspan></text>'
+                 '<text class="nvs__l nvs__on %s" x="34" y="%d" aria-hidden="true"><tspan fill="%s">%s</tspan><tspan fill="%s" dx="9">%s →</tspan>'
+                 '<tspan fill="%s" dx="6">%s</tspan></text></g>'
+                 % (y - 3.6, MINT, lit['log' + key], y - 3.6, MINT,
+                    y, INK3, t, INK3, what, INK2, model,
+                    lit['log' + key], y, INK2, t, INK, what, MINT, model))
+
+    style = ('<style>%s</style>' % ''.join(css))
+    log = '; '.join('%s, %s on %s' % (t, w, m) for t, w, m in NVIDIA['stack_log'])
+    svg = ('<svg class="nvs" viewBox="0 0 %d %d" role="img" aria-labelledby="%s-t %s-d" style="--nvs-cycle:%.1fs">'
+           '<title id="%s-t">NVIDIA stack</title>'
+           '<desc id="%s-d">Three layers. At the bottom, a row of NVIDIA GPUs. In the middle, NVIDIA BioNeMo NIM microservices: '
+           '%s. On top, three Cytogent agents: Reader, Analyst and Writer. Thin lines join the layers, and a pulse runs up '
+           'from a GPU through a model to the Analyst, one route at a time. A run log reads: %s.</desc>%s</svg>'
+           % (W, H, uid, uid, CYCLE, uid, uid, ', '.join(NV.MODELS[:-1]) + ' and ' + NV.MODELS[-1], log, ''.join(o)))
+    return ('<figure class="frame frame--svg nvstack" data-nvstack>%s%s<p class="frame__cap">%s</p></figure>'
+            % (style, svg, NVIDIA['stack_caption']))
+
+
+def built_on_nvidia(mode='compact'):
+    """The "Built on NVIDIA technology" section. compact (home): badge, title, lead, the five model tags and a link,
+    beside the illustration. full (data and models): badge, title and lead beside the illustration, then all six
+    cards and the legal line. The section id is the anchor the trust row and the other pages point to."""
+    c = NVIDIA
+    full = mode == 'full'
+    text_ = (nv_badge('lg' if full else 'md') +
+             '<h2 id="h-nvidia">%s</h2><p class="lede">%s</p>' % (kw(c['h2']), c['lead']))
+    if not full:
+        text_ += ('<ul class="tags nvtags" aria-label="Models">%s</ul>' % ''.join('<li class="tag">%s</li>' % m for m in NV.MODELS) +
+                  tlink(c['more'], NV.MORE_HREF))
+    body = split(text_, nv_stack())
+    if full:
+        cards = ''
+        for icon_, title, tags, txt, state in c['cards']:
+            cards += ('<div class="card icard nvcard%s" data-rv-item>%s<h3>%s</h3>%s%s%s</div>'
+                      % (' nvcard--next' if state else '', ico(icon_, col=MINT), title,
+                         '<div class="tags">%s</div>' % ''.join('<span class="tag">%s</span>' % t_ for t_ in tags),
+                         '<p>%s</p>' % txt if txt else '', pill(state) if state else ''))
+        body += '<div class="grid grid--3 icards rv" data-stagger>%s</div>' % cards + nv_legal('rv')
+    return ('%s<section class="band band--dark band--nv band--nv-%s" id="%s" aria-labelledby="h-nvidia"><div class="wrap">%s</div></section>'
+            % (confirm('nvidia'), mode, NV.ANCHOR, body))
+
+
+def nv_line(text_):
+    """One line on a page that names the NVIDIA models it runs on, linking to the full list."""
+    return '<p class="nvline">%s</p>' % tlink(text_, NV.MORE_HREF)
 
 
 # ------------------------------------------------------------------- demo ---
@@ -379,11 +630,12 @@ def footer():
     return (
         '<footer class="foot"><div class="wrap">'
         '<div class="foot__grid">'
-        '<div class="foot__brand"><a class="foot__logo" href="/">%s<b>Cytogent</b></a><p>%s</p></div>%s</div>'
+        '<div class="foot__brand"><a class="foot__logo" href="/">%s<b>Cytogent</b></a><p>%s</p>%s</div>%s</div>'
         '<div class="foot__legal"><span>&copy; 2026 WelloWork AB</span><span>Cytogent is a research tool, not a medical device.</span></div>'
-        '</div></footer>'
+        '%s</div></footer>'
         % (logo_mark('foot'),
-           TAGLINE, cols)
+           TAGLINE, nv_badge('sm', '/about/', label='%s. About WelloWork AB' % NV.MEMBER_LINE), cols,
+           nv_legal('foot__tm'))
     )
 
 
@@ -414,6 +666,7 @@ def jsonld(path, title, desc, faq=None, crumbs=None, extra=None):
             "legalName": "WelloWork AB", "url": ORIGIN, "email": "info@cytogent.com",
             "address": {"@type": "PostalAddress", "addressCountry": "SE"},
             "brand": {"@type": "Brand", "name": "Cytogent"},
+            "memberOf": NV.MEMBER_OF,
         })
         blocks.append({
             "@context": "https://schema.org", "@type": "WebSite",
@@ -545,6 +798,10 @@ def artifact(pages, home_title, home_body):
            % (home_title, css, nav('/'), home_body, footer(), tmpl, js, ROUTER))
     # internal links become #/paths; in-page anchors stay as they are
     doc = re.sub(r'href="(/[^"]*)"', r'href="#\1"', doc)
+    # the badge has no server here: carry it inline
+    if NV.BADGE_SRC:
+        svg = open(os.path.join(STATIC, NV.BADGE_SRC.lstrip('/')), 'rb').read()
+        doc = doc.replace('src="%s"' % NV.BADGE_SRC, 'src="data:image/svg+xml;base64,%s"' % base64.b64encode(svg).decode())
     return doc
 
 
@@ -566,10 +823,13 @@ def home():
         '<p class="hero__support">Write your goal in plain words. Cytogent turns it into a research brief, '
         'then AI agents and your team do the work.</p>'
         '<div class="hero__actions">%s%s</div>'
+        '<a class="hero__member" href="#%s" aria-label="%s: see how Cytogent uses NVIDIA technology">'
+        '<span class="hero__member-k" aria-hidden="true">Member of the</span>%s</a>'
         '</div>'
         '</section>'
         % (btn('Request access', '/request-access/', 'primary'),
-           btn('See an example', '#demo', 'outline', False)))
+           btn('See an example', '#demo', 'outline', False),
+           NV.ANCHOR, NV.MEMBER_LINE, nv_badge('sm', eager=True)))
 
     # ---- the live demo, right under the hero --------------------------------
     o.append(
@@ -711,13 +971,15 @@ def home():
                      'source, version and licence inside the workspace. Literature includes full-text papers from '
                      'ScienceDirect, through Elsevier\'s API.', '', 'sciencedirect'),
         ('Trained models', 'Domain models for prediction and screening (variant effect, binding affinity, assay QC). '
-                           'Each shows its validation on its own card.', pill('progress'), 'trained'),
+                           'Each shows its validation on its own card. Trained and served on NVIDIA GPUs.', pill('progress'), 'trained'),
         ('Protocols', 'Protocols you can search, adapt and cite, with every step attributed to where it came from.', '', None),
         ('Health data standards', 'Patient data is modelled with openEHR, exchanged with FHIR, mapped to OMOP for '
                                   'multi-site studies, and coded with SNOMED CT.', '', 'standards'),
     ]
     cards = ''.join('%s<div class="card rv" data-rv-item><h3>%s</h3><p class="card__get">%s</p>%s</div>'
                     % (confirm(k), h, p_, pl) for h, p_, pl, k in dm_cards)
+    # ---- built on NVIDIA technology, right before the data you can trace ----
+    o.append(built_on_nvidia('compact'))
     o.append(
         '<section class="band band--dark" aria-labelledby="h-data"><div class="wrap">%s'
         '<div class="split"><div class="split__text">'
@@ -908,8 +1170,9 @@ def solution_page(slug):
               '<p class="bstrip__q">“%s”</p>'
               '<p class="bstrip__t">Cytogent asks about data, success criteria and limits, then agents plan from the signed brief. '
               '<a href="/#demo">See an example</a></p></div>' % question)
+    nvl = NVIDIA['solution_lines'].get(slug)
     o.append(band('dark', 'h-what', split(
-        '<h2 id="h-what">%s</h2>%s' % (kw(h2), ticks(bl)),
+        '<h2 id="h-what">%s</h2>%s%s' % (kw(h2), ticks(bl), confirm('nvidia') + nv_line(nvl) if nvl else ''),
         dframe(kind, cap, alt)) + strip_))
     t = c['team']
     cfg = {'q': t['q'], 'agents': [[a[0], a[1]] for a in t['agents']], 'outs': t['outs']}
@@ -990,7 +1253,8 @@ def platform_page():
     # 3. the right model for each step
     h2, lede, routes = c['routing']
     rl = ''.join('<li class="route" data-rv-item>%s<div><b>%s</b><span>%s</span></div></li>' % (ico(a, n), b, m) for n, (a, b, m) in enumerate(routes))
-    o.append(band('dark', 'h-route', split('<h2 id="h-route">%s</h2><p class="lede">%s</p><ul class="routes" data-stagger>%s</ul>' % (kw(h2), lede, rl),
+    o.append(band('dark', 'h-route', split('<h2 id="h-route">%s</h2><p class="lede">%s</p><ul class="routes" data-stagger>%s</ul>%s%s'
+                                            % (kw(h2), lede, rl, confirm('nvidia'), nv_line(NVIDIA['platform_line'])),
                                             dframe('routing', 'Each task to its model · every routing decision logged',
                                                    'Four tasks on the left go through a router to four models on the right: reading to a long-context '
                                                    'language model, code to a code model, structure to a structure model, drafting to a drafting model. '
@@ -1122,6 +1386,7 @@ def data_page():
                                                           'affinity model with predictions close to measurements, and an assay QC model '
                                                           'scanning a plate and flagging three wells.', cls='frame--wide') +
                   icards(items, cols=3, start=1)))
+    o.append(built_on_nvidia('full'))
     h2, lede, st = c['curation']
     o.append(band('dark', 'h-cur', head2('h-cur', h2, lede) +
                   '<div class="how">%s<div class="rv">%s</div></div>' % (
@@ -1176,6 +1441,10 @@ def about_page():
                                                 'the people ask, the agents work, and the people review and decide.'))))
     h2, lede, items = c['principles']
     o.append(band('dark', 'h-pr', head2('h-pr', h2, lede) + icards(items, cols=4)))
+    h2, p1, more = NVIDIA['about']
+    o.append(band('dark band--nv', 'h-nv', split(
+        '<h2 id="h-nv">%s</h2><p class="body body--lg">%s</p>%s' % (kw(h2), p1, tlink(more, NV.MORE_HREF)),
+        '<div class="nvabout"><div class="nvcardbox">%s</div>%s</div>' % (nv_badge('lg'), nv_legal()))))
     h2, p1, url = c['partner']
     o.append(band('cream', 'h-kg', split('<h2 id="h-kg">%s</h2><p class="body body--lg">%s</p>' % (kw(h2), p1),
                                         '<a class="kg" href="%s" rel="noopener" aria-label="Kilogent, opens kilogent.com">%s</a>'
@@ -1206,8 +1475,8 @@ def customers_page():
 # ---- resources, FAQ, glossary ---------------------------------------------
 def faq_groups():
     F = dict((q, (q, a)) for q, a in FAQ)
-    what, vs_chat, vs_ws, brief_, tasks, who, train, access, device = [F[q] for q, _ in FAQ]
-    return [('About Cytogent', [what] + FAQ_MORE['general'] + [who, FAQ_AGENTS, vs_chat, vs_ws]),
+    what, vs_chat, vs_ws, models, brief_, tasks, who, train, access, device = [F[q] for q, _ in FAQ]
+    return [('About Cytogent', [what] + FAQ_MORE['general'] + [who, FAQ_AGENTS, vs_chat, vs_ws, models]),
             ('Using the workspace', [brief_, tasks] + FAQ_MORE['using']),
             ('Data and security', [train, FAQ_HOSTING] + FAQ_MORE['data'] + [device]),
             ('Access', [access] + FAQ_MORE['access'])]
@@ -1225,7 +1494,7 @@ def resources_page():
              ('key', 'Request access', 'Three request types, reviewed by hand.', '/request-access/', 'Request access')]
     o.append(band('dark', 'h-res', head2('h-res', 'Start <kw>here</kw>.', 'Answers, terms and the pages people ask about most.') + icards(cards, cols=3)))
     o.append(band('cream', 'h-top', head2('h-top', 'Asked most <kw>often</kw>.', 'Three answers to start with.') +
-                  '<div class="faq rv">%s</div><p class="more rv">%s</p>' % (qa_list([FAQ[0], FAQ[6], FAQ[7]]), tlink('All questions', '/resources/faq/'))))
+                  '<div class="faq rv">%s</div><p class="more rv">%s</p>' % (qa_list([FAQ[0], FAQ[7], FAQ[8]]), tlink('All questions', '/resources/faq/'))))
     o.append(cta('Bring your next <kw>question</kw>.', 'Tell us your field and what you want to do. We set up the workspace around it.'))
     return ''.join(o)
 
@@ -1479,7 +1748,10 @@ def seo_files():
     llms += ['', '## Facts', '',
              '- Product: Cytogent', '- Operator: WelloWork AB', '- Country: Sweden',
              '- Data: project data is isolated and never trains shared models',
-             '- EU data residency: in progress', '- Access: by request only', '- Contact: info@cytogent.com', '']
+             '- EU data residency: in progress', '- Access: by request only', '- Contact: info@cytogent.com',
+             '- %s: WelloWork AB, the company behind Cytogent, is a member. Science models run through NVIDIA BioNeMo NIM '
+             'microservices (OpenFold, DiffDock, ESM, RFdiffusion, ProteinMPNN) and NVIDIA Parabricks. %s'
+             % (NV.PROGRAM_NAME, NV.LEGAL_LINE), '']
     return '\n'.join(sm), robots, '\n'.join(llms)
 
 
@@ -1499,6 +1771,8 @@ def build():
             shutil.copytree(src_, os.path.join(DIST, 'img', f), ignore=shutil.ignore_patterns('.*', '*.md'))
         elif not f.startswith('.'):
             shutil.copy(src_, os.path.join(DIST, 'img', f))
+    # third-party marks, served as they are (the NVIDIA Inception Program badge)
+    shutil.copytree(os.path.join(STATIC, 'brand'), os.path.join(DIST, 'brand'), ignore=shutil.ignore_patterns('.*', '*.md'))
     shutil.copy(os.path.join(SRC, 'js', 'cell.js'), os.path.join(DIST, 'js', 'cell.js'))
     shutil.copy(os.path.join(SRC, 'js', 'diagrams.js'), os.path.join(DIST, 'js', 'diagrams.js'))
     shutil.copy(os.path.join(SRC, 'js', 'app.js'), os.path.join(DIST, 'js', 'app.js'))

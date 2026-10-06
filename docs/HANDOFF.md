@@ -40,6 +40,7 @@ Each item below is in the build as the brief wrote it, and is marked in the HTML
 | 12 | **Health data standards**: which of openEHR, FHIR, OMOP and SNOMED CT are live. SNOMED CT needs a licence. | Home, Platform, Data, hospitals page, FAQ, glossary, compare hub | Mark the ones that are not live. |
 | 13 | **ScienceDirect**: Elsevier licence, AI reading and citing allowed, and permission to name it. | Home, Platform, Data, literature page, FAQ | Remove the ScienceDirect sentences. |
 | 14 | **"xAI" in our own copy.** The company behind Grok now signs its pages "SpaceXAI". The brief's copy says "Anthropic, OpenAI, Google and xAI". | Platform, FAQ, compare pages | Decide whether to rename it across the site. The Grok page already names the models, not the company. |
+| 15 | **NVIDIA models are live**: OpenFold, DiffDock, ESM, RFdiffusion and ProteinMPNN through NVIDIA BioNeMo NIM microservices, and NVIDIA Parabricks. The NVIDIA cards carry no status yet. | Home ("Built on NVIDIA technology", FAQ), Data and models (`#nvidia`), About, Platform, protein design and in-silico pages | Add a status per card in `pages.NVIDIA['cards']` (the fifth value), or remove the model from `nvidia_inception.MODELS`. The badge, member line and legal line live in `source/src/nvidia_inception.py`. |
 
 ### Manual steps (not in the code)
 
