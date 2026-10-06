@@ -1,11 +1,11 @@
 {
  "/": {
-  "date": "2026-10-02",
-  "hash": "38c94a3ecb265892"
+  "date": "2026-10-06",
+  "hash": "6154844927d21afe"
  },
  "/about/": {
-  "date": "2026-10-02",
-  "hash": "7f1473d2baa20317"
+  "date": "2026-10-06",
+  "hash": "f393258b8fe4a857"
  },
  "/compare/": {
   "date": "2026-10-02",
@@ -28,8 +28,8 @@
   "hash": "5c7dee4d69b435e5"
  },
  "/data-and-models/": {
-  "date": "2026-10-02",
-  "hash": "c02655a0aac1285c"
+  "date": "2026-10-06",
+  "hash": "d9c23aa540831035"
  },
  "/industries/cro-and-clinical-teams/": {
   "date": "2026-10-02",
@@ -48,8 +48,8 @@
   "hash": "986fae67ee1112e9"
  },
  "/platform/": {
-  "date": "2026-10-02",
-  "hash": "5ad5594ce8882ac9"
+  "date": "2026-10-06",
+  "hash": "af3de08e5c4a7860"
  },
  "/privacy/": {
   "date": "2026-10-02",
@@ -60,12 +60,12 @@
   "hash": "0a25606e84b805b7"
  },
  "/resources/": {
-  "date": "2026-10-02",
-  "hash": "9014ad8b29010820"
+  "date": "2026-10-06",
+  "hash": "e15cb07aeaacdd10"
  },
  "/resources/faq/": {
-  "date": "2026-10-02",
-  "hash": "2f5171a838117a4a"
+  "date": "2026-10-06",
+  "hash": "e5ec7ea41f02f0ed"
  },
  "/resources/glossary/": {
   "date": "2026-10-02",
@@ -84,8 +84,8 @@
   "hash": "bf642edd61524067"
  },
  "/solutions/in-silico-studies/": {
-  "date": "2026-10-02",
-  "hash": "e78e1016194e0a74"
+  "date": "2026-10-06",
+  "hash": "ff01aeeb3fd840ec"
  },
  "/solutions/literature-and-evidence/": {
   "date": "2026-10-02",
@@ -96,8 +96,8 @@
   "hash": "011f5fb124d40a85"
  },
  "/solutions/protein-design/": {
-  "date": "2026-10-02",
-  "hash": "8aac37599c77110f"
+  "date": "2026-10-06",
+  "hash": "2708f046061e7f76"
  },
  "/solutions/regulatory-documentation/": {
   "date": "2026-10-02",
