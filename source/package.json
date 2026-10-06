@@ -1,0 +1,8 @@
+{
+  "name": "cytogent-site-build",
+  "private": true,
+  "description": "Build tools for the Cytogent site. build.py minifies the page scripts with terser.",
+  "devDependencies": {
+    "terser": "5.51.2"
+  }
+}

@@ -7,6 +7,11 @@ SITE = {
     "country": "Sweden",
     "origin": "https://cytogent.com",
     "locale": "en",
+    # the Cytogent company page (the product's only social profile); used in the footer and the JSON-LD
+    "linkedin": "https://www.linkedin.com/company/cytogent/",
+    # Google Search Console: paste the token from the HTML-tag method here to add the meta tag to the home page.
+    # Leave it empty when the Domain property is verified with a DNS TXT record.
+    "google_site_verification": "",
 }
 
 # The fixed definition. Word for word on Home (FAQ), About, in llms.txt and in the JSON-LD description.

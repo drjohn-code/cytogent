@@ -5,7 +5,7 @@ Outputs:
   dist/               deployable static site (real paths, sitemap, robots, llms.txt)
   dist-artifact/      one self-contained HTML file for the Claude artifact preview
 """
-import os, re, json, shutil, base64, sys, html, datetime
+import os, re, json, shutil, base64, sys, html, datetime, hashlib, subprocess
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, 'src')
@@ -25,7 +25,9 @@ import nvidia_inception as NV  # noqa: E402
 
 read = lambda p: open(p, encoding='utf-8').read()
 ORIGIN = SITE['origin']
-BUILD_DATE = os.environ.get('CG_BUILD_DATE') or datetime.date.today().isoformat()   # sitemap <lastmod>
+BUILD_DATE = os.environ.get('CG_BUILD_DATE') or datetime.date.today().isoformat()   # sitemap <lastmod> of a changed page
+LASTMOD = os.path.join(ROOT, 'lastmod.json')   # committed: per page, a hash of its content and the date it last changed
+LOGO = ORIGIN + '/img/logo-512.png'   # rendered by icons.py
 
 # ---------------------------------------------------------------- assets ---
 CSS = read(os.path.join(SRC, 'css', 'site.css'))
@@ -620,6 +622,12 @@ def nav(current=''):
     )
 
 
+LINKEDIN_ICON = ('<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04'
+                 '-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 '
+                 '7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54'
+                 'C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>')
+
+
 def footer():
     cols = ''
     for title, items in FOOTER:
@@ -631,11 +639,12 @@ def footer():
         '<footer class="foot"><div class="wrap">'
         '<div class="foot__grid">'
         '<div class="foot__brand"><a class="foot__logo" href="/">%s<b>Cytogent</b></a><p>%s</p>%s</div>%s</div>'
-        '<div class="foot__legal"><span>&copy; 2026 WelloWork AB</span><span>Cytogent is a research tool, not a medical device.</span></div>'
+        '<div class="foot__legal"><span>&copy; 2026 WelloWork AB</span>'
+        '<a href="%s" target="_blank" rel="noopener" aria-label="Cytogent on LinkedIn, opens linkedin.com">%sLinkedIn</a></div>'
         '%s</div></footer>'
         % (logo_mark('foot'),
            TAGLINE, nv_badge('sm', '/about/', label='%s. About WelloWork AB' % NV.MEMBER_LINE), cols,
-           nv_legal('foot__tm'))
+           SITE['linkedin'], LINKEDIN_ICON, nv_legal('foot__tm'))
     )
 
 
@@ -660,12 +669,14 @@ def font_face(inline):
 def jsonld(path, title, desc, faq=None, crumbs=None, extra=None):
     blocks = []
     if path == '/':
+        # the company is WelloWork AB; Cytogent is its brand and its software, and the LinkedIn page and logo are Cytogent's
         blocks.append({
             "@context": "https://schema.org", "@type": "Organization",
             "@id": ORIGIN + "/#organization", "name": "WelloWork AB",
             "legalName": "WelloWork AB", "url": ORIGIN, "email": "info@cytogent.com",
             "address": {"@type": "PostalAddress", "addressCountry": "SE"},
-            "brand": {"@type": "Brand", "name": "Cytogent"},
+            "brand": {"@type": "Brand", "@id": ORIGIN + "/#brand", "name": "Cytogent", "url": ORIGIN,
+                      "logo": LOGO, "sameAs": [SITE['linkedin']]},
             "memberOf": NV.MEMBER_OF,
         })
         blocks.append({
@@ -677,7 +688,8 @@ def jsonld(path, title, desc, faq=None, crumbs=None, extra=None):
         blocks.append({
             "@context": "https://schema.org", "@type": "SoftwareApplication",
             "@id": ORIGIN + "/#software", "name": "Cytogent",
-            "applicationCategory": "Research", "operatingSystem": "Web browser",
+            "applicationCategory": "BusinessApplication", "operatingSystem": "Web",
+            "url": ORIGIN, "image": LOGO, "sameAs": [SITE['linkedin']],
             "description": DEFINITION,
             "featureList": ["Research brief", "AI agents and human tasks on one board",
                             "Literature and evidence with citations", "In-silico studies", "Protein studies and design",
@@ -702,8 +714,9 @@ def jsonld(path, title, desc, faq=None, crumbs=None, extra=None):
             "mainEntity": [{"@type": "Question", "name": strip(q),
                             "acceptedAnswer": {"@type": "Answer", "text": strip(a)}} for q, a in faq],
         })
+    # "<" is escaped, so no text can ever close the script element
     return ''.join('<script type="application/ld+json">%s</script>'
-                   % json.dumps(b, ensure_ascii=False, separators=(',', ':')) for b in blocks)
+                   % json.dumps(b, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c') for b in blocks)
 
 
 def strip(html):
@@ -715,25 +728,45 @@ def og_name(path):
     return 'og%s.jpg' % (path.rstrip('/').replace('/', '-') or '-home')
 
 
+def h1_text(body):
+    """The page's H1 as plain text: what its OG image shows, so it is also the image's alt text."""
+    return re.sub(r'\s+', ' ', strip(re.search(r'<h1\b[^>]*>(.*?)</h1>', body, re.S).group(1)))
+
+
 def page(path, title, desc, body, faq=None, crumbs=None, extra=None, noindex=False):
     css = font_face(False) + CSS
     canonical = ORIGIN + path
+    image = '%s/%s' % (ORIGIN, og_name(path))
+    alt = html.escape(h1_text(body), quote=True)
+    verify = SITE.get('google_site_verification', '')
     head = [
         '<title>%s</title>' % title,
         '<meta name="description" content="%s">' % desc,
         '<meta name="robots" content="noindex">' if noindex else '',
+        '<meta name="google-site-verification" content="%s">' % html.escape(verify, quote=True) if verify and path == '/' else '',
         '<link rel="canonical" href="%s">' % canonical,
         '<meta property="og:type" content="website">',
         '<meta property="og:site_name" content="Cytogent">',
+        '<meta property="og:locale" content="en_GB">',
         '<meta property="og:title" content="%s">' % title,
         '<meta property="og:description" content="%s">' % desc,
         '<meta property="og:url" content="%s">' % canonical,
-        '<meta property="og:image" content="%s/%s">' % (ORIGIN, og_name(path)),
+        '<meta property="og:image" content="%s">' % image,
         '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">',
+        '<meta property="og:image:alt" content="%s">' % alt,
+        # no twitter:site: Cytogent has no X account
         '<meta name="twitter:card" content="summary_large_image">',
+        '<meta name="twitter:title" content="%s">' % title,
+        '<meta name="twitter:description" content="%s">' % desc,
+        '<meta name="twitter:image" content="%s">' % image,
+        '<meta name="twitter:image:alt" content="%s">' % alt,
         '<meta name="theme-color" content="#05060E">',
+        '<link rel="icon" href="/favicon.ico" sizes="48x48">',
         '<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">',
+        '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
         '<link rel="preload" href="/fonts/Geist-Latin.woff2" as="font" type="font/woff2" crossorigin>',
+        # Geist Mono is kept: every page uses it further down, and the browser fetches it at the first layout anyway.
+        # Without the preload it starts later, and Lighthouse's FCP went from 0.8 s to 1.05-1.5 s (mobile).
         '<link rel="preload" href="/fonts/GeistMono-Latin.woff2" as="font" type="font/woff2" crossorigin>',
         '<style>%s</style>' % css,
         '<script>%s</script>' % CONSENT_JS,
@@ -742,11 +775,11 @@ def page(path, title, desc, body, faq=None, crumbs=None, extra=None, noindex=Fal
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
             '%s</head><body>%s\n<main id="main">%s</main>\n%s'
-            '<script src="/js/cell.js" defer></script><script src="/js/diagrams.js" defer></script>'
-            '%s<script src="/js/app.js" defer></script>'
+            '<script src="%s" defer></script><script src="%s" defer></script>'
+            '%s<script src="%s" defer></script>'
             '</body></html>'
-            % (''.join(head), nav(path), body, footer(),
-               '<script src="/js/demo.js" defer></script>' if 'data-demo' in body else ''))
+            % (''.join(head), nav(path), body, footer(), JS_URL['cell.js'], JS_URL['diagrams.js'],
+               '<script src="%s" defer></script>' % JS_URL['demo.js'] if 'data-demo' in body else '', JS_URL['app.js']))
 
 
 ROUTER = r"""
@@ -1695,24 +1728,60 @@ def hero_of(path):
     return ('whole', 'breathe', ''), 'Where scientists and AI agents do research <kw>together</kw>.'
 
 
+# ================================================================ scripts ===
+JS_FILES = ['cell.js', 'diagrams.js', 'demo.js', 'app.js']
+JS_URL = {}   # 'app.js' -> '/js/app.<hash>.js', filled by publish_js() before any page is written
+TERSER = os.path.join(ROOT, 'node_modules', '.bin', 'terser')
+
+
+def publish_js():
+    """Minify each page script with terser and put a hash of the result in its name, so the host can cache it for a year.
+    The preview artifact inlines the source files instead."""
+    if not os.path.exists(TERSER):
+        sys.exit('terser is missing: run "npm ci" in source/ first')
+    for f in JS_FILES:
+        out = subprocess.run([TERSER, os.path.join(SRC, 'js', f), '--compress', '--mangle', '--comments', 'false'],
+                             check=True, capture_output=True).stdout
+        name = '%s.%s.js' % (f[:-3], hashlib.sha256(out).hexdigest()[:10])
+        open(os.path.join(DIST, 'js', name), 'wb').write(out)
+        JS_URL[f] = '/js/' + name
+
+
 # ============================================================== SEO files ===
-def seo_files():
+def content_hash(title, desc, body):
+    """What a page says: its title, its description and its <main> HTML, without inline styles or scripts."""
+    main = re.sub(r'<(script|style)\b.*?</\1>', '', body, flags=re.S)
+    return hashlib.sha256(('%s\n%s\n%s' % (title, desc, main)).encode('utf-8')).hexdigest()[:16]
+
+
+def lastmod(hashes):
+    """The date each page last changed, kept in lastmod.json. A page keeps its date while its hash stays the same;
+    a new or changed page gets BUILD_DATE (CG_BUILD_DATE, or today)."""
+    old = json.load(open(LASTMOD, encoding='utf-8')) if os.path.exists(LASTMOD) else {}
+    new = {}
+    for path, h in hashes.items():
+        o = old.get(path)
+        new[path] = o if o and o['hash'] == h else {'hash': h, 'date': BUILD_DATE}
+    with open(LASTMOD, 'w', encoding='utf-8') as f:
+        json.dump(new, f, indent=1, sort_keys=True); f.write('\n')
+    return {p_: v['date'] for p_, v in new.items()}
+
+
+def seo_files(dates):
     urls = ['/', '/platform/', '/compare/'] + ['/compare/%s/' % k for k in VS_PAGES]
     urls += (['/customers/'] if PILOTS_PUBLIC else []) + ['/data-and-models/', '/security/', '/about/',
              '/resources/', '/resources/faq/', '/resources/glossary/',
              '/request-access/', '/terms/', '/privacy/']
     urls += ['/solutions/%s/' % s['slug'] for s in SOLUTIONS]
     urls += ['/industries/%s/' % i['slug'] for i in INDUSTRIES]
-    prio = {'/': '1.0'}
+    # no <changefreq> or <priority>: Google ignores both. <lastmod> is the day the page's content last changed.
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in urls:
-        sm.append('<url><loc>%s%s</loc><lastmod>%s</lastmod><changefreq>monthly</changefreq><priority>%s</priority></url>'
-                  % (ORIGIN, u, BUILD_DATE, prio.get(u, '0.8')))
+        sm.append('<url><loc>%s%s</loc><lastmod>%s</lastmod></url>' % (ORIGIN, u, dates[u]))
     sm.append('</urlset>')
 
-    robots = ('User-agent: *\nAllow: /\nDisallow: /request-access/success/\n\n'
-              'Sitemap: %s/sitemap.xml\n' % ORIGIN)
+    robots = 'User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n' % ORIGIN
 
     llms = ['# Cytogent', '', '> ' + strip(DEFINITION), '',
             'Cytogent is operated by WelloWork AB, a company registered in Sweden.', '',
@@ -1773,10 +1842,7 @@ def build():
             shutil.copy(src_, os.path.join(DIST, 'img', f))
     # third-party marks, served as they are (the NVIDIA Inception Program badge)
     shutil.copytree(os.path.join(STATIC, 'brand'), os.path.join(DIST, 'brand'), ignore=shutil.ignore_patterns('.*', '*.md'))
-    shutil.copy(os.path.join(SRC, 'js', 'cell.js'), os.path.join(DIST, 'js', 'cell.js'))
-    shutil.copy(os.path.join(SRC, 'js', 'diagrams.js'), os.path.join(DIST, 'js', 'diagrams.js'))
-    shutil.copy(os.path.join(SRC, 'js', 'app.js'), os.path.join(DIST, 'js', 'app.js'))
-    shutil.copy(os.path.join(SRC, 'js', 'demo.js'), os.path.join(DIST, 'js', 'demo.js'))
+    publish_js()
     # favicon = the mark on its own
     open(os.path.join(DIST, 'img', 'favicon.svg'), 'w', encoding='utf-8').write(MARK)
 
@@ -1786,6 +1852,7 @@ def build():
     body = home()
     open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(
         page('/', title, desc, body, faq=FAQ, crumbs=None))
+    hashes = {'/': content_hash(title, desc, body)}
 
     built = []
     for path, t, d_, fn, faq, crumbs, extra in inner_pages():
@@ -1795,8 +1862,9 @@ def build():
         open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(
             page(path, t, d_, b_, faq=faq, crumbs=crumbs, extra=extra, noindex=(path == '/customers/' and not PILOTS_PUBLIC)))
         built.append((path, t, b_))
+        hashes[path] = content_hash(t, d_, b_)
 
-    sm, robots, llms = seo_files()
+    sm, robots, llms = seo_files(lastmod(hashes))
     open(os.path.join(DIST, 'sitemap.xml'), 'w', encoding='utf-8').write(sm)
     open(os.path.join(DIST, 'robots.txt'), 'w', encoding='utf-8').write(robots)
     open(os.path.join(DIST, 'llms.txt'), 'w', encoding='utf-8').write(llms)

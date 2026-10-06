@@ -1,5 +1,46 @@
 # Cytogent website v2 — handoff
 
+## Search and speed (October 2026, branch `feat/seo-search-console`)
+
+What changed, and where:
+
+| Area | Change | Where |
+| --- | --- | --- |
+| Descriptions | Rule: title up to 60 characters, description 70 to 155, both unique. `/privacy/` and `/customers/` were 159; both are shorter now, with no new facts. | `src/pages.py`; `verify_all.py` and `tools/v2_check.py` use the same rule and now exit with 1 on a problem |
+| SEO check | `tools/seo_check.py` reads `dist/` and fails the build on a bad title, description, canonical, H1, image, link preview tag, JSON-LD block or sitemap. It also checks `site/404.html`. | `make.sh` runs it before the sync to `site/` |
+| Sitemap dates | `<lastmod>` is the day a page's content last changed, not the build day. A hash of the title, description and `<main>` is kept per page in `source/lastmod.json`. `<changefreq>` and `<priority>` are gone (Google ignores them). | `build.py` (`content_hash`, `lastmod`, `seo_files`) |
+| robots.txt | The `Disallow: /request-access/success/` line is gone: that page does not exist. | `build.py` |
+| Link previews | `og:locale` (en_GB), `og:image:alt`, `twitter:title`, `twitter:description`, `twitter:image`, `twitter:image:alt`. The alt text is the page's H1, which the OG image shows. No `twitter:site`: there is no X account. | `page()` in `build.py` |
+| JSON-LD | Organization = WelloWork AB; its `brand` is Cytogent, with its URL, the new logo and the LinkedIn page. SoftwareApplication: category `BusinessApplication`, system `Web`, plus `url`, `image` and `sameAs`. No price, rating or reviews. `<` is escaped as `\u003c`. | `jsonld()` in `build.py` |
+| LinkedIn | `SITE['linkedin']`. The footer's bottom row now links to it (it replaces the sentence "Cytogent is a research tool, not a medical device.", which still stands on home, `/security/`, `/solutions/clinical-trials/` and in `llms.txt`). | `src/content.py`, `footer()`, `site.css` |
+| Icons | `favicon.ico` (48×48), `apple-touch-icon.png` (180×180) and `img/logo-512.png`, rendered from the mark on #05060E. Linked from every page and from `site/404.html`. | `icons.py` |
+| Scripts | Minified with terser (156 KB → 87 KB) and named after a hash of their content (`/js/app.<hash>.js`). Vercel caches `/js/` for a year. The preview artifact still inlines the source files. | `publish_js()` in `build.py`, `package.json`, `vercel.json` |
+| Hero poster | `poster.py` is removed, with `hero-poster.jpg` and `.webp`. Nothing used them, and as a picture behind the home hero the WebP made LCP worse (1.8 s → 2.55 s in Lighthouse, mobile), because it became the largest element. | — |
+| Fonts | Both preloads stay. Geist Mono shows on the first screen only on the glossary, but every page uses it further down, so the browser downloads it at the first layout anyway. Without the preload it starts later, and Lighthouse's FCP got worse (0.8 s → 1.05–1.5 s on mobile). | `page()` in `build.py` |
+| One host | `cytogent.vercel.app` redirects (308) to `cytogent.com`, path kept. The rule matches only that host, not preview URLs. Its source is `/(.*)`, not `/:path*`: with `trailingSlash: true`, `/:path*` does not match `/` or page URLs that end in `/`. | `vercel.json` |
+| Search Console | `SITE['google_site_verification']` is empty. If it is set, the home page gets the meta tag. The steps to do by hand are in the README. | `src/content.py`, `page()` |
+
+### Speed (Lighthouse 13.5, mobile)
+
+Measured on 2 October 2026 with `npx serve` (gzip on) on this machine, 3 runs per page, median. The live site was measured too, before this change.
+
+| Page | Live site now | Before (local) | After (local) |
+| --- | --- | --- | --- |
+| `/` | 100 · LCP 1.52 s · TBT 11 ms · CLS 0 | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 152 KiB | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 140 KiB |
+| `/platform/` | 100 · LCP 1.72 s · TBT 7 ms · CLS 0 | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 144 KiB | 99 · LCP 1.80 s · TBT 0 ms · CLS 0 · 131 KiB |
+| `/compare/` | 100 · LCP 1.67 s · TBT 0 ms · CLS 0 | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 140 KiB | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 129 KiB |
+| `/solutions/literature-and-evidence/` | 100 · LCP 1.73 s · TBT 2 ms · CLS 0 | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 139 KiB | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 128 KiB |
+| `/request-access/` | 100 · LCP 1.69 s · TBT 0 ms · CLS 0 | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 139 KiB | 100 · LCP 1.80 s · TBT 0 ms · CLS 0 · 128 KiB |
+
+All pages were already inside the targets (performance 90+, LCP under 2.5 s, CLS under 0.1, TBT under 200 ms), so the scores cannot go up. What the change gives: 11 to 13 KiB less per page (the scripts go from 47–50 KiB to 36–37 KiB over the wire), no "minify JavaScript" warning, and scripts that a returning visitor does not download again. With real network throttling (`--throttling-method=devtools`) the numbers are the same before and after: performance 100, LCP 0.85–0.88 s, TBT up to 25 ms, CLS up to 0.055.
+
+Lighthouse on the inlined CSS: it is not render-blocking (it is in the page). It reports about 10 to 12 KiB of unused CSS on inner pages and none on home. That is expected for one shared stylesheet, and it was left as it is.
+
+The diagrams were already lazy: each canvas starts when it comes within 360 px of the screen and its animation stops while it is off screen (`cell.js` runs one animation loop, gated per canvas by an IntersectionObserver). Nothing changed there.
+
+---
+
+
 Built from [`docs/V2_BRIEF.md`](V2_BRIEF.md), in the seven phases it lists, one commit per phase.
 
 ## Problem
@@ -112,7 +153,7 @@ Not checked one by one: the short table cells that describe other products in ge
 ## Decisions made while building
 
 - **Eyebrows are not printed.** The current design prints section titles only, so the eyebrows in the brief stay in the source as before. **Ledes are printed** where the brief gives one for a new or changed section, because those sections need the text.
-- **Meta descriptions.** Every new or changed page has a description of 140 to 160 characters. Pages the brief said to keep (solutions, industries and a few others) still have their old, shorter descriptions.
+- **Meta descriptions.** Every new or changed page has a description of 140 to 155 characters (the limit was 160 until October 2026; see "Search and speed" at the top). Pages the brief said to keep (solutions, industries and a few others) still have their old, shorter descriptions.
 - **Encryption at rest** is set to "In progress", following the deck. The security diagram caption says so too.
 - **The privacy policy** also got one line each in sections 2 and 3 (analytics data, and consent as the legal basis), so it agrees with the new section 7.
 - **Inactive story steps are less dim** (68% instead of 42%, and their number uses the lighter grey). At 42% their text missed AA contrast, which the acceptance checks ask for.
@@ -120,7 +161,7 @@ Not checked one by one: the short table cells that describe other products in ge
 
 ## Checks
 
-Run from `source/`, with `dist/` served on port 8765 (`python3 -m http.server 8765 --directory dist`):
+`make.sh` runs `python3 tools/seo_check.py` on every build (no browser, no server; see the README). The others run from `source/`, with `dist/` served on port 8765 (`python3 -m http.server 8765 --directory dist`):
 
 - `python3 verify_all.py`: contrast, one H1, heading order, title and description length, canonical, JSON-LD, links and anchors, phone overflow, reduced motion, console errors.
 - `python3 tools/dg_layout_check.py`: every diagram at four widths. The only findings left are tags in the "scattered files" diagram passing each other while they move, which is the animation itself.

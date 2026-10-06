@@ -12,9 +12,10 @@ __pycache__/
 source/dist/
 source/_og_pages.json
 source/_og.html
-source/_poster.html
-source/_hero.png
 source/artifact.html
 
 # Vercel
 .vercel/
+
+# Node build tools (source/package.json)
+source/node_modules/
