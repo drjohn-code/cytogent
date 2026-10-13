@@ -7,7 +7,7 @@ Marketing site for [cytogent.com](https://cytogent.com), operated by WelloWork A
 | Path | What it is |
 | --- | --- |
 | `site/` | **The deployed site.** Plain static HTML, minified JS with a content hash in each name, fonts, images, OG images, icons (`favicon.ico`, `apple-touch-icon.png`, `img/logo-512.png`), `sitemap.xml`, `robots.txt`, `llms.txt`, `404.html`. No build step on the host. |
-| `source/` | The Python generator that produces `site/`. Home copy: `src/content.py`. Inner-page copy: `src/pages.py`. Styles: `src/css/site.css`. Scripts: `src/js/` (`demo.js` is the live demo, `consent.js` is the cookie bar and analytics). |
+| `source/` | The Python generator that produces `site/`. Home copy: `src/content.py`. Inner-page copy: `src/pages.py`. Styles: `src/css/site.css`. Scripts: `src/js/` (`film.js` plays the "how it works" film, `consent.js` is the cookie bar and analytics). |
 | `docs/` | `HANDOFF.md` (handoff, open items to confirm, pre-launch checklist), `V2_BRIEF.md` (the brief the v2 site was built from) and full-page screenshots of every route. |
 | `api/request-access.js` | Serverless function behind the request-access form. It emails each request to request@cytogent.com through [Resend](https://resend.com). |
 | `source/lastmod.json` | The date each page last changed, and a hash of its content. The build updates it; commit it with `site/`. |

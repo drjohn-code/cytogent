@@ -1,7 +1,7 @@
 {
  "/": {
-  "date": "2026-10-06",
-  "hash": "e19e9412d0a62d39"
+  "date": "2026-10-14",
+  "hash": "0df006fceef4262e"
  },
  "/about/": {
   "date": "2026-10-06",
@@ -48,8 +48,8 @@
   "hash": "986fae67ee1112e9"
  },
  "/platform/": {
-  "date": "2026-10-06",
-  "hash": "af3de08e5c4a7860"
+  "date": "2026-10-14",
+  "hash": "7259a5487ac2f965"
  },
  "/privacy/": {
   "date": "2026-10-02",
@@ -76,32 +76,32 @@
   "hash": "acfda25571042b30"
  },
  "/solutions/clinical-trials/": {
-  "date": "2026-10-02",
-  "hash": "4857f1ac0e2d1aad"
+  "date": "2026-10-14",
+  "hash": "5abeda0f03b11f0c"
  },
  "/solutions/crispr-genome-editing/": {
-  "date": "2026-10-02",
-  "hash": "bf642edd61524067"
+  "date": "2026-10-14",
+  "hash": "02c2a27e541afdbb"
  },
  "/solutions/in-silico-studies/": {
-  "date": "2026-10-06",
-  "hash": "ff01aeeb3fd840ec"
+  "date": "2026-10-14",
+  "hash": "2c8de3e9477ad511"
  },
  "/solutions/literature-and-evidence/": {
-  "date": "2026-10-02",
-  "hash": "97e2e54a7055c541"
+  "date": "2026-10-14",
+  "hash": "a87e803ded4e025d"
  },
  "/solutions/patent-documentation/": {
-  "date": "2026-10-02",
-  "hash": "011f5fb124d40a85"
+  "date": "2026-10-14",
+  "hash": "073db506561a8e01"
  },
  "/solutions/protein-design/": {
-  "date": "2026-10-06",
-  "hash": "2708f046061e7f76"
+  "date": "2026-10-14",
+  "hash": "7f39e74ede44f43f"
  },
  "/solutions/regulatory-documentation/": {
-  "date": "2026-10-02",
-  "hash": "808193cc106e37d5"
+  "date": "2026-10-14",
+  "hash": "506635d401d59f86"
  },
  "/terms/": {
   "date": "2026-10-02",

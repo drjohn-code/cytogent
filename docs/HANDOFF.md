@@ -115,14 +115,18 @@ Each item below is in the build as the brief wrote it, and is marked in the HTML
 
 - `source/src/js/consent.js` is inlined into every page by the build. `site/404.html` carries a hand-pasted copy; the build prints a warning if the two differ.
 - Before a choice: no request to Google, no cookie. "Accept analytics" loads the tag. "Decline" stores the choice. "Cookie settings" in the footer reopens the bar. Declining after an earlier yes stops Analytics and removes its cookies.
-- Events go through `window.cgTrack(name, params)`, which does nothing without consent: `generate_lead`, `demo_select_example`, `demo_step`, `demo_complete`, `cta_click`.
+- Events go through `window.cgTrack(name, params)`, which does nothing without consent: `generate_lead`, `demo_play`, `demo_pause`, `demo_step`, `demo_complete`, `cta_click`.
 - The preview artifact has no analytics.
 
-## The demo
+## The film (replaced the demo, October 2026)
 
-- Copy: `DEMO` in `source/src/content.py`. Markup: `demo()` in `source/build.py`. Script: `source/src/js/demo.js`. Styles: the `demo` block in `site.css`.
-- Picking an example plays it once through to the File step and then stops. This is how `demo_complete` can fire after a tab click. Clicking a step stops everything at that step.
-- On phones the feed is a short window on the newest messages, with "Show all" above it.
+Feedback said the demo under the hero was confusing (tabs above, steps below, nothing explaining each step) and that the home page was too full.
+
+- The demo is now a film: one example in four chapters (Write, Sign, Work, Result), about 30 seconds. It plays like a video: autoplay while on screen, pause button, a timeline with clickable chapters, a time readout, and a caption that says what each chapter shows. It loops.
+- Real HTML, not a video file: sharp text, no download, copy in `FILM` in `source/src/content.py`. Markup: `film()` in `source/build.py`. Script: `source/src/js/film.js`. Styles: the `film` block in `site.css`.
+- It holds still off screen and in a hidden tab. With reduced motion it starts paused and every chapter shows finished. Screen readers get a transcript instead of the animated screen.
+- Events: `demo_play`, `demo_pause`, `demo_step`, `demo_complete` (first full run).
+- The home page went from 16 sections to 8: hero, film, workflows, why Cytogent (only the rows where Cytogent differs; the full table is on `/compare/`), pilots, one trust row (NVIDIA, data, security), six FAQ answers, CTA. The film replaces the research brief, people and agents, how it works and the scroll story sections; "Who it is for" lives in the nav; access is in the CTA.
 
 ## Pilots: one switch
 

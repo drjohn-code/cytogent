@@ -197,13 +197,10 @@ INDUSTRIES = [
 ]
 
 # --------------------------------------------------------------------------
-# The live brief demo (home, right under the hero; one example on Platform).
-# Every name, time, file and number here is made up: the panel carries the label "Illustrative example".
-# Steps: 1 Write, 2 Ask, 3 Brief, 4 Work, 5 File. "at" = the step a feed message appears at;
-# the third value of a brief field = the step it is filled in at.
+# The film: how Cytogent works, played like a short video (home, right under the hero; Platform).
+# One made-up project in four chapters. Every name, time, file and number is made up: the player carries the
+# label "Illustrative example". Each chapter: (key, label in the timeline, caption, sub-caption).
 # --------------------------------------------------------------------------
-DEMO_STEPS = ["Write", "Ask", "Brief", "Work", "File"]
-
 # agent: (icon, tile colour, model). CONFIRM: "Planner" as the name of the agent that asks and plans.
 DEMO_AGENTS = {
     "Planner": ("list", 4, "long-context LLM"),
@@ -212,200 +209,50 @@ DEMO_AGENTS = {
     "Writer": ("pen", 2, "drafting LLM"),
 }
 
-DEMO = [
-    {
-        "id": "resistance", "tab": "Drug resistance",
-        "feed": [
-            {"who": "Dr. Berg", "ini": "AB", "time": "09:00", "at": 1,
-             "text": "Our lung cancer cell line stopped responding to a KRAS inhibitor after six weeks. Why, and what "
-                     "should we test next?",
-             "files": ["rna-seq_wk0_wk6.csv", "variants.vcf"]},
-            {"who": "Planner", "time": "09:01", "at": 2, "text": "Three questions before I plan.",
-             "qa": [("What counts as a good answer?", "Top 3 causes, each with one test"),
-                    ("What can the lab do in the next four weeks?", "Two CRISPR knockouts, no animal work"),
-                    ("What do we compare with?", "The parental line")]},
-            {"event": "Brief signed by Dr. Berg", "time": "09:04", "at": 3},
-            {"who": "Planner", "time": "09:05", "at": 4,
-             "text": "I split the brief into 6 tasks: 4 for agents, 2 for people."},
-            {"who": "Analyst", "time": "11:40", "at": 4,
-             "text": "The week-6 sample has a mutation at a known resistance site. Flagged for review."},
-            {"who": "Writer", "time": "14:12", "at": 5,
-             "text": "Report v0.2 is ready: 3 causes, 3 tests, 18 citations."},
-        ],
-        "brief": {
-            "id": "RB-014",
-            "fields": [
-                ("Question", "What causes acquired resistance to the KRAS inhibitor in line LC-7R?", 1),
-                ("Hypothesis", "A second mutation in KRAS, or a bypass pathway.", 2),
-                ("Data", "RNA-seq at week 0 and week 6, variant list, dose–response curves.", 1),
-                ("Control", "Parental line LC-7.", 2),
-                ("Success", "Top 3 causes, each with evidence and one test.", 2),
-                ("Limits", "Two CRISPR knockouts. No animal work.", 2),
-                ("Owner", "Dr. A. Berg · signed 09:04", 3),
-            ],
-        },
-        "board": [
-            ("To do", [
-                {"id": "CG-105", "t": "Order guides for the top 2 targets", "owner": "Jonas, lab manager", "ini": "J",
-                 "pills": [("Person", "")]},
-            ]),
-            ("In progress", [
-                {"id": "CG-101", "t": "Read 40 papers on KRAS inhibitor resistance", "agent": "Reader", "model": "long-context LLM"},
-                {"id": "CG-102", "t": "Compare variants with known resistance sites", "agent": "Analyst", "model": "code model"},
-                {"id": "CG-104", "t": "Approve the knockout plan", "owner": "Dr. Berg", "ini": "AB",
-                 "pills": [("Needs Dr. Berg", "progress")]},
-            ]),
-            ("Done", [
-                {"id": "CG-100", "t": "Brief signed", "owner": "Dr. Berg", "ini": "AB"},
-                {"id": "CG-103", "t": "Dock the inhibitor into the mutant pocket", "agent": "Analyst", "model": "structure model"},
-            ]),
-        ],
-        "file": {
-            "title": "Resistance report v0.2",
-            "meta": "3 causes · 3 tests · 18 citations",
-            "sections": ["Summary", "Evidence table", "Docking results", "Proposed tests", "Bench protocol: CRISPR knockout"],
-            "exports": ["ELN", "Word", "PDF"],
-        },
+FILM = {
+    "chapters": [
+        ("write", "Write", "Write your goal in plain words.", "Attach data if you have it. No perfect prompt needed."),
+        ("brief", "Sign", "Cytogent asks, and you sign the brief.", "Only the questions that change the plan."),
+        ("work", "Work", "Agents and people share the work.", "Agents read and analyse. People run the lab and approve."),
+        ("file", "Result", "You get a cited file to sign off.", "Every claim links to its source."),
+    ],
+    "who": ("Dr. Berg", "AB"),
+    "goal": "Our lung cancer cell line stopped responding to a KRAS inhibitor after six weeks. "
+            "Why, and what should we test next?",
+    "files": ["rna-seq_wk0_wk6.csv", "variants.vcf"],
+    "qa": [("What counts as a good answer?", "Top 3 causes, each with one test"),
+           ("What can the lab do in four weeks?", "Two CRISPR knockouts, no animal work"),
+           ("What do we compare with?", "The parental line")],
+    "brief_id": "RB-014",
+    "brief": [("Question", "Why does line LC-7R resist the KRAS inhibitor?"),
+              ("Hypothesis", "A second KRAS mutation, or a bypass pathway"),
+              ("Control", "Parental line LC-7"),
+              ("Success", "Top 3 causes, each with evidence and one test"),
+              ("Limits", "Two CRISPR knockouts. No animal work.")],
+    # (owner, agent or person, task); a person is (name, initials)
+    "agents": [("Reader", "Read 40 papers on KRAS inhibitor resistance"),
+               ("Analyst", "Compare variants with known resistance sites"),
+               ("Writer", "Draft the resistance report")],
+    "people": [(("Dr. Berg", "AB"), "Approve the knockout plan"),
+               (("Jonas, lab", "J"), "Order guides for the top 2 targets")],
+    "finding": ("Analyst", "Week 6 has a mutation at a known resistance site. Flagged for Dr. Berg."),
+    "file": {
+        "title": "Resistance report v0.2",
+        "meta": "3 causes · 3 tests · 18 citations",
+        "sections": ["Summary", "Evidence table", "Docking results", "Proposed tests", "Bench protocol"],
+        "claim": "A secondary KRAS mutation at the drug-binding pocket is the most likely cause",
+        "exports": ["ELN", "Word", "PDF"],
     },
-    {
-        "id": "trial", "tab": "Clinical trial",
-        "feed": [
-            {"who": "Dr. Lind", "ini": "ML", "time": "09:00", "at": 1,
-             "text": "We have a skin patch for vitiligo. Help us plan the first study in people.",
-             "files": ["preclinical_safety.pdf", "IB_draft_v2.docx"]},
-            {"who": "Planner", "time": "09:01", "at": 2, "text": "Three questions before I plan.",
-             "qa": [("Which phase, and where?", "Phase I/IIa, two sites in Sweden"),
-                    ("What matters most?", "Safety first, then repigmentation at week 24"),
-                    ("Who can join?", "Adults with stable non-segmental vitiligo")]},
-            {"event": "Brief signed by Dr. Lind", "time": "09:06", "at": 3},
-            {"who": "Planner", "time": "09:07", "at": 4,
-             "text": "I split the brief into 7 tasks: 4 for agents, 3 for people."},
-            {"who": "Analyst", "time": "13:20", "at": 4,
-             "text": "Sample size draft: 24 participants. Assumptions are listed for the statistician."},
-            {"who": "Writer", "time": "16:05", "at": 5,
-             "text": "Protocol v0.3 is drafted against the SPIRIT checklist, with 31 citations."},
-        ],
-        "brief": {
-            "id": "RB-022",
-            "fields": [
-                ("Question", "Is the patch safe, and does it show early repigmentation in adults with non-segmental vitiligo?", 1),
-                ("Design", "Phase I/IIa, randomised, double-blind, vehicle-controlled.", 2),
-                ("Population", "Adults aged 18 to 65 with stable non-segmental vitiligo.", 2),
-                ("Primary endpoint", "Adverse events up to week 24.", 2),
-                ("Secondary endpoint", "Change in F-VASI at week 24.", 2),
-                ("Sites and rules", "Two sites in Sweden · EU CTR · ICH GCP.", 2),
-                ("Owner", "Dr. M. Lind · signed 09:06", 3),
-            ],
-        },
-        "board": [
-            ("To do", [
-                {"id": "CG-207", "t": "Book the ethics review meeting", "owner": "Elin, study coordinator", "ini": "E",
-                 "pills": [("Person", "")]},
-            ]),
-            ("In progress", [
-                {"id": "CG-202", "t": "Draft the protocol", "agent": "Writer", "model": "drafting LLM"},
-                {"id": "CG-203", "t": "Sample size and SAP draft", "agent": "Analyst", "model": "code model"},
-                {"id": "CG-205", "t": "Confirm site feasibility", "owner": "Site lead", "ini": "SL",
-                 "pills": [("Person", "")]},
-                {"id": "CG-206", "t": "Approve protocol v0.3", "owner": "Dr. Lind", "ini": "ML",
-                 "pills": [("Needs Dr. Lind", "progress")]},
-            ]),
-            ("Done", [
-                {"id": "CG-200", "t": "Brief signed", "owner": "Dr. Lind", "ini": "ML"},
-                {"id": "CG-201", "t": "Review 25 trials of topical vitiligo treatments", "agent": "Reader", "model": "long-context LLM"},
-            ]),
-        ],
-        "file": {
-            "title": "Clinical trial application draft",
-            "meta": "Protocol v0.3 · SAP draft · CRF set · 31 citations",
-            "sections": ["Protocol", "Statistical analysis plan", "Case report forms",
-                         "Gaps in the investigator's brochure", "Cover letter draft"],
-            "exports": ["Word", "PDF"],
-        },
-    },
-    {
-        "id": "crispr", "tab": "CRISPR diagnostic",
-        "feed": [
-            {"who": "Dr. Nyberg", "ini": "SN", "time": "09:00", "at": 1,
-             "text": "We want a CRISPR test that finds high-risk HPV in cervical samples. Where do we start?",
-             "files": ["sample_overview.xlsx"]},
-            {"who": "Planner", "time": "09:01", "at": 2, "text": "Three questions before I plan.",
-             "qa": [("Which HPV types first?", "HPV16 and HPV18"),
-                    ("Where will the test run?", "In the clinic, from a self-collected swab"),
-                    ("Which market first?", "The EU, under IVDR")]},
-            {"event": "Brief signed by Dr. Nyberg", "time": "09:05", "at": 3},
-            {"who": "Planner", "time": "09:06", "at": 4,
-             "text": "I split the brief into 6 tasks: 4 for agents, 2 for people."},
-            {"who": "Analyst", "time": "12:30", "at": 4,
-             "text": "12 candidate guides designed. 4 pass the cross-reactivity check against 14 other HPV types."},
-            {"who": "Writer", "time": "15:45", "at": 5,
-             "text": "The assay design report and an IVDR technical file outline are ready."},
-        ],
-        "brief": {
-            "id": "RB-031",
-            "fields": [
-                ("Question", "Can a Cas12-based test detect HPV16 and HPV18 in self-collected swabs?", 1),
-                ("Targets", "E6 and E7 regions of HPV16 and HPV18.", 2),
-                ("Compare with", "A validated PCR test on the same samples.", 2),
-                ("Success", "Sensitivity and specificity against PCR on banked samples.", 2),
-                ("Rules", "Ethics approval for banked samples · IVDR.", 2),
-                ("Owner", "Dr. S. Nyberg · signed 09:05", 3),
-            ],
-        },
-        "board": [
-            ("To do", [
-                {"id": "CG-306", "t": "Run a limit-of-detection test on synthetic targets", "owner": "Lab technician", "ini": "LT",
-                 "pills": [("Person", ""), ("Protocol attached", "note")]},
-            ]),
-            ("In progress", [
-                {"id": "CG-302", "t": "Design guides for HPV16 and HPV18 E6/E7", "agent": "Analyst", "model": "design model"},
-                {"id": "CG-304", "t": "Outline the IVDR technical file", "agent": "Writer", "model": "drafting LLM"},
-                {"id": "CG-305", "t": "Approve the guide shortlist", "owner": "Dr. Nyberg", "ini": "SN",
-                 "pills": [("Needs Dr. Nyberg", "progress")]},
-            ]),
-            ("Done", [
-                {"id": "CG-300", "t": "Brief signed", "owner": "Dr. Nyberg", "ini": "SN"},
-                {"id": "CG-301", "t": "Review 60 papers on CRISPR detection of HPV", "agent": "Reader", "model": "long-context LLM"},
-            ]),
-        ],
-        "file": {
-            "title": "Assay design report v0.1",
-            "meta": "4 guides · 1 lab protocol · IVDR outline · 26 citations",
-            "sections": ["Summary", "Guide shortlist and checks", "Lab protocol: limit of detection",
-                         "IVDR technical file outline", "Open questions"],
-            "exports": ["ELN", "Word", "PDF"],
-        },
-    },
-]
+}
 
 # --------------------------------------------------------------------------
-# Home: how it works
+# How it works (llms.txt; the film tells the same four steps)
 # --------------------------------------------------------------------------
 HOW = [
     ("Write", "Your goal in plain language. Attach data or connect your sources."),
     ("Brief", "Cytogent asks a few questions. You confirm and sign the research brief."),
     ("Work", "Agents and people do the tasks. Each step goes to the best model and is logged."),
     ("Decide", "Review cited results, sign off, and export to your notebook, LIMS or report."),
-]
-
-# --------------------------------------------------------------------------
-# Home: the research brief, and people and agents
-# --------------------------------------------------------------------------
-BRIEF_CARDS = [
-    ("pen", "Write it your way", "Type the goal the way you would tell a colleague. Attach data if you have it."),
-    ("message", "Answer a few questions",
-     "Cytogent asks only what changes the plan: data, what counts as an answer, limits and rules."),
-    ("check", "Sign the brief",
-     "One page with the question, hypothesis, data, controls, endpoints, rules and owner. Agents plan from it, "
-     "and every result links back to it."),
-]
-
-# (text, open item or None)
-PEOPLE_TICKS = [
-    ("Agents take the reading, analysis and drafting.", None),
-    ("People get lab work, reviews and sign-offs, with the protocol attached.", None),
-    ("New tasks appear as results come in.", None),
-    ("Anything that leaves the project waits for a yes.", "outbound"),
 ]
 
 # --------------------------------------------------------------------------
@@ -419,88 +266,6 @@ PILOTS = [
      "tags": ["CRISPR &amp; genome editing", "Literature &amp; evidence"], "vis": "crispr-genome-editing"},
     {"id": "eipha", "name": "Eipha Biosciences", "line": "Clinical trial for a vitiligo skin patch.",
      "tags": ["Clinical trials, full cycle", "Regulatory documentation"], "vis": "clinical-trials"},
-]
-
-# --------------------------------------------------------------------------
-# Home: one project, end to end
-# --------------------------------------------------------------------------
-STORY = [
-    {
-        "n": "01", "h": "A question arrives",
-        "p": "The team asks why a cell line resists an inhibitor. They attach assay results and a variant list.",
-        "label": "2 datasets · 1 question",
-        "img": ("confocal-fibroblast-actin-dapi.jpg",
-                "Confocal · Human fibroblast · Actin (phalloidin), DNA (DAPI) · 20 µm",
-                "Stressed cells. A gold ring marks the nucleus."),
-        "vis": ('st_question', 'You ask · two datasets attach to the question', 'A person asks a question in a card; an assay result set and a variant list attach to it.'),
-
-
-    },
-    {
-        "n": "02", "h": "The brief is signed",
-        "p": "Cytogent asks which data to use, what counts as an answer and what the limits are. The PI signs a one-page brief.",
-        "label": "1 brief · signed",
-        "vis": ('st_brief', 'The Planner asks · the brief fills in · the PI signs',
-                'A person, the PI, and the Planner agent; the Planner asks three questions, a research brief card fills in '
-                'line by line, and the PI signs it with a check mark.'),
-    },
-    {
-        "n": "03", "h": "Evidence is gathered",
-        "p": "The Reader agent reviews 40 papers and two cohort datasets and cites the three that explain the mutation.",
-        "label": "42 sources read · 3 cited",
-        "img": ("confocal-fibroblast-actin-dapi.jpg",
-                "Confocal · Human fibroblast · Actin (phalloidin), DNA (DAPI) · 20 µm",
-                "Same frame. Citation cards slide in over the image edge."),
-        "vis": ('st_evidence', 'The Reader agent reads 40 papers · three become citations', 'The Reader agent scans a grid of forty papers; three light up and become numbered citations.'),
-
-
-    },
-    {
-        "n": "04", "h": "Models test the idea",
-        "p": "In-silico docking and a variant-effect model rank the mutation and suggest a binding-site change.",
-        "label": "docking · variant effect",
-        "img": ("protein-pocket-mutation.png",
-                "Drawn diagram · Binding pocket · Mutation highlighted",
-                "Protein pocket render with the mutation called out."),
-        "vis": ('st_models', 'The Analyst docks the ligand · candidates ranked · G12C flagged', 'The Analyst agent docks a molecule into the pocket and ranks candidates; the variant effect is flagged.'),
-
-
-    },
-    {
-        "n": "05", "h": "An edit is designed",
-        "p": "Guide RNAs are designed and checked for off-targets. An agent creates a lab task for the bench team, with the protocol attached.",
-        "label": "4 guides · 1 lab task",
-        "img": ("timelapse-division-01..04.jpg",
-                "Time-lapse · HeLa · H2B-GFP · 20 µm · 4 frames",
-                "CRISPR cut animation running into a dividing-cells time-lapse."),
-        "vis": ('st_edit', 'Guides designed · off-targets checked · a lab task goes to the bench',
-                'A guide RNA finds its site, the strand is cut and repaired; guides are checked for off-targets; a lab task '
-                'with the protocol attached goes to a person on the bench team.'),
-
-
-    },
-    {
-        "n": "06", "h": "A study is planned",
-        "p": "A cohort definition, protocol draft and statistical plan are prepared for the clinical team to review.",
-        "label": "protocol v0.3 · SAP draft",
-        "img": ("immune-cells-tissue.jpg",
-                "Confocal · Tissue section · CD3 / CD68 / DAPI · 50 µm",
-                "Trial document skeleton assembling over the cohort image."),
-        "vis": ('st_plan', 'The Writer assembles the protocol · cohort defined · SAP drafted', 'The Writer agent fills a protocol section by section while a cohort of 24 people is defined.'),
-
-
-    },
-    {
-        "n": "07", "h": "The record is written",
-        "p": "Regulatory and patent drafts are built from the same cited results. A scientist signs off at each checkpoint.",
-        "label": "IND module · claim draft",
-        "img": ("confocal-cell-cycle-checkpoint.jpg",
-                "Confocal · Mitotic checkpoint · Mad2 / tubulin / DAPI · 10 µm",
-                "A gold gate opens only after the check mark."),
-        "vis": ('st_record', 'IND modules and claim draft from the same sources · a scientist signs off', 'Regulatory modules and a patent claim tree built from the same three citations; a scientist signs off.'),
-
-
-    },
 ]
 
 # --------------------------------------------------------------------------
@@ -539,25 +304,10 @@ COMPARE_NOTE = ("Examples are for orientation, based on public product informati
 # Home: security rows
 # --------------------------------------------------------------------------
 # (control, text, status, open item or None)
-SECURITY = [
-    ("Project isolation", "Each project has its own storage scope. Agents see only its data.", "done", None),
-    ("No training on your data", "Your data never trains shared models.", "done", None),
-    ("Encryption in transit", "TLS 1.2 or higher on every connection.", "done", None),
-    ("Encryption at rest", "Managed keys, rotated on a schedule.", "progress", "at_rest"),
-    ("Role-based access", "Owner, editor and viewer roles per project and dataset.", "done", None),
-    ("EU data residency", "Storage and processing inside the EU.", "progress", None),
-    ("SOC 2 Type II", "Independent audit of controls.", "planned", None),
-    ("Analytics only with consent", "Google Analytics runs only if you accept it in the cookie banner.", "done", None),
-]
 
 # --------------------------------------------------------------------------
 # Home: doors
 # --------------------------------------------------------------------------
-DOORS = [
-    ("Door one", "Individual", "Scientists and students with an institutional email.", "individual"),
-    ("Door two", "Institute", "Companies, academic institutes and CROs.", "institute"),
-    ("Door three", "Hospital", "Clinical teams and hospital units working with patient data.", "hospital"),
-]
 
 # --------------------------------------------------------------------------
 # Home: FAQ (answers 40-60 words, complete on their own)
@@ -606,6 +356,16 @@ FAQ = [
      "medical device under the MDR or IVDR. Agents draft, search, predict and support. A qualified scientist or "
      "clinician reviews and decides, and that review is part of the record."),
 ]
+
+# The six the home page shows (and lists in its FAQPage JSON-LD); the FAQ page has them all.
+HOME_FAQ = [qa for qa in FAQ if qa[0] in (
+    "What is Cytogent?",
+    "How is Cytogent different from ChatGPT, Claude or Copilot?",
+    "What is a research brief?",
+    "Is my data used to train models?",
+    "Is Cytogent a medical device?",
+    "How do I get access?",
+)]
 
 # Two answers that moved from the home page to the FAQ page only.
 FAQ_AGENTS = (

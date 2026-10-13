@@ -124,8 +124,6 @@
     var inst = window.CytogentDiagrams.attach(c, { kind: c.dataset.kind, phase: +c.dataset.phase || 0, cfg: cfg });
     byCanvas.push({ el: c, inst: inst });
     if (c.id) { byId[c.id] = inst; }
-    var layer = c.closest('.story__layer');
-    if (layer && layer.dataset.on !== 'true' && inst.pause) { inst.pause(); }
   }
   function diagrams(scope) {
     var cvs = $$('canvas.dg', scope);
@@ -151,25 +149,6 @@
           if (!byId[drive]) { var c = d.getElementById(drive); if (c) { attachCv(c); } }
           if (byId[drive]) { byId[drive].setProgress(Math.min(0.999, Math.max(0.001, total / items.length))); }
         }
-      });
-    });
-  }
-
-  /* ---------- home: the scroll story ---------- */
-  function story(scope) {
-    var st = $('#story', scope); if (!st) { return; }
-    if (reduce) { $$('.sstep', st).forEach(function (s) { s.dataset.on = 'true'; }); $$('.story__layer', st).forEach(function (l) { l.dataset.on = 'true'; }); return; }
-    var sSteps = $$('.sstep', st), layers = $$('.story__layer', st), current = -1;
-    scrollJobs.push(function (vh) {
-      var best = 0;
-      sSteps.forEach(function (s, i) { if (s.getBoundingClientRect().top < vh * 0.55) { best = i; } });
-      sSteps.forEach(function (s, i) { s.dataset.on = i === best ? 'true' : 'false'; });
-      if (best === current) { return; }
-      current = best;
-      layers.forEach(function (l, i) {
-        l.dataset.on = i === best ? 'true' : 'false';
-        var c = l.querySelector('canvas.dg');
-        if (c) { if (i === best) { attachCv(c); } byCanvas.forEach(function (o) { if (o.el === c && o.inst.pause) { if (i === best) { o.inst.resume(); } else { o.inst.pause(); } } }); }
       });
     });
   }
@@ -265,8 +244,8 @@
     scope = scope || d;
     scrollJobs = []; byId = {}; byCanvas = [];
     closeSheet();
-    reveal(scope); heroes(scope); diagrams(scope); steps(scope); story(scope); form(scope); svgPlay(scope);
-    if (window.CytogentDemo) { window.CytogentDemo.mount(scope); }
+    reveal(scope); heroes(scope); diagrams(scope); steps(scope); form(scope); svgPlay(scope);
+    if (window.CytogentFilm) { window.CytogentFilm.mount(scope); }
     onScroll();
   }
   window.CytogentApp = { mount: mount };

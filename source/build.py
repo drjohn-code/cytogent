@@ -12,11 +12,11 @@ SRC = os.path.join(ROOT, 'src')
 STATIC = os.path.join(ROOT, 'static')
 DIST = os.path.join(ROOT, 'dist')
 sys.path.insert(0, SRC)
-from content import (SITE, DEFINITION, TAGLINE, FACTS_CHECKED, CONFIRM, SOLUTIONS, INDUSTRIES, HOW, STORY,
-                     BRIEF_CARDS, PEOPLE_TICKS, PILOTS, PILOTS_PUBLIC,
-                     COMPARE, COMPARE_COLS, COMPARE_MORE, COMPARE_NOTE, SECURITY, DOORS,
-                     FAQ, FAQ_AGENTS, FAQ_HOSTING, FAQ_CONFIRM, FOOTER,
-                     DEMO, DEMO_STEPS, DEMO_AGENTS)                  # noqa: E402
+from content import (SITE, DEFINITION, TAGLINE, FACTS_CHECKED, CONFIRM, SOLUTIONS, INDUSTRIES, HOW,
+                     PILOTS, PILOTS_PUBLIC,
+                     COMPARE, COMPARE_COLS, COMPARE_MORE, COMPARE_NOTE,
+                     FAQ, HOME_FAQ, FAQ_AGENTS, FAQ_HOSTING, FAQ_CONFIRM, FOOTER,
+                     FILM, DEMO_AGENTS)                  # noqa: E402
 from pages import (SOLUTION_PAGES, INDUSTRY_PAGES, PLATFORM, DATA, SECURITY_PAGE, ABOUT, RESOURCES,  # noqa: E402
                    FAQ_PAGE, FAQ_MORE, GLOSSARY_PAGE, GLOSSARY, REQUEST, LEGAL,
                    COMPARE_HUB, VS_PAGES, VS_FURTHER,
@@ -34,7 +34,7 @@ CSS = read(os.path.join(SRC, 'css', 'site.css'))
 CELL_JS = read(os.path.join(SRC, 'js', 'cell.js'))
 DG_JS = read(os.path.join(SRC, 'js', 'diagrams.js'))
 APP_JS = read(os.path.join(SRC, 'js', 'app.js'))
-DEMO_JS = read(os.path.join(SRC, 'js', 'demo.js'))
+FILM_JS = read(os.path.join(SRC, 'js', 'film.js'))
 
 
 def squeeze_js(js):
@@ -471,93 +471,105 @@ def nv_line(text_):
     return '<p class="nvline">%s</p>' % tlink(text_, NV.MORE_HREF)
 
 
-# ------------------------------------------------------------------- demo ---
-def demo(examples, mode='full'):
-    """The live brief demo: a chat-like feed on the left, a stage on the right (brief, board, file), a stepper under it.
-    Real HTML, so the text can be read, searched and spoken. mode='full': tabs and autoplay (home);
-    mode='single': one example, no tabs (platform). Without JavaScript the first example shows its last step."""
+# ------------------------------------------------------------------- film ---
+def film():
+    """How Cytogent works, played like a short video: one made-up project in four chapters (Write, Sign, Work, Result).
+    Real HTML, so the text stays sharp at any size and the copy stays in content.py. film.js plays it: the chapter
+    is written to data-ch, CSS animates what belongs to it, and the timeline fills like a video's. The screen is
+    hidden from screen readers; the transcript under it says the same thing. Without JavaScript the Sign chapter
+    shows, finished, and the transcript is visible."""
     esc = lambda t: html.escape(t, quote=False)
-    tick = ('<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" '
-            'stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.6 10.2l2.2 2.2 4.4-4.6"/></svg>')
+    f = FILM
+    chs = f['chapters']
 
-    def face(name, ini='', size='sm'):
-        """An agent is a squircle with its icon; a person is a circle with initials."""
+    def face(name, ini=''):
         if name in DEMO_AGENTS:
-            return ico(DEMO_AGENTS[name][0], DEMO_AGENTS[name][1], 'ico--' + size)
-        return '<span class="av av--%s" aria-hidden="true">%s</span>' % (size, esc(ini))
+            return ico(DEMO_AGENTS[name][0], DEMO_AGENTS[name][1], 'ico--sm')
+        return '<span class="av av--sm">%s</span>' % esc(ini)
 
-    def message(m):
-        if 'event' in m:
-            return ('<li class="msg msg--event" data-at="%d"><p class="msg__ev">%s<span>%s</span><span class="msg__meta">%s</span></p></li>'
-                    % (m['at'], tick, esc(m['event']), m['time']))
-        extra = ''
-        if m.get('files'):
-            extra += '<ul class="msg__files" aria-label="Attachments">%s</ul>' % ''.join(
-                '<li class="tag">%s</li>' % esc(f) for f in m['files'])
-        if m.get('qa'):
-            extra += '<ol class="msg__qa">%s</ol>' % ''.join(
-                '<li><span>%s</span><span class="ans"><span class="sr-only">Answer: </span>%s</span></li>' % (esc(q), esc(a)) for q, a in m['qa'])
-        return ('<li class="msg" data-at="%d">%s<div class="msg__b"><p class="msg__meta">%s · %s</p><p class="msg__t">%s</p>%s</div></li>'
-                % (m['at'], face(m['who'], m.get('ini', '')), esc(m['who']), m['time'], esc(m['text']), extra))
+    def words(t, start=0, step=55):
+        """Each word fades in after the one before, so the goal reads as if it were being typed."""
+        return ' '.join('<span class="fw" style="--d:%dms">%s</span>' % (start + i * step, esc(w))
+                        for i, w in enumerate(t.split()))
 
-    def task(t):
-        if 'agent' in t:
-            owner = '%s<span>%s</span><span class="tag">%s</span>' % (face(t['agent'], size='xs'), t['agent'], esc(t['model']))
-        else:
-            owner = '%s<span>%s</span>' % (face('', t['ini'], 'xs'), esc(t['owner']))
-        pills = ''.join('<span class="pill%s"><i></i>%s</span>' % (' pill--' + k if k else '', esc(n)) for n, k in t.get('pills', []))
-        return ('<li class="task"><span class="task__id">%s</span><p class="task__t">%s</p><div class="task__o">%s</div>%s</li>'
-                % (t['id'], esc(t['t']), owner, '<div class="task__p">%s</div>' % pills if pills else ''))
+    who, ini = f['who']
+    n_words = len(f['goal'].split())
+    t_files = 400 + n_words * 55 + 200
+    write = ('<div class="fs fs--write"><div class="fcompose">'
+             '<div class="fcompose__who">%s<span>%s · new project</span></div>'
+             '<p class="fcompose__t">%s<span class="fcaret"></span></p>'
+             '<div class="fcompose__foot"><ul class="ffiles">%s</ul>'
+             '<span class="fsend" style="--d:%dms">Send%s</span></div></div></div>'
+             % (face(who, ini), esc(who), words(f['goal'], 400),
+                ''.join('<li class="tag fpop" style="--d:%dms">%s</li>' % (t_files + i * 250, esc(x)) for i, x in enumerate(f['files'])),
+                t_files + 900, ARROW))
 
-    def brief_rows(ex, plain=False):
-        return ''.join('<div class="bf__row"%s><dt>%s</dt><dd><span>%s</span></dd></div>'
-                       % ('' if plain else ' data-fill="%d"' % at, esc(k), esc(v)) for k, v, at in ex['brief']['fields'])
+    qa = ''.join('<li class="fpop" style="--d:%dms"><span>%s</span><b style="--d:%dms">%s</b></li>'
+                 % (500 + i * 1100, esc(q), 1000 + i * 1100, esc(a)) for i, (q, a) in enumerate(f['qa']))
+    rows = ''.join('<div class="fbf__row"><dt>%s</dt><dd style="--d:%dms"><span>%s</span></dd></div>'
+                   % (esc(k), 700 + i * 650, esc(v)) for i, (k, v) in enumerate(f['brief']))
+    brief = ('<div class="fs fs--brief">'
+             '<div class="fchat"><div class="fchat__who">%s<span>Planner</span></div>'
+             '<p class="fchat__t fpop" style="--d:150ms">Three questions before I plan.</p><ol class="fqa">%s</ol></div>'
+             '<div class="fcard fbrief"><div class="fcard__head"><h3>Research brief <span>%s</span></h3>'
+             '<span class="pill pill--progress fdraft" style="--d:4400ms"><i></i>Draft</span>'
+             '<span class="pill pill--done fsigned" style="--d:4400ms"><i></i>Signed</span></div>'
+             '<dl class="fbf">%s</dl>'
+             '<p class="fsign" style="--d:4400ms">%s<span>Signed by %s · 09:04</span></p></div></div>'
+             % (face('Planner'), qa, f['brief_id'], rows, face(who, ini), esc(who)))
 
-    def panel(ex, n):
-        b, f = ex['brief'], ex['file']
-        feed = ('<div class="dfeed"><button type="button" class="dmore" hidden>Show all</button>'
-                '<div class="dfeed__scroll"><ol class="feed" aria-live="off" aria-label="Conversation">%s</ol></div></div>'
-                % ''.join(message(m) for m in ex['feed']))
-        brief = ('<div class="stage stage--brief"><div class="dcard"><div class="dcard__head">'
-                 '<h3 class="dcard__title">Research brief <span>%s</span></h3>'
-                 '<span class="pill pill--progress dpill--draft"><i></i>Draft</span>'
-                 '<span class="pill pill--done dpill--signed"><i></i>Signed</span></div>'
-                 '<dl class="bf">%s</dl></div></div>' % (b['id'], brief_rows(ex)))
-        cols = ''.join('<div class="board__col"><h4>%s <span>%d</span></h4><ul>%s</ul></div>'
-                       % (name, len(tasks), ''.join(task(t) for t in tasks)) for name, tasks in ex['board'])
-        board = ('<div class="stage stage--board"><div class="dcard__head"><h3 class="dcard__title">Task board <span>%s</span></h3></div>'
-                 '<div class="board">%s</div></div>' % (b['id'], cols))
-        file_ = ('<div class="stage stage--file"><div class="dcard"><div class="dcard__head"><h3 class="dcard__title">%s</h3></div>'
-                 '<p class="dcard__meta">%s</p><ol class="fsec">%s</ol>'
-                 '<p class="fline">Every claim links to its source. <span class="cite">[1]</span> <span class="cite">[2]</span> '
-                 '<span class="cite">[3]</span></p>'
-                 '<div class="fexp"><span>Export</span>%s</div></div></div>'
-                 % (esc(f['title']), esc(f['meta']), ''.join('<li>%s</li>' % esc(x) for x in f['sections']),
-                    ''.join('<span class="tag">%s</span>' % x for x in f['exports'])))
-        if mode == 'full':
-            attrs = ('role="tabpanel" id="demo-p-%s" aria-labelledby="demo-t-%s" tabindex="0"%s'
-                     % (ex['id'], ex['id'], '' if n == 0 else ' hidden'))
-        else:
-            attrs = 'role="group" aria-label="Example: %s"' % esc(ex['tab'])
-        return ('<div class="dpanel" %s data-example="%s"><div class="dframe">%s<div class="dstage">%s%s%s</div></div></div>'
-                % (attrs, ex['id'], feed, brief, board, file_))
+    def task(i, owner_html, owner, t, kind):
+        return ('<li class="ftask fpop" style="--d:%dms">%s<div><p class="ftask__t">%s</p><p class="ftask__o">%s</p></div>'
+                '<span class="fstate fstate--%s" style="--d:%dms"></span></li>'
+                % (300 + i * 380, owner_html, esc(t), esc(owner), kind, 2600 + i * 700))
+    lane_a = ''.join(task(i, face(a), a, t, 'agent') for i, (a, t) in enumerate(f['agents']))
+    lane_p = ''.join(task(len(f['agents']) + i, face(*p), p[0], t, 'person') for i, (p, t) in enumerate(f['people']))
+    fa, ft = f['finding']
+    work = ('<div class="fs fs--work"><div class="fbrief-chip">%s<span>Brief %s · signed</span></div>'
+            '<div class="flanes"><div class="flane"><h4>Agents</h4><ul>%s</ul></div>'
+            '<div class="flane"><h4>People</h4><ul>%s</ul></div></div>'
+            '<p class="ftoast" style="--d:4200ms">%s<span><b>%s</b>%s</span></p></div>'
+            % (pill_dot(), f['brief_id'], lane_a, lane_p, face(fa), fa, esc(ft)))
 
-    tabs = ''
-    if mode == 'full':
-        tabs = '<div class="dtabs" role="tablist" aria-label="Examples">%s</div>' % ''.join(
-            '<button type="button" class="dtab" role="tab" id="demo-t-%s" aria-controls="demo-p-%s" aria-selected="%s"%s>%s</button>'
-            % (ex['id'], ex['id'], 'true' if n == 0 else 'false', '' if n == 0 else ' tabindex="-1"', esc(ex['tab']))
-            for n, ex in enumerate(examples))
-    steps = '<ol class="dsteps" aria-label="Steps">%s</ol>' % ''.join(
-        '<li><button type="button" class="dstep%s" data-step="%d"%s><i></i>%s</button></li>'
-        % (' is-done', n, ' aria-current="step"' if n == len(DEMO_STEPS) else '', name)
-        for n, name in enumerate(DEMO_STEPS, 1))
-    first = examples[0]
-    nos = ('<noscript><div class="dcard dnos"><div class="dcard__head"><h3 class="dcard__title">Research brief <span>%s</span></h3>'
-           '<span class="pill pill--done"><i></i>Signed</span></div><dl class="bf">%s</dl></div></noscript>'
-           % (first['brief']['id'], brief_rows(first, plain=True)))
-    return ('<div class="demo rv" data-demo data-mode="%s" data-step="%d">%s%s%s%s</div>'
-            % (mode, len(DEMO_STEPS), tabs, ''.join(panel(ex, n) for n, ex in enumerate(examples)), steps, nos))
+    fl = f['file']
+    secs = ''.join('<li class="fpop" style="--d:%dms">%s</li>' % (500 + i * 220, esc(x)) for i, x in enumerate(fl['sections']))
+    file_ = ('<div class="fs fs--file"><div class="fcard fdoc"><div class="fcard__head"><h3>%s</h3>'
+             '<span class="pill pill--progress fdraft" style="--d:4600ms"><i></i>In review</span>'
+             '<span class="pill pill--done fsigned" style="--d:4600ms"><i></i>Signed off</span></div>'
+             '<p class="fdoc__meta">%s</p>'
+             '<div class="fdoc__body"><ol class="fdoc__secs">%s</ol>'
+             '<p class="fdoc__claim fpop" style="--d:1900ms">%s<sup class="fcite" style="--d:2500ms">1</sup>'
+             '<sup class="fcite" style="--d:2800ms">2</sup><sup class="fcite" style="--d:3100ms">3</sup></p></div>'
+             '<div class="fdoc__exp fpop" style="--d:3600ms"><span>Export</span>%s</div></div></div>'
+             % (esc(fl['title']), esc(fl['meta']), secs, esc(fl['claim']),
+                ''.join('<span class="tag">%s</span>' % x for x in fl['exports'])))
+
+    screen = ('<div class="film__screen" aria-hidden="true">'
+              '<div class="film__bar"><i></i><i></i><i></i><span>Cytogent · Research brief %s</span></div>'
+              '<div class="film__stage">%s%s%s%s</div>'
+              '<div class="film__cap">%s</div></div>'
+              % (f['brief_id'], write, brief, work, file_,
+                 ''.join('<p class="fcap" data-for="%d"><span class="fcap__n">%d / %d</span><b>%s</b><span>%s</span></p>'
+                         % (i, i + 1, len(chs), esc(c), esc(sub)) for i, (_, _, c, sub) in enumerate(chs))))
+    play = ('<button type="button" class="film__play" aria-label="Pause">'
+            '<svg class="i-pause" viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="4" width="3.4" height="12" rx="1"/>'
+            '<rect x="11.6" y="4" width="3.4" height="12" rx="1"/></svg>'
+            '<svg class="i-play" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 4.2v11.6a.8.8 0 0 0 1.2.7l9.2-5.8a.8.8 0 0 0 0-1.4L7.7 3.5a.8.8 0 0 0-1.2.7z"/></svg>'
+            '<svg class="i-again" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
+            'stroke-linejoin="round" aria-hidden="true"><path d="M4 10a6 6 0 1 0 1.8-4.3"/><path d="M4 3.5v3h3"/></svg></button>')
+    chapters = ''.join('<li><button type="button" class="film__ch" data-ch="%d" aria-label="Chapter %d: %s"><i><b></b></i><span>%s</span></button></li>'
+                       % (i, i + 1, esc(c), esc(lbl)) for i, (_, lbl, c, _) in enumerate(chs))
+    controls = ('<div class="film__ctrl">%s<ol class="film__chs">%s</ol><span class="film__time" aria-hidden="true">0:00</span></div>'
+                % (play, chapters))
+    transcript = ('<figcaption class="sr-only">How it works, in four steps: <ol>%s</ol></figcaption>'
+                  % ''.join('<li><b>%s</b> %s</li>' % (esc(c), esc(sub)) for _, _, c, sub in chs))
+    return ('<figure class="film rv" data-film data-ch="1" aria-label="How Cytogent works: a short animated example">%s%s%s</figure>'
+            % (screen, controls, transcript))
+
+
+def pill_dot():
+    return ('<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" '
+            'stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.6 10.2l2.2 2.2 4.4-4.6"/></svg>')
 
 
 # -------------------------------------------------------------------- nav ---
@@ -775,7 +787,7 @@ def page(path, title, desc, body, faq=None, crumbs=None, extra=None, noindex=Fal
             '%s<script src="%s" defer></script>'
             '</body></html>'
             % (''.join(head), nav(path), body, footer(), JS_URL['cell.js'], JS_URL['diagrams.js'],
-               '<script src="%s" defer></script>' % JS_URL['demo.js'] if 'data-demo' in body else '', JS_URL['app.js']))
+               '<script src="%s" defer></script>' % JS_URL['film.js'] if 'data-film' in body else '', JS_URL['app.js']))
 
 
 ROUTER = r"""
@@ -816,7 +828,7 @@ ROUTER = r"""
 def artifact(pages, home_title, home_body):
     """One self-contained file for the Claude preview: all pages as templates, a hash router, fonts inline."""
     css = font_face(True) + CSS
-    js = CELL_JS + '\n' + DG_JS + '\n' + DEMO_JS + '\n' + APP_JS
+    js = CELL_JS + '\n' + DG_JS + '\n' + FILM_JS + '\n' + APP_JS
     tmpl = ''.join('<template data-path="%s" data-title="%s">%s</template>' % (p, html.escape(t, quote=True), b)
                    for p, t, b in pages)
     doc = ('<title>%s</title><meta name="description" content="Cytogent website preview"><style>%s</style>'
@@ -836,6 +848,8 @@ def artifact(pages, home_title, home_body):
 
 # =============================================================== home page ==
 def home():
+    """Eight sections, one idea each: hero, the film (how it works), workflows, why Cytogent, pilots, trust, FAQ, CTA.
+    Brief, people and agents, steps and the story are all in the film; data, security and NVIDIA share one trust row."""
     o = []
     kwd = lambda w: '<span class="nobr"><span class="kw">%s</span>.</span>' % w
 
@@ -857,70 +871,17 @@ def home():
         '</div>'
         '</section>'
         % (btn('Request access', '/request-access/', 'primary'),
-           btn('See an example', '#demo', 'outline', False),
+           btn('Watch how it works', '#demo', 'outline', False),
            NV.ANCHOR, NV.MEMBER_LINE, nv_badge('sm', eager=True)))
 
-    # ---- the live demo, right under the hero --------------------------------
+    # ---- how it works: the film, right under the hero ------------------------
     o.append(
         '<section class="band band--cream" aria-labelledby="h-demo" id="demo"><div class="wrap">%s%s%s'
         '<div class="dfoot rv"><p class="cap">Illustrative example. Names, data and numbers are made up.</p>%s</div>'
         '</div></section>'
-        % (shead('See it work', '<span id="h-demo">From a rough idea to a signed %s</span>' % kwd('plan'),
-                 'Pick an example. Watch Cytogent ask the right questions, write the brief, split the work between '
-                 'agents and people, and build the file.', show=True),
-           confirm('planner'), demo(DEMO, 'full'), tlink('See how the platform works', '/platform/')))
-
-    # ---- the research brief -------------------------------------------------
-    o.append(
-        '<section class="band band--dark" aria-labelledby="h-brief"><div class="wrap">%s%s</div></section>'
-        % (shead('The research brief', '<span id="h-brief">You don\'t need the perfect %s</span>' % kwd('prompt'),
-                 'A research question is not a prompt. It hides choices about controls, endpoints, sample size, ethics '
-                 'and regulation. Cytogent asks about them first, so agents plan from a brief your PI would sign.', show=True),
-           icards(BRIEF_CARDS, cols=3)))
-
-    # ---- people and agents ----------------------------------------------------
-    ticks_ = '<ul class="ticks">%s</ul>' % ''.join('%s<li>%s<span>%s</span></li>' % (confirm(k), TICK, t_) for t_, k in PEOPLE_TICKS)
-    o.append(
-        '<section class="band band--cream" aria-labelledby="h-people"><div class="wrap">%s</div></section>'
-        % split('<h2 id="h-people">Agents plan the work and give work back to %s</h2>'
-                '<p class="lede">After you sign the brief, agents split it into tasks. Some go to agents. Some go to people: '
-                'a lab run, a review, an approval. Results come back into the same record.</p>%s' % (kwd('people'), ticks_),
-                bench_frame('frame--43')))
-
-    # ---- who it is for --------------------------------------------------
-    cards = ''
-    for i in INDUSTRIES:
-        cards += (
-            '<a class="card rv" data-rv-item href="/industries/%s/">%s<h3>%s</h3>'
-            '<p class="card__pain">%s</p><p class="card__get">%s</p>%s</a>'
-            % (i['slug'], icon(i['icon']), i['title'], i['pain'], i['get'],
-               tfake('See this page')))
-    o.append(
-        '<section class="band band--dark" aria-labelledby="h-who"><div class="wrap">%s'
-        '<div class="grid grid--4 rv" data-stagger style="margin-top:44px">%s</div>'
-        '</div></section>'
-        % (shead('Who it is for', '<span id="h-who">Built for the people who move science %s</span>' % kwd('forward'),
-                 'Four teams, one workspace. Each gets the agents, data and documents its work needs.'),
-           cards))
-
-    # ---- how it works: four steps -------------------------------------------
-    steps = ''
-    for n, (h, p) in enumerate(HOW, 1):
-        steps += ('<li class="step"><span class="step__n">0%d</span><div><h3>%s</h3><p>%s</p></div></li>'
-                  % (n, h, p))
-    how_media = frame(('', 'You → Planner → Reader, Analyst, Writer and a person → a signed result', ''),
-                      'frame--43', '',
-                      vis=dg('flow', 'You write a goal; the Planner asks a few questions and you sign a research brief; the work '
-                                     'fans out to three agents, Reader, Analyst and Writer, each with its model, and to a person on '
-                                     'your team; their results land in a page with two citations; you sign off.', cid='dg-how'))
-    o.append(
-        '<section class="band band--cream" aria-labelledby="h-how"><div class="wrap">%s'
-        '<div class="how"><ol class="steps rv" id="how-steps" data-drive="dg-how">%s</ol>'
-        '<div class="rv">%s%s</div>'
-        '</div></div></section>'
-        % (shead('How it works', '<span id="h-how">From question to signed result in four %s</span>' % kwd('steps'),
-                 'You write. Cytogent asks and you sign the brief. Agents and people work. You decide. Every step is logged.'),
-           steps, confirm('planner'), how_media))
+        % (shead('How it works', '<span id="h-demo">From a rough idea to a signed %s</span>' % kwd('plan'),
+                 'One research question, from a sentence to a cited report. Thirty seconds.', show=True),
+           confirm('planner'), film(), tlink('See how the platform works', '/platform/')))
 
     # ---- seven workflows ------------------------------------------------
     flows = ''
@@ -943,30 +904,6 @@ def home():
                  'Every workflow uses the same agents, data and rules, so a result in one is a source in the next.'),
            flows))
 
-    # ---- one project, end to end ---------------------------------------
-    layers, steps_html = '', ''
-    for i, st in enumerate(STORY):
-        v = st['vis']
-        body = dg(v[0], v[2], phase=i)
-        layers += '<div class="story__layer" data-on="%s">%s<p class="frame__cap">%s</p></div>' % (
-            'true' if i == 0 else 'false', body, v[1])
-        steps_html += (
-            '<li class="sstep" data-on="%s" data-label="%s"><span class="sstep__n">%s</span>'
-            '<h3>%s</h3><p>%s</p></li>'
-            % ('true' if i == 0 else 'false', st['label'], st['n'], st['h'], st['p']))
-    o.append(
-        '<section class="band band--cream" aria-labelledby="h-story" id="story"><div class="wrap">%s'
-        '<div class="story"><div class="story__media">'
-        '<div class="frame story__frame">%s</div>'
-        '<p class="illus story__illus">Illustrative example</p>'
-        '</div>'
-        '<ol class="story__steps">%s</ol></div></div></section>'
-        % (shead('One project, end to end',
-                 '<span id="h-story">Follow a single <span class="kw">question</span> through the workspace.</span>',
-                 'A resistance mutation in a cancer cell line. Seven steps, one evidence trail. '
-                 'Illustrative example.'),
-           layers, steps_html))
-
     # ---- why Cytogent: keep your tools, choose Cytogent for research ---------
     o.append(
         '<section class="band band--dark" aria-labelledby="h-why"><div class="wrap">%s%s'
@@ -976,7 +913,7 @@ def home():
         % (shead('Why Cytogent', '<span id="h-why">Keep your AI tools. Choose Cytogent for %s</span>' % kwd('research'),
                  'ChatGPT, Claude, Copilot and agent workspaces are great for general work. Cytogent does the same agent '
                  'work, and is built for how research moves from question to file.', show=True),
-           cmp_table(COMPARE_COLS, COMPARE, 'How Cytogent compares with AI assistants and agent workspaces'),
+           cmp_table(COMPARE_COLS, [r for r in COMPARE if len({r[2], r[3], r[4]}) > 1], 'How Cytogent compares with AI assistants and agent workspaces'),
            COMPARE_NOTE, ARROW))
 
     # ---- pilots ------------------------------------------------------------
@@ -994,83 +931,37 @@ def home():
                  'Both turn a science finding into industry-ready work.', show=True),
            confirm('pilots'), pil, tlink('Read about the pilots', '/customers/')))
 
-    # ---- data and models ------------------------------------------------
-    dm_cards = [
-        ('Datasets', 'Public and licensed collections, cleaned, versioned and documented. Each one lists its '
-                     'source, version and licence inside the workspace. Literature includes full-text papers from '
-                     'ScienceDirect, through Elsevier\'s API.', '', 'sciencedirect'),
-        ('Trained models', 'Domain models for prediction and screening (variant effect, binding affinity, assay QC). '
-                           'Each shows its validation on its own card. Trained and served on NVIDIA GPUs.', pill('progress'), 'trained'),
-        ('Protocols', 'Protocols you can search, adapt and cite, with every step attributed to where it came from.', '', None),
-        ('Health data standards', 'Patient data is modelled with openEHR, exchanged with FHIR, mapped to OMOP for '
-                                  'multi-site studies, and coded with SNOMED CT.', '', 'standards'),
+    # ---- trust: NVIDIA, data and security in one row --------------------------
+    trust = [
+        (NV.ANCHOR, nv_badge('sm'), 'Built on NVIDIA technology',
+         'Science models run on NVIDIA GPUs and BioNeMo NIM microservices: %s.' % ', '.join(NV.MODELS[:-1]),
+         ('See the models', NV.MORE_HREF), 'nvidia'),
+        ('', icon('layers'), 'Data you can trace',
+         'Every dataset has a source, a version and a licence. Every model reports its validation.',
+         ('See data and models', '/data-and-models/'), None),
+        ('', icon('lock'), 'Your data stays yours',
+         'Projects are isolated, access is per role, and nothing trains on your data. Not a medical device.',
+         ('Read about security', '/security/'), None),
     ]
-    cards = ''.join('%s<div class="card rv" data-rv-item><h3>%s</h3><p class="card__get">%s</p>%s</div>'
-                    % (confirm(k), h, p_, pl) for h, p_, pl, k in dm_cards)
-    # ---- built on NVIDIA technology, right before the data you can trace ----
-    o.append(built_on_nvidia('compact'))
+    cards = ''.join('%s<div class="card tcard rv" data-rv-item%s><div class="tcard__mark">%s</div><h3>%s</h3><p class="card__get">%s</p>%s</div>'
+                    % (confirm(k), ' id="%s"' % aid if aid else '', mark, h, p_, tlink(*lnk))
+                    for aid, mark, h, p_, lnk, k in trust)
     o.append(
-        '<section class="band band--dark" aria-labelledby="h-data"><div class="wrap">%s'
-        '<div class="split"><div class="split__text">'
-        '<div class="grid" style="gap:14px">%s</div>%s</div>'
-        '<div class="split__media rv">%s</div>'
-        '</div></div></section>'
-        % (shead('Data &amp; models', '<span id="h-data">Built on data you can %s</span>' % kwd('trace'),
-                 'Every dataset has a source, a version and a licence. Every model reports its validation.'),
-           cards, tlink('See data and models', '/data-and-models/'),
-           frame(('', 'Datasets with source, version and licence · models with validation · the curation path', ''),
-                 'frame--43', vis=dg('data', 'Four dataset cards with their version and licence; three trained models with '
-                                             'their validation metric; a five-step path Collect, Clean, Version, Document, Serve.'))))
+        '<section class="band band--dark" aria-labelledby="h-trust"><div class="wrap">%s'
+        '<div class="grid grid--3 rv" data-stagger style="margin-top:44px">%s</div></div></section>'
+        % (shead('Trust', '<span id="h-trust">Research you can %s</span>' % kwd('trust'), ''), cards))
 
-    # ---- security -------------------------------------------------------
-    rows = ''
-    for name, desc, state, k in SECURITY:
-        rows += '%s<li class="row rv" data-rv-item><b>%s</b><p>%s</p>%s</li>' % (confirm(k), name, desc, pill(state))
-    o.append(
-        '<section class="band band--cream" aria-labelledby="h-sec"><div class="wrap">%s'
-        '<div class="split"><div class="split__text" style="max-width:none">'
-        '<ul class="rows" data-stagger style="margin-top:0">%s</ul>'
-        '<p class="body" style="font-size:15px">Cytogent is a research tool. It is not a medical device and '
-        'makes no clinical decisions.</p>%s</div>'
-        '<div class="split__media rv">%s</div>'
-        '</div></div></section>'
-        % (shead('Security', '<span id="h-sec">Your data stays %s</span>' % kwd('yours'),
-                 'Projects are isolated. Access is per role. Nothing trains on your data.'),
-           rows, tlink('Read the full security page', '/security/'),
-           frame(('', 'Three isolated projects · a crossing refused · roles · the audit log', ''),
-                 'frame--43', vis=dg('security', 'Three project boxes, each with its own data and agent and a lock; a packet '
-                                                 'trying to cross between projects is refused; owner, editor and viewer roles; '
-                                                 'an audit log filling in.'))))
-
-    # ---- three ways in -------------------------------------------------
-    doors = ''
-    for k, name, desc, t in DOORS:
-        doors += ('<a class="door rv" data-rv-item href="/request-access/?type=%s">'
-                  '<h3>%s</h3><p>%s</p>%s</a>' % (t, name, desc, tfake('Request access')))
-    o.append(
-        '<section class="band band--dark" aria-labelledby="h-access"><div class="wrap">%s'
-        '<div class="doors" data-stagger>%s</div>'
-        '%s<p class="body doors__note rv">Tell us what you want to find out. We reply within five working days with a '
-        'first draft of your research brief.</p>'
-        '<div class="next"><span data-n="1">We read your request</span>'
-        '<span data-n="2">A short call, if needed</span>'
-        '<span data-n="3">Workspace set up with your permissions</span></div>'
-        '</div></section>'
-        % (shead('Access', '<span id="h-access">Access is by %s</span>' % kwd('request'),
-                 'No self sign-up. Tell us who you are and what you want to find out. We review every request.'),
-           doors, confirm('reply')))
-
-    # ---- FAQ: a standard accordion, the first answer open ---------------
+    # ---- FAQ: six short answers; the rest live in Resources -----------------
     o.append(
         '<section class="band band--cream" aria-labelledby="h-faq"><div class="wrap">%s'
-        '<div class="faq rv">%s</div></div></section>'
-        % (shead('FAQ', '<span id="h-faq">Questions scientists ask %s</span>' % kwd('first'),
-                 'Short answers, in plain words. The full list lives in Resources.'),
-           qa_list(FAQ)))
+        '<div class="faq rv">%s</div><p class="more rv">%s</p></div></section>'
+        % (shead('FAQ', '<span id="h-faq">Questions scientists ask %s</span>' % kwd('first'), ''),
+           qa_list(HOME_FAQ), tlink('All questions', '/resources/faq/')))
 
-    # ---- final CTA -----------------------------------------------------
+    # ---- final CTA: access is by request ------------------------------------
     o.append(cta('Bring your next <kw>question</kw>.',
-                 'Tell us what you want to find out. We set up the workspace and send you a first research brief.', kind='dark'))
+                 'Access is by request. Tell us what you want to find out, and we reply within five working days '
+                 'with a first draft of your research brief.' + confirm('reply'), kind='dark'))
 
     return ''.join(o)
 
@@ -1198,7 +1089,7 @@ def solution_page(slug):
     strip_ = ('<div class="bstrip rv"><p class="bstrip__k">Starts with a research brief</p>'
               '<p class="bstrip__q">“%s”</p>'
               '<p class="bstrip__t">Cytogent asks about data, success criteria and limits, then agents plan from the signed brief. '
-              '<a href="/#demo">See an example</a></p></div>' % question)
+              '<a href="/#demo">See how it works</a></p></div>' % question)
     nvl = NVIDIA['solution_lines'].get(slug)
     o.append(band('dark', 'h-what', split(
         '<h2 id="h-what">%s</h2>%s%s' % (kw(h2), ticks(bl), confirm('nvidia') + nv_line(nvl) if nvl else ''),
@@ -1274,7 +1165,7 @@ def platform_page():
                sub=c['sub'])]
     # 1. every project starts with a brief: the demo, one example
     h2, lede = c['brief']
-    o.append(band('dark', 'h-brief', head2('h-brief', h2, lede, show=True) + confirm('planner') + demo(DEMO[:1], 'single') +
+    o.append(band('dark', 'h-brief', head2('h-brief', h2, lede, show=True) + confirm('planner') + film() +
                   '<div class="dfoot rv"><p class="cap">Illustrative example. Names, data and numbers are made up.</p></div>'))
     # 2. the shared bench
     h2, lede = c['bench']
@@ -1728,7 +1619,7 @@ def hero_of(path):
 
 
 # ================================================================ scripts ===
-JS_FILES = ['cell.js', 'diagrams.js', 'demo.js', 'app.js']
+JS_FILES = ['cell.js', 'diagrams.js', 'film.js', 'app.js']
 JS_URL = {}   # 'app.js' -> '/js/app.<hash>.js', filled by publish_js() before any page is written
 TERSER = os.path.join(ROOT, 'node_modules', '.bin', 'terser')
 
@@ -1849,7 +1740,7 @@ def build():
             'and your team do the work, with every step cited.')
     body = home()
     open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(
-        page('/', title, desc, body, faq=FAQ, crumbs=None))
+        page('/', title, desc, body, faq=HOME_FAQ, crumbs=None))
     hashes = {'/': content_hash(title, desc, body)}
 
     built = []
