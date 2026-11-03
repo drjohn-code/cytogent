@@ -1,0 +1,6 @@
+# Legacy static site and its generator: kept in the repo until cutover, never deployed with the Next.js site.
+# Without this, Vercel would also deploy api/request-access.js as a function.
+/api
+/site
+/source
+/screenshots

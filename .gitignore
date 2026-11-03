@@ -19,3 +19,17 @@ source/artifact.html
 
 # Node build tools (source/package.json)
 source/node_modules/
+
+# Next.js app (repo root)
+/node_modules/
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+/test-results/
+/playwright-report/
+/screenshots/
+.env*.local
+
+# Generated brand-board scratch pages
+docs/brand/_*.html

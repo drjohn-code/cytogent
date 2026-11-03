@@ -1,0 +1,161 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* Tailwind theme names map onto the tokens; no raw hex values below this line. */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-elevated: var(--elevated);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-signal: var(--signal);
+  --color-shift: var(--shift);
+  --color-alert: var(--alert);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+  --ease-out: var(--ease-out);
+}
+
+@layer base {
+  html {
+    background: var(--canvas);
+    color: var(--text);
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+  }
+
+  body {
+    min-height: 100svh;
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  /* One visible focus style everywhere: 2px signal outline, 12.8:1 against the canvas. */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--signal) 35%, transparent);
+  }
+
+  /* While the mobile menu is open, the page underneath does not scroll. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  /* Glass HUD card (BRIEF §6: surface + 12px blur + 1px line). */
+  .glass {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    -webkit-backdrop-filter: blur(var(--surface-blur));
+    backdrop-filter: blur(var(--surface-blur));
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 16px;
+    top: -100px;
+    z-index: 100;
+    padding: 12px 16px;
+    border-radius: var(--radius-control);
+    background: var(--signal);
+    color: var(--canvas);
+    font-weight: 600;
+  }
+
+  .skip-link:focus-visible {
+    top: 12px;
+    outline-color: var(--text);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 1.125rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  /* Pressed feedback without moving layout. */
+  .btn:active {
+    opacity: 0.85;
+  }
+
+  .btn-primary {
+    background: var(--signal);
+    color: var(--canvas);
+  }
+
+  .btn-primary:hover {
+    background: color-mix(in srgb, var(--signal) 85%, var(--text));
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--signal);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

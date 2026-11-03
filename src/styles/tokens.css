@@ -1,0 +1,37 @@
+/*
+ * Cytogent design tokens: the single source of truth for colour, surface, radius and motion (BRIEF §6).
+ * Components use these through Tailwind theme names (bg-canvas, text-muted, border-line …) or var(--…).
+ * Contrast checked 3 Nov 2026 (WCAG 2.x relative luminance):
+ *   text #EAF4F5 on canvas 17.6:1 · muted #8FA6B4 on canvas 7.8:1, on elevated 7.4:1
+ *   signal #42E8C8 on canvas 12.8:1 (also canvas-on-signal for buttons) · shift #8B7CFF on canvas 6.0:1
+ *   line-strong #56748A on canvas 4.0:1 (form-control borders, ≥3:1) · line #1B3448 is decorative only (1.5:1)
+ */
+:root {
+  --canvas: #050b14;
+  --elevated: #081320;
+  --surface: rgb(13 27 42 / 0.72);
+  --surface-blur: 12px;
+  --line: #1b3448;
+  --line-strong: #56748a;
+
+  --signal: #42e8c8;
+  --shift: #8b7cff;
+  --alert: #ff8a6b;
+
+  --text: #eaf4f5;
+  --muted: #8fa6b4;
+
+  --focus: var(--signal);
+
+  --radius-card: 14px;
+  --radius-control: 10px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 240ms;
+
+  --header-h: 64px;
+  --measure: 68ch;
+
+  color-scheme: dark;
+}
