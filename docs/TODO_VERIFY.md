@@ -8,7 +8,7 @@ Started 3 November 2026 (Phase 1 / 1b of the V3.1 build prompt); summary updated
 
 | # | Blocker | Owner | Where to change |
 | --- | --- | --- | --- |
-| 1 | **Contact email verified** (`info@cytogent.com` exists, has MX records and is read). Until then `/contact` says the address is being set up, and no page offers a way to reach you. | Owner | `credentials.email.status` → `"verified"` |
+| 1 | ~~Contact email verified~~ **Done 3 Nov 2026.** Owner confirmed `info@cytogent.com` works and is monitored; MX records point to Zoho EU. Now shown on `/contact` (mailto per intent), in the footer, the privacy notice, `llms.txt` and Organization JSON-LD. | Owner | `credentials.email` |
 | 2 | **Data controller and privacy contact named** on `/privacy`. | Owner + legal | `src/app/privacy/page.tsx` |
 | 3 | **Legal review of `/privacy` and `/terms`** (governing law, contracting entity, liability, hosting provider and subprocessors). | Legal | same pages |
 | 4 | **Scientific review** of `/science` and the 18 glossary entries. | Named scientist | `src/app/science`, `src/content/glossary.ts` |

@@ -15,9 +15,9 @@ export interface Fact<T> {
 
 export const credentials = {
   email: {
-    status: "pending",
+    status: "verified",
     value: "info@cytogent.com",
-    note: "Legacy README: cytogent.com had no MX records; the legacy form mailed request@. Confirm the mailbox exists and is read.",
+    note: "Owner confirmed in chat on 3 Nov 2026 that the mailbox works and is monitored.",
   },
   linkedin: {
     status: "pending",
