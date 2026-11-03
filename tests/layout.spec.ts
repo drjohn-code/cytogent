@@ -35,14 +35,18 @@ for (const r of routes) {
       await page.keyboard.press("Tab");
       const check = await page.evaluate(() => {
         const el = document.activeElement as HTMLElement | null;
-        if (!el || el === document.body) return null;
+        // vercel-live-feedback: Vercel's toolbar, injected into preview deployments only; not part of the site.
+        if (!el || el === document.body || el.closest("vercel-live-feedback")) return null;
         const b = el.getBoundingClientRect();
         const x = Math.min(Math.max(b.left + b.width / 2, 0), innerWidth - 1);
         const y = Math.min(Math.max(b.top + b.height / 2, 0), innerHeight - 1);
         const top = document.elementFromPoint(x, y);
-        return { visible: !!top && (top === el || el.contains(top) || top.contains(el)), label: el.textContent?.trim().slice(0, 40) };
+        return {
+          visible: !!top && (top === el || el.contains(top) || top.contains(el)),
+          label: `${el.outerHTML.slice(0, 80)} under ${top?.outerHTML.slice(0, 80)}`,
+        };
       });
-      if (check) expect(check.visible, `focused "${check.label}" is covered by another element`).toBe(true);
+      if (check) expect(check.visible, `focused ${check.label}`).toBe(true);
     }
   });
 }

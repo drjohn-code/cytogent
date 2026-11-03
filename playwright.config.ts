@@ -17,9 +17,8 @@ export default defineConfig({
   outputDir: "test-results",
   use: {
     baseURL,
-    extraHTTPHeaders: bypass
-      ? { "x-vercel-protection-bypass": bypass, "x-vercel-set-bypass-cookie": "true" }
-      : undefined,
+    // Sent on every request, so no bypass cookie is needed (the cookie header would add a 307 hop to each response).
+    extraHTTPHeaders: bypass ? { "x-vercel-protection-bypass": bypass } : undefined,
     // Headless Chromium needs this to create a WebGL context (SwiftShader), so the hero canvas path is tested.
     launchOptions: { args: ["--enable-unsafe-swiftshader"] },
   },

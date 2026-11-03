@@ -14,11 +14,13 @@ for (const r of routes) {
     const errors: string[] = [];
     const external: string[] = [];
     const host = new URL(baseURL!).host;
+    // Vercel injects its feedback toolbar (vercel.live) into preview deployments only; it is not part of the site.
+    const allowed = host.endsWith(".vercel.app") ? ["vercel.live"] : [];
     page.on("pageerror", (e) => errors.push(e.message));
-    page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+    page.on("console", (m) => m.type() === "error" && !allowed.some((a) => m.location().url.includes(a)) && errors.push(m.text()));
     page.on("request", (req) => {
       const u = new URL(req.url());
-      if (u.protocol.startsWith("http") && u.host !== host) external.push(req.url());
+      if (u.protocol.startsWith("http") && u.host !== host && !allowed.includes(u.host)) external.push(req.url());
     });
 
     const res = await page.goto(r.path);
