@@ -2,7 +2,7 @@
 
 The website for Cytogent: the Experimental Intelligence Layer for oncology R&D, delivered as Decision-as-a-Service. Next.js App Router, built from the V3.1 build prompt in November 2026.
 
-> **Status (3 November 2026): on a Vercel preview, not in production.** Branch `feat/v3-nextjs-site` deploys to a protected preview (branch URL: `cytogent-git-feat-v3-nextjs-site-drjohn-codes-projects.vercel.app`). `main` and `cytogent.com` still serve the legacy static site from `site/` (see [docs/LEGACY_README.md](docs/LEGACY_README.md)). Launch is blocked on owner and legal items listed in [docs/TODO_VERIFY.md](docs/TODO_VERIFY.md#launch-blockers).
+> **Status (3 November 2026): live on [cytogent.com](https://cytogent.com).** `main` deploys to production on Vercel; all 193 tests passed against the production domain after launch. Open items (contact email, privacy controller, legal and scientific review) are in [docs/TODO_VERIFY.md](docs/TODO_VERIFY.md#launch-blockers). The legacy site's files (`source/`, `site/`, `api/`) are still in the repo but no longer deployed (see [docs/LEGACY_README.md](docs/LEGACY_README.md)).
 
 ## Quick start
 

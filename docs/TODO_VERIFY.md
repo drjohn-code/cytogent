@@ -4,7 +4,7 @@ Started 3 November 2026 (Phase 1 / 1b of the V3.1 build prompt); summary updated
 
 ## Launch blockers
 
-The site should not replace the legacy site until each of these is done.
+> **Launched 3 November 2026 at the owner's instruction ("all ok, push to main") with items 1–4 and 6 still open.** They are now open items on the live site rather than blockers. Production deploy of `b42d93e`; 193/193 tests passed against `https://cytogent.com` afterwards.
 
 | # | Blocker | Owner | Where to change |
 | --- | --- | --- | --- |
@@ -12,7 +12,7 @@ The site should not replace the legacy site until each of these is done.
 | 2 | **Data controller and privacy contact named** on `/privacy`. | Owner + legal | `src/app/privacy/page.tsx` |
 | 3 | **Legal review of `/privacy` and `/terms`** (governing law, contracting entity, liability, hosting provider and subprocessors). | Legal | same pages |
 | 4 | **Scientific review** of `/science` and the 18 glossary entries. | Named scientist | `src/app/science`, `src/content/glossary.ts` |
-| 5 | ~~`vercel.json` switched to Next.js and tests run against the preview~~ **Done on branch `feat/v3-nextjs-site`** (preview passes 193/193). Remaining: merge to `main` when the other blockers are cleared. | Developer | `vercel.json` |
+| 5 | ~~`vercel.json` switched to Next.js, tested on preview and production~~ **Done.** Merged to `main` (fast-forward) and live. | Developer | `vercel.json` |
 | 6 | **Owner sign-off** on the copy as a whole, including the four "intended / proposed" pages (`/platform`, `/pilot-programme`, `/partners`, `/data-governance`). | Owner | — |
 
 ## Owner decisions on record
@@ -27,7 +27,7 @@ NVIDIA Inception membership **and** badge rights · WelloWork AB affiliation wor
 
 ## Not tested (do not describe as passed)
 
-- The production domain. *(The protected Vercel preview of commit 8e64fe5 passed all 193 tests on 3 Nov 2026, so redirects, 410s, headers, OG images and the sitemap work on Vercel. Still untested: `cytogent.com` itself, `www` → apex, and HTTP → HTTPS.)*
+- *(Production now tested: 193/193 against `https://cytogent.com` on 3 Nov 2026. HTTPS, `www` → apex and `cytogent.vercel.app` → apex all redirect (308, Vercel host level); `http://www` takes two hops (→ https://www → apex), which is Vercel's default and acceptable. HSTS is on.)*
 - Screen readers (VoiceOver, NVDA, JAWS), Safari, Firefox, forced colours / Windows High Contrast.
 - Real phones and low-power devices (hero WebGL performance unmeasured on real hardware).
 - Field Core Web Vitals (lab only: see `docs/QA_REPORT.md`).

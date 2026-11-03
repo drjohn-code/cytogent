@@ -4,10 +4,10 @@ Built up during Phases 4–8 (3 November 2026). Ticked items were checked **loca
 
 ## Cutover, in order
 
-1. Launch blockers resolved (`docs/TODO_VERIFY.md#launch-blockers`).
-2. `vercel.json` switched to Next.js (see README → Deploying).
-3. Preview deploy → `BASE_URL=https://<preview> npm test` passes (193 tests locally on 3 Nov 2026).
-4. Production deploy → `BASE_URL=https://cytogent.com npm run seo:check` passes.
+1. Launch blockers resolved (`docs/TODO_VERIFY.md#launch-blockers`). **Launched with items open, by owner decision (3 Nov 2026).**
+2. [x] `vercel.json` switched to Next.js.
+3. [x] Preview deploy: 193/193 tests passed (3 Nov 2026).
+4. [x] Production deploy of `b42d93e`: 193/193 tests passed against `https://cytogent.com` (3 Nov 2026); HTTPS, `www` and `vercel.app` redirects and HSTS checked with curl.
 5. Search Console and Bing Webmaster: verify the domain, submit the sitemap, watch coverage for the retired URLs (should report 410, not soft 404).
 6. Rich Results Test and schema.org validator on `/`, `/platform`, `/faq`, `/glossary`.
 
