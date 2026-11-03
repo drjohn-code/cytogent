@@ -1,6 +1,8 @@
 # QA report (Phase 7)
 
-Run on 3 November 2026 against the local production build (`next build` + `next start`), Chromium 156 (Playwright 1.64.1, headless, SwiftShader WebGL). **Not** run against a deployed URL yet: re-run with `BASE_URL=<preview url> npm test`.
+Run on 3 November 2026 against the local production build (`next build` + `next start`), Chromium 156 (Playwright 1.64.1, headless, SwiftShader WebGL).
+
+**Deployed preview:** the same 193 tests also pass against the protected Vercel preview of commit `8e64fe5` (branch `feat/v3-nextjs-site`), run with `BASE_URL=<preview> VERCEL_AUTOMATION_BYPASS_SECRET=<secret> npm test`. On `*.vercel.app` hosts the tests ignore Vercel's preview-only feedback toolbar (`vercel.live`). The production domain has not been tested.
 
 ## How to run
 
