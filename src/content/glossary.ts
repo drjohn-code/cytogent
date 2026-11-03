@@ -22,7 +22,7 @@ export const glossary: Term[] = [
     slug: "abstention-zone",
     term: "Abstention zone",
     definition:
-      "The set of cases where the evidence is too thin for a model to rank options responsibly. Instead of forcing a guess, the system should say it cannot rank them yet, or propose an experiment that would reduce the uncertainty. Making abstention visible is one of Cytogent’s intended operating principles.",
+      "The set of cases where the evidence is too thin for a model to rank options responsibly. Instead of forcing a guess, the system should say it cannot rank them yet, or propose an experiment that would reduce the uncertainty. Making abstention visible is one of Cytogent’s operating principles.",
   },
   {
     slug: "combination-benefit",
@@ -106,7 +106,7 @@ export const glossary: Term[] = [
     slug: "decision-as-a-service",
     term: "Decision-as-a-Service (DaaS)",
     definition:
-      "Cytogent’s intended delivery model: a managed scientific service that helps a drug team reach a specific development decision, rather than software the team operates alone. It combines experiment selection, coordination with laboratory partners, learning from results and a clear recommendation. It is not a self-serve dashboard or a generic CRO.",
+      "Cytogent’s delivery model: a managed scientific service that helps a drug team reach a specific development decision, rather than software the team operates alone. It combines experiment selection, coordination with laboratory partners, learning from results and a clear recommendation. It is not a self-serve dashboard or a generic CRO.",
   },
   {
     slug: "closed-loop-experimentation",

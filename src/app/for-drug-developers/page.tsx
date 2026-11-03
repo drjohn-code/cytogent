@@ -30,7 +30,7 @@ export default function ForDrugDevelopersPage() {
         answer={
           <p>
             When a programme meets resistance, the Monday-morning question is practical: which experiments get the next
-            slot of lab time and the next vial of patient-derived material? Cytogent is building a service to help
+            slot of lab time and the next vial of patient-derived material? Cytogent helps
             answer that, one bounded batch at a time.
           </p>
         }
@@ -67,7 +67,7 @@ export default function ForDrugDevelopersPage() {
       <Section id="brief" className="border-t border-line">
         <SectionHeader id="brief" eyebrow="From question to plate" title="A decision brief becomes a plate plan.">
           <p>
-            The intended workflow starts with the decision, not the data. The brief sets the question, the models and
+            The workflow starts with the decision, not the data. The brief sets the question, the models and
             the budget; the plan is the small batch that best serves it, with controls built in.
           </p>
         </SectionHeader>
@@ -107,14 +107,14 @@ export default function ForDrugDevelopersPage() {
           ))}
         </ol>
         <div className="mt-6 flex flex-wrap gap-x-8">
-          <ArrowLink href="/pilot-programme">The proposed pilot structure</ArrowLink>
+          <ArrowLink href="/pilot-programme">The pilot structure</ArrowLink>
           <ArrowLink href="/science">The biology</ArrowLink>
           <ArrowLink href="/data-governance">Data governance</ArrowLink>
         </div>
       </Section>
 
       <CtaBand title="Bring a resistance question." cta={{ label: "Bring a resistance question", href: "/contact?intent=pilot" }}>
-        We are scoping pilot conversations now. Please don’t send confidential chemical structures or patient data in a
+        We are ready to start pilots now. Please don’t send confidential chemical structures or patient data in a
         first message.
       </CtaBand>
     </>

@@ -21,8 +21,7 @@ export default function AboutPage() {
           <>
             <p>{site.mission}</p>
             <p>
-              The question behind it: when a cancer drug stops working, which experiment should a team run next? We are
-              building a service to help answer that, starting with resistance to osimertinib in EGFR-mutant lung
+              The question behind it: when a cancer drug stops working, which experiment should a team run next? We built a service to answer that, starting with resistance to osimertinib in EGFR-mutant lung
               cancer.
             </p>
           </>
@@ -35,7 +34,7 @@ export default function AboutPage() {
       />
 
       <Section id="principles">
-        <SectionHeader id="principles" eyebrow="Operating principles" title="How we intend to work." />
+        <SectionHeader id="principles" eyebrow="Operating principles" title="How we work." />
         <div className="mt-10">
           <DesignPrinciples />
         </div>
@@ -56,7 +55,11 @@ export default function AboutPage() {
       )}
 
       <Section id="stage" className="border-t border-line">
-        <SectionHeader id="stage" eyebrow="Where we are" title="In development, and saying so.">
+        <SectionHeader id="stage" eyebrow="Where we are" title="Ready to start.">
+          <p>
+            The platform is built. We are ready to start pilots with oncology drug teams and to partner with
+            laboratories and biobanks.
+          </p>
           <p>{site.statusNote}</p>
         </SectionHeader>
         <div className="mt-6 flex flex-wrap gap-x-8">

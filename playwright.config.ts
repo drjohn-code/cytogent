@@ -3,9 +3,12 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * Tests run against a production build (`npm run build` first). Set BASE_URL to test a deployed preview instead,
  * e.g. BASE_URL=https://<preview>.vercel.app npm test
+ * Protected Vercel previews: also set VERCEL_AUTOMATION_BYPASS_SECRET (Vercel → Settings → Deployment Protection →
+ * Protection Bypass for Automation). It is read from the environment only; never commit it.
  */
 const PORT = 3200;
 const baseURL = process.env.BASE_URL ?? `http://localhost:${PORT}`;
+const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
 export default defineConfig({
   testDir: "tests",
@@ -14,6 +17,9 @@ export default defineConfig({
   outputDir: "test-results",
   use: {
     baseURL,
+    extraHTTPHeaders: bypass
+      ? { "x-vercel-protection-bypass": bypass, "x-vercel-set-bypass-cookie": "true" }
+      : undefined,
     // Headless Chromium needs this to create a WebGL context (SwiftShader), so the hero canvas path is tested.
     launchOptions: { args: ["--enable-unsafe-swiftshader"] },
   },

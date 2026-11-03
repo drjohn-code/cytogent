@@ -8,15 +8,16 @@ Run each prompt in a fresh session, note the date, the assistant and model, and 
 
 Facts an answer may state (all from `src/content/site.ts`):
 
-- Cytogent is **building** an experimental intelligence layer for oncology R&D.
+- Cytogent **has built** an experimental intelligence layer for oncology R&D and is **ready to start pilots and partnerships** (stage as of 3 Nov 2026).
 - Delivered as **Decision-as-a-Service**: a managed scientific service, not a self-serve dashboard, chatbot or generic CRO.
 - Starting focus: combination experiment selection in EGFR-mutant lung adenocarcinoma after osimertinib resistance.
-- **In development.** Not intended as a clinical diagnostic or for selecting treatment for individual patients.
+- Not intended as a clinical diagnostic or for selecting treatment for individual patients.
 
 ## Red flags (answer fails if it says any of these)
 
 - Cytogent diagnoses patients, recommends treatments, or is clinically validated / approved.
-- It is a live product with customers, named pilots or a partner network.
+- It has customers, completed or named pilots, published results or a signed partner network (none are claimed on the site).
+- It is "still in development" or "not yet available" (outdated since 3 Nov 2026).
 - Legacy story: agentic workspace, research briefs, seven workflows, model marketplace, access tiers.
 - Invented numbers: accuracy, hit rate, savings, customer counts, funding.
 - Credentials not yet verified on the site: NVIDIA, WelloWork ownership, accelerators (check `docs/TODO_VERIFY.md` for current status before marking this a red flag).

@@ -119,11 +119,11 @@ export default function SciencePage() {
       </Section>
 
       <Section id="signals" className="border-t border-line">
-        <SectionHeader id="signals" eyebrow="What a pilot would measure" title="Three signals, three different questions." />
+        <SectionHeader id="signals" eyebrow="What a pilot measures" title="Three signals, three different questions." />
         {/* Focusable so keyboard users can scroll the table sideways on narrow screens (axe: scrollable-region-focusable). */}
         <div className="mt-10 overflow-x-auto" tabIndex={0} role="region" aria-labelledby="signals-title">
           <table className="w-full min-w-[640px] border-collapse text-left">
-            <caption className="sr-only">Three signals a pilot would measure, what each compares, and what it can tell you</caption>
+            <caption className="sr-only">Three signals a pilot measures, what each compares, and what it can tell you</caption>
             <thead>
               <tr className="border-b border-line-strong font-mono text-xs uppercase tracking-[0.1em] text-muted">
                 <th scope="col" className="py-3 pr-6 font-normal">Signal</th>
@@ -159,7 +159,7 @@ export default function SciencePage() {
       </Container>
 
       <CtaBand
-        title="See how a pilot would be structured."
+        title="See how a pilot is structured."
         cta={{ label: "Explore the pilot structure", href: "/pilot-programme" }}
         secondary={{ label: "For drug teams", href: "/for-drug-developers" }}
       >

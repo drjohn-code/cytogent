@@ -27,7 +27,7 @@ export default function PlatformPage() {
         answer={
           <>
             <p>
-              Cytogent is building Decision-as-a-Service: a managed scientific workflow that helps oncology drug teams
+              Cytogent provides Decision-as-a-Service: a managed scientific workflow that helps oncology drug teams
               choose the next combination experiment, run it with laboratory partners, and update the plan from what
               the cells actually did.
             </p>
@@ -41,7 +41,7 @@ export default function PlatformPage() {
         }
         aside={
           <div className="glass p-6">
-            <p className="font-mono text-xs uppercase tracking-[0.12em] text-signal">Intended deliverables per wave</p>
+            <p className="font-mono text-xs uppercase tracking-[0.12em] text-signal">Deliverables per wave</p>
             <div className="mt-4">
               <Chips items={["Decision brief", "Ranked batch", "Uncertainty map", "QC'd readouts", "Audit trail"]} />
             </div>
@@ -50,14 +50,14 @@ export default function PlatformPage() {
       />
 
       <Section id="loop">
-        <SectionHeader id="loop" eyebrow="The intended loop" title="Six steps, repeated in waves.">
+        <SectionHeader id="loop" eyebrow="The loop" title="Six steps, repeated in waves.">
           <p>Each wave is small on purpose. What one wave learns shapes the next.</p>
         </SectionHeader>
         <LoopTimeline />
       </Section>
 
       <Section id="decisions" className="border-t border-line">
-        <SectionHeader id="decisions" eyebrow="Intended outputs" title="Four decisions it is meant to inform." />
+        <SectionHeader id="decisions" eyebrow="Outputs" title="Four decisions it informs." />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2">
           {decisions.map((d) => (
             <li key={d.q} className="glass p-6">
@@ -72,7 +72,7 @@ export default function PlatformPage() {
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <SectionHeader id="uncertainty" eyebrow="Uncertainty" title="A ranking should show what it doesn’t know.">
             <p>
-              Each ranked experiment is meant to carry an uncertainty estimate. Where the evidence is too thin, the
+              Each ranked experiment carries an uncertainty estimate. Where the evidence is too thin, the
               right output is to abstain, or to propose an experiment that would reduce the uncertainty.
             </p>
             <p>Calibration of those estimates is a validation objective: something to show, not assume.</p>
@@ -82,18 +82,18 @@ export default function PlatformPage() {
       </Section>
 
       <Section id="principles" className="border-t border-line">
-        <SectionHeader id="principles" eyebrow="Principles" title="How we intend to operate." />
+        <SectionHeader id="principles" eyebrow="Principles" title="How we operate." />
         <div className="mt-10">
           <DesignPrinciples />
         </div>
         <div className="mt-6">
-          <ArrowLink href="/data-governance">How project data is meant to be kept apart</ArrowLink>
+          <ArrowLink href="/data-governance">How project data is kept apart</ArrowLink>
         </div>
       </Section>
 
       <Section id="not">
         <SectionHeader id="not" eyebrow="Boundaries" title="What Cytogent is not.">
-          <p>The platform is in development. These describe its intended use, not a regulatory classification.</p>
+          <p>These describe its intended use, not a regulatory classification.</p>
         </SectionHeader>
         <div className="mt-10">
           <NotCards />

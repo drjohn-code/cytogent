@@ -25,7 +25,7 @@ export default function PilotProgrammePage() {
         answer={
           <p>
             A pilot is the smallest useful test of the loop. It is designed around one candidate, one resistance
-            context and one decision the sponsor needs to make. What follows is the proposed shape; the details are
+            context and one decision the sponsor needs to make. What follows is the standard shape; the details are
             scoped with each sponsor.
           </p>
         }
@@ -37,7 +37,7 @@ export default function PilotProgrammePage() {
       />
 
       <Section id="method">
-        <SectionHeader id="method" eyebrow="Intended method" title="Write the decision down first.">
+        <SectionHeader id="method" eyebrow="Method" title="Write the decision down first.">
           <p>
             Before any experiment is chosen, the pilot records the decision it should inform and the go/no-go criteria.
             That keeps the batch small and the result readable, including when the answer is “stop”.
@@ -46,8 +46,8 @@ export default function PilotProgrammePage() {
       </Section>
 
       <Section id="deliverables" className="border-t border-line">
-        <SectionHeader id="deliverables" eyebrow="Proposed pilot shape" title="Eight deliverables.">
-          <p>This is the design we are working to. It is not a list of completed engagements.</p>
+        <SectionHeader id="deliverables" eyebrow="Pilot shape" title="Eight deliverables.">
+          <p>What every pilot includes.</p>
         </SectionHeader>
         <div className="mt-12">
           <DeliverableRail />

@@ -14,7 +14,7 @@ export default function FaqPage() {
       <PageHeader
         path="/faq"
         eyebrow="FAQ"
-        answer={<p>Short, honest answers. Cytogent is in development, and these answers say so where it matters.</p>}
+        answer={<p>Short, honest answers.</p>}
       />
       <Container className="py-16">
         <div className="max-w-[var(--measure)] space-y-14">

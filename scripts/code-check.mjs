@@ -48,7 +48,7 @@ for (const f of src) {
 }
 
 // 4. No 21st API key anywhere in the repo or build output. `.mcp.json` may only reference the env var.
-const KEYISH = /(API_KEY_21ST|x-api-key)["'\s:=]+(?!["']?\$\{)["']?[A-Za-z0-9_-]{16,}/;
+const KEYISH = /(API_KEY_21ST|x-api-key|VERCEL_AUTOMATION_BYPASS_SECRET|x-vercel-protection-bypass)["'\s:=]+(?!["']?\$\{)["']?[A-Za-z0-9_-]{16,}/;
 const scan = [
   ...walk(join(root, "src")),
   ...walk(join(root, "public")),

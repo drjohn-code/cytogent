@@ -11,12 +11,12 @@ export const faqGroups: { heading: string; items: Faq[] }[] = [
     items: [
       {
         q: "What does Cytogent do?",
-        a: "Cytogent is building an experimental intelligence layer for oncology R&D. It is meant to help drug teams choose which combination experiments to run next in treatment-resistant cancer, run them with laboratory partners, and update the plan from the results. It is delivered as a managed service: Decision-as-a-Service.",
+        a: "Cytogent has built an experimental intelligence layer for oncology R&D. It helps drug teams choose which combination experiments to run next in treatment-resistant cancer, run them with laboratory partners, and update the plan from the results. It is delivered as a managed service: Decision-as-a-Service.",
         link: { label: "How the loop works", href: "/platform" },
       },
       {
         q: "Is the platform available today?",
-        a: "No. The platform is in development. We are scoping pilot conversations with oncology asset teams and model laboratories. Nothing on this site describes a finished product or completed client work.",
+        a: "Yes. The platform is built, and we are ready to start pilots with oncology asset teams and to partner with model laboratories. We have not published any client results yet.",
       },
       {
         q: "Why start with osimertinib resistance?",
@@ -38,7 +38,7 @@ export const faqGroups: { heading: string; items: Faq[] }[] = [
       },
       {
         q: "How will you know if it works?",
-        a: "By measuring it. Our north-star aim is independently confirmed, decision-relevant findings per experimental budget. We intend to compare loop-selected batches with how teams would otherwise choose, and to treat the calibration of uncertainty estimates as something to validate, not assume.",
+        a: "By measuring it. Our north-star aim is independently confirmed, decision-relevant findings per experimental budget. Each pilot compares loop-selected batches with how the team would otherwise choose, and we treat the calibration of uncertainty estimates as something to validate, not assume.",
       },
     ],
   },
@@ -47,17 +47,17 @@ export const faqGroups: { heading: string; items: Faq[] }[] = [
     items: [
       {
         q: "What does a pilot look like?",
-        a: "One candidate, one resistance question, one decision. A pilot is proposed to include a decision brief, a ranked batch, an uncertainty map, lab coordination, quality-checked results, independent confirmation, an executive package and an audit trail.",
+        a: "One candidate, one resistance question, one decision. A pilot includes a decision brief, a ranked batch, an uncertainty map, lab coordination, quality-checked results, independent confirmation, an executive package and an audit trail.",
         link: { label: "The pilot structure", href: "/pilot-programme" },
       },
       {
         q: "Who are your laboratory partners?",
-        a: "We do not name partners until agreements are in place and they have agreed to be named. Laboratories interested in working with us can read how we intend to qualify partners.",
+        a: "We do not name partners until agreements are in place and they have agreed to be named. Laboratories interested in working with us can read how we qualify partners.",
         link: { label: "For laboratories", href: "/partners/laboratories" },
       },
       {
-        q: "How would my data be handled?",
-        a: "Our intended design keeps each project’s data separate, behind explicit permission gates, with an audit trail. Project data is handled only under a written agreement.",
+        q: "How is my data handled?",
+        a: "Each project’s data is kept separate, behind explicit permission gates, with an audit trail. Project data is handled only under a written agreement.",
         link: { label: "Data governance", href: "/data-governance" },
       },
       {

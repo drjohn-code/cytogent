@@ -56,7 +56,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
           <div style={{ fontSize: 28, color: C.muted, marginTop: 22, maxWidth: 960, lineHeight: 1.35 }}>{r.description}</div>
         </div>
         <div style={{ display: "flex", fontSize: 20, color: C.muted, background: C.canvas }}>
-          cytogent.com · Platform in development
+          cytogent.com · Decision-as-a-Service for oncology R&D
         </div>
       </div>
     ),

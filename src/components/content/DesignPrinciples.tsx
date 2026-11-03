@@ -1,4 +1,4 @@
-/** Cytogent's intended operating principles (BRIEF §3). Replaces any vendor comparison matrix. */
+/** Cytogent's operating principles (BRIEF §3). Replaces any vendor comparison matrix. */
 const principles = [
   {
     title: "Bounded experimental batches",
@@ -22,7 +22,7 @@ const principles = [
 export function DesignPrinciples({ compact = false }: { compact?: boolean }) {
   return (
     <div>
-      <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted">Intended operating principles</p>
+      <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted">Operating principles</p>
       <ol className={`mt-4 grid gap-4 ${compact ? "" : "sm:grid-cols-2"}`}>
         {principles.map((p, i) => (
           <li key={p.title} className={compact ? "flex items-baseline gap-4 border-b border-line pb-4" : "glass p-6"}>

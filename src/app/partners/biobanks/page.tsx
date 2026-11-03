@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata("/partners/biobanks");
 const commitments = [
   { title: "Ethics and consent first", body: "Work only within the consent, ethics approval and usage rights attached to each sample." },
   { title: "No patient-identifiable data here", body: "Nothing on this website collects or shows patient-identifiable data, and we ask you not to send any through it." },
-  { title: "No automatic pooling", body: "Our policy aim: data from one collaboration is not pooled with another client’s data unless all parties agree." },
+  { title: "No automatic pooling", body: "Our policy: data from one collaboration is not pooled with another client’s data unless all parties agree." },
 ];
 
 export default function BiobanksPage() {
@@ -22,7 +22,7 @@ export default function BiobanksPage() {
         eyebrow="For biobanks"
         answer={
           <p>
-            Donated samples are most useful when they answer a specific question. Cytogent aims to match consented
+            Donated samples are most useful when they answer a specific question. Cytogent matches consented
             material and patient-derived models with focused resistance questions, so each sample is used where it can
             teach the most.
           </p>
@@ -45,7 +45,7 @@ export default function BiobanksPage() {
       </Section>
 
       <Section id="commitments" className="border-t border-line">
-        <SectionHeader id="commitments" eyebrow="How we intend to work" title="Governance before data." />
+        <SectionHeader id="commitments" eyebrow="How we work" title="Governance before data." />
         <ul className="mt-10 grid gap-4 md:grid-cols-3">
           {commitments.map((c) => (
             <li key={c.title} className="glass p-6">

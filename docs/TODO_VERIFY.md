@@ -15,6 +15,12 @@ The site should not replace the legacy site until each of these is done.
 | 5 | **`vercel.json` switched** to Next.js and the test suite run against the preview (`BASE_URL=… npm test`). | Developer | `vercel.json` |
 | 6 | **Owner sign-off** on the copy as a whole, including the four "intended / proposed" pages (`/platform`, `/pilot-programme`, `/partners`, `/data-governance`). | Owner | — |
 
+## Owner decisions on record
+
+| Date | Decision | Effect on the site |
+| --- | --- | --- |
+| 3 Nov 2026 | "We developed the platform. We are ready for partnership and start. Remove all under-development badges." | All development-stage wording removed (status note, hero, FAQ, platform, pilot, partner, governance, investor, about, terms, OG images, JSON-LD). **Kept:** the intended-use statement (not a clinical diagnostic or treatment-selection tool), "conceptual" labels on illustrations, and statements about evidence that does not exist yet: no completed pilots or published client results, no signed partners, calibration as a validation goal, investor gates as aims, data governance as "not a certification". This departs from the V3.1 brief's §1.2 and §2 status note, by owner instruction. |
+
 ## Pending facts (omitted from the site until verified)
 
 NVIDIA Inception membership **and** badge rights · WelloWork AB affiliation wording · LinkedIn URL · two Nordic–Baltic accelerator selections · data controller / retention · the two 2 Nov 2026 source documents (not provided) · Appendix A (not provided). Details in "Facts" below.

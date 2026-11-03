@@ -1,4 +1,4 @@
-/** Eight-node rail of proposed pilot deliverables (BRIEF §8 /pilot-programme). Wording is design, not completed ops. */
+/** Eight-node rail of pilot deliverables (/pilot-programme). */
 export const deliverables = [
   { title: "Decision brief", body: "The question, the constraints, the budget and the decision the pilot should inform." },
   { title: "Ranked batch", body: "A small set of combination experiments, each with a reason it was chosen." },

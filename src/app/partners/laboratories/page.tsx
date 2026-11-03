@@ -35,8 +35,8 @@ export default function LaboratoriesPage() {
         eyebrow="For laboratory partners"
         answer={
           <p>
-            We are looking for laboratories with authenticated cancer models and functional assays. Cytogent would bring
-            a defined question, a bounded batch and a clear plan; your lab would bring the biology and the readout.
+            We are looking for laboratories with authenticated cancer models and functional assays. Cytogent brings
+            a defined question, a bounded batch and a clear plan; your lab brings the biology and the readout.
           </p>
         }
         actions={
@@ -47,10 +47,10 @@ export default function LaboratoriesPage() {
       />
 
       <Section id="exchange">
-        <SectionHeader id="exchange" eyebrow="The exchange" title="What we would ask, and what we would bring." />
+        <SectionHeader id="exchange" eyebrow="The exchange" title="What we ask, and what we bring." />
         <div className="mt-10 grid gap-4 md:grid-cols-2">
           <div className="glass p-6">
-            <h3 className="text-xl font-semibold">We would ask for</h3>
+            <h3 className="text-xl font-semibold">We ask for</h3>
             <ul className="mt-4 list-disc space-y-2 pl-5 text-muted marker:text-signal">
               <li>Authenticated, documented models, ideally with resistant and matched parental pairs.</li>
               <li>Assays with quality control you can describe.</li>
@@ -58,7 +58,7 @@ export default function LaboratoriesPage() {
             </ul>
           </div>
           <div className="glass p-6">
-            <h3 className="text-xl font-semibold">We would bring</h3>
+            <h3 className="text-xl font-semibold">We bring</h3>
             <ul className="mt-4 list-disc space-y-2 pl-5 text-muted marker:text-signal">
               <li>Questions with a purpose, not open-ended screens.</li>
               <li>Work scoped in advance, on agreed terms.</li>
@@ -84,8 +84,8 @@ export default function LaboratoriesPage() {
       </Section>
 
       <Section id="qualify">
-        <SectionHeader id="qualify" eyebrow="Proposed qualification" title="Four steps before project work.">
-          <p>This is how we intend to qualify partners. It may change as we learn.</p>
+        <SectionHeader id="qualify" eyebrow="Qualification" title="Four steps before project work.">
+          <p>How we qualify laboratory partners.</p>
         </SectionHeader>
         <ol className="mt-10 grid gap-4 md:grid-cols-4">
           {steps.map((s, i) => (

@@ -29,7 +29,7 @@ export const routes: RouteEntry[] = [
     slug: "home",
     title: "Cytogent | Experimental Intelligence for Oncology R&D",
     description:
-      "Cytogent is building a way to connect molecular state and lab response so oncology teams can choose the next high-value combination experiment in resistant cancer.",
+      "Cytogent connects molecular state and lab response so oncology teams can choose the next high-value combination experiment in resistant cancer.",
     heading: "The Experimental Intelligence Layer for Resistant Cancer.",
     label: "Home",
     kind: "home",
@@ -39,7 +39,7 @@ export const routes: RouteEntry[] = [
     slug: "platform",
     title: "How the Cytogent Loop Works | Decision-as-a-Service",
     description:
-      "Cytogent's intended closed loop: frame a resistance question, rank a bounded batch with visible uncertainty, test with lab partners, then learn.",
+      "How Cytogent's closed loop works: frame a resistance question, rank a bounded batch with visible uncertainty, test with lab partners, then learn.",
     heading: "A loop, not another dashboard.",
     label: "Platform",
     parent: "/",
@@ -51,7 +51,7 @@ export const routes: RouteEntry[] = [
     slug: "science",
     title: "Osimertinib Resistance Biology | Cytogent Science",
     description:
-      "Why EGFR-mutant lung cancer can escape osimertinib in different ways, why a functional lab readout still decides, and three signals a pilot would measure.",
+      "Why EGFR-mutant lung cancer can escape osimertinib in different ways, why a functional lab readout still decides, and three signals a pilot measures.",
     heading: "Resistance is not one mutation.",
     label: "Science",
     parent: "/",
@@ -62,7 +62,7 @@ export const routes: RouteEntry[] = [
     slug: "for-drug-developers",
     title: "Experiment Selection for Oncology Drug Teams | Cytogent",
     description:
-      "For asset teams and translational leads facing resistance: how Cytogent intends to help choose which combination experiments to run next, and what to stop.",
+      "For asset teams and translational leads facing resistance: how Cytogent helps choose which combination experiments to run next, and what to stop.",
     heading: "Know what to test on Monday.",
     label: "For drug teams",
     parent: "/",
@@ -73,7 +73,7 @@ export const routes: RouteEntry[] = [
     slug: "pilot-programme",
     title: "Pilot Programme Structure | Cytogent",
     description:
-      "The proposed shape of a Cytogent pilot: one candidate, one resistance question, a bounded batch, independent confirmation and a go/no-go package.",
+      "The shape of a Cytogent pilot: one candidate, one resistance question, a bounded batch, independent confirmation and a go/no-go package.",
     heading: "One candidate. One question. One measurable decision.",
     label: "Pilot programme",
     parent: "/",
@@ -96,7 +96,7 @@ export const routes: RouteEntry[] = [
     slug: "partners-laboratories",
     title: "For Laboratory Partners | Cytogent",
     description:
-      "For laboratories with authenticated cancer models: how execution and independent validation roles are meant to work in Cytogent's experiment loop.",
+      "For laboratories with authenticated cancer models: how execution and independent validation roles work in Cytogent's experiment loop.",
     heading: "Your models. A governed next experiment.",
     label: "Laboratories",
     parent: "/partners",
@@ -140,7 +140,7 @@ export const routes: RouteEntry[] = [
     slug: "about",
     title: "About Cytogent | Experimental Intelligence for Oncology",
     description:
-      "Cytogent is building an experimental intelligence layer for oncology R&D, starting with combination experiment selection in resistant lung cancer.",
+      "Cytogent has built an experimental intelligence layer for oncology R&D and is starting pilots in combination experiment selection for resistant lung cancer.",
     heading: "Built around one hard question.",
     label: "About",
     parent: "/",
@@ -151,7 +151,7 @@ export const routes: RouteEntry[] = [
     slug: "data-governance",
     title: "Data Governance | Cytogent",
     description:
-      "How Cytogent intends to keep each project's data separate: project-level isolation, permission gates and an audit trail, for research-use decision support.",
+      "How Cytogent keeps each project's data separate: project-level isolation, permission gates and an audit trail, for research-use decision support.",
     heading: "Data stays in its own lane.",
     label: "Data governance",
     parent: "/",
@@ -173,7 +173,7 @@ export const routes: RouteEntry[] = [
     slug: "faq",
     title: "Questions and Answers | Cytogent",
     description:
-      "Straight answers about Cytogent: what it is building, what it is not, how a pilot would work, how data would be handled, and what it means for patients.",
+      "Straight answers about Cytogent: what it does, what it is not, how a pilot works, how data is handled, and what it means for patients.",
     heading: "Questions and answers.",
     label: "FAQ",
     parent: "/",

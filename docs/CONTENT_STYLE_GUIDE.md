@@ -4,7 +4,9 @@ For anyone writing or editing copy on cytogent.com. The rules come from the V3.1
 
 ## The story, in one breath
 
-Cytogent is **building** the Experimental Intelligence Layer for oncology R&D: a closed-loop way to choose, run and learn from combination experiments in treatment-resistant cancer, delivered as **Decision-as-a-Service**. The starting focus is a programme blueprint in EGFR-mutant lung adenocarcinoma after osimertinib resistance. It is **not intended** as a clinical diagnostic or for choosing anyone's treatment.
+Cytogent **has built** the Experimental Intelligence Layer for oncology R&D: a closed-loop way to choose, run and learn from combination experiments in treatment-resistant cancer, delivered as **Decision-as-a-Service**, and is **ready to start pilots and partnerships**. The starting focus is a programme blueprint in EGFR-mutant lung adenocarcinoma after osimertinib resistance. It is **not intended** as a clinical diagnostic or for choosing anyone's treatment.
+
+> Stage changed on 3 November 2026 at the owner's instruction: the platform is developed and Cytogent is ready for partnerships. Development-stage wording ("in development", "we are building", "intended", "proposed") was removed. What stays: the intended-use statement, "conceptual" labels on illustrations, and honesty about evidence that does not exist yet (no completed pilots or published client results, no signed partners, calibration still to validate, investor gates as aims).
 
 Do not revive the old story: no agentic workspace, seven workflows, signed research briefs, named pilots, model marketplace, access tiers or AI model comparisons.
 
@@ -12,18 +14,18 @@ Do not revive the old story: no agentic workspace, seven workflows, signed resea
 
 - **British English**, `en-GB`: programme, tumour, prioritise, characterise, modelling, colour. One fixed exception: the loop label `PRIORITIZE`.
 - **Short paragraphs**, plain words, precise science. Define a term once, or link `/glossary`.
-- **Say what is true today.** The platform is in development. Write "we are building", "designed to", "we aim to", "intended", "proposed".
+- **Say what is true today.** The platform is built and ready for pilots and partners. No pilots have completed yet, so results are never implied.
 - **Calm.** No exclamation marks, no urgency, no hype.
 
 ## Stage-accurate wording
 
 | Say | Don't say |
 | --- | --- |
-| We are building / designed to / we aim to | We deliver / our platform does |
+| The platform is built; we are ready to start pilots | Our pilots have shown… / customers report… |
 | Uncertainty estimates (calibration is a validation goal) | Calibrated uncertainty, guaranteed accuracy |
-| Proposed pilot shape; the design we are working to | Our pilots have shown… |
-| Qualified lab partners, when those partners exist | Our partner network |
-| Project-level isolation as an intended design | Fully isolated, certified, compliant |
+| The pilot shape; what every pilot includes | Results from our pilots |
+| Qualified lab partners (we are looking for them) | Our partner network |
+| Project-level isolation; not a certification | Fully isolated, certified, compliant |
 | North-star **aim**: independently confirmed, decision-relevant findings per experimental budget | Proven to save X% |
 | Not intended as a clinical diagnostic or tool for selecting treatment for individual patients | Cytogent is not a medical device (a legal determination we do not make) |
 
@@ -81,9 +83,9 @@ Do not link to unpublished articles.
 
 ## Fixed text
 
-- Loop labels, exactly: `DEFINE → CONNECT → PRIORITIZE → TEST → LEARN → CONFIRM`, always described as the **intended** loop.
+- Loop labels, exactly: `DEFINE → CONNECT → PRIORITIZE → TEST → LEARN → CONFIRM`.
 - Brand line: "One question. One experiment. Evidence for the next decision."
-- Status note (every footer, from `site.ts`): "Platform in development. Intended initial focus: preclinical/translational experiment selection for oncology R&D. Not intended as a clinical diagnostic or as a tool for selecting treatment for individual patients."
+- Status note (every footer, from `site.ts`): "Initial focus: preclinical and translational experiment selection for oncology R&D. Not intended as a clinical diagnostic or as a tool for selecting treatment for individual patients."
 
 ## Contact and data
 

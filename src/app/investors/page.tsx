@@ -24,7 +24,7 @@ export default function InvestorsPage() {
         eyebrow="Investors"
         answer={
           <p>
-            Cytogent is building the Experimental Intelligence Layer for oncology R&amp;D, delivered as
+            Cytogent has built the Experimental Intelligence Layer for oncology R&amp;D, delivered as
             Decision-as-a-Service. We are starting narrow on purpose: one resistance setting, one kind of decision, and
             clear gates that have to be passed before anything broader.
           </p>

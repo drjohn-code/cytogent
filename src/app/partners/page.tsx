@@ -24,7 +24,7 @@ export default function PartnersPage() {
         answer={
           <p>
             Cytogent chooses and learns from experiments; laboratories and biobanks hold the biology. We are not a
-            competing wet lab. We are building the structure that lets each partner do what it does best, with each
+            competing wet lab. Cytogent provides the structure that lets each partner do what it does best, with each
             project’s data kept to that project.
           </p>
         }
@@ -54,7 +54,7 @@ export default function PartnersPage() {
       <Section id="lean" className="border-t border-line">
         <SectionHeader id="lean" eyebrow="Operating idea" title="Start lean: one sponsor, one lab.">
           <p>
-            The first loops are meant to run with the smallest workable group: one sponsor with a real question and one
+            The first loops run with the smallest workable group: one sponsor with a real question and one
             laboratory with suitable models. More partners join only when a specific question needs them.
           </p>
           <p>
@@ -62,7 +62,7 @@ export default function PartnersPage() {
           </p>
         </SectionHeader>
         <div className="mt-6 flex flex-wrap gap-x-8">
-          <ArrowLink href="/data-governance">How project data is meant to be kept apart</ArrowLink>
+          <ArrowLink href="/data-governance">How project data is kept apart</ArrowLink>
           <ArrowLink href="/pilot-programme">The pilot structure</ArrowLink>
         </div>
       </Section>

@@ -41,7 +41,7 @@ export default function Home() {
               {route("/").heading}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-muted">
-              Cytogent is building a closed-loop service so drug teams can prioritise combination experiments, test
+              Cytogent has built a closed-loop service so drug teams can prioritise combination experiments, test
               them with laboratory partners, and update plans from biological outcomes.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -83,12 +83,12 @@ export default function Home() {
         </ul>
       </Section>
 
-      {/* 4. What we are building */}
+      {/* 4. What we have built */}
       <Section id="building">
-        <SectionHeader id="building" eyebrow="What we are building" title="From hypothesis noise to a ranked batch.">
+        <SectionHeader id="building" eyebrow="What we have built" title="From hypothesis noise to a ranked batch.">
           <p>
             Sequencing lists what changed in a tumour. It does not, by itself, show how adapted living cells respond to
-            two drugs together. We are building a way to connect both, so each batch is chosen for what it can teach.
+            two drugs together. Cytogent connects both, so each batch is chosen for what it can teach.
           </p>
         </SectionHeader>
         <div className="mt-6">
@@ -98,10 +98,10 @@ export default function Home() {
 
       {/* 5. Loop */}
       <Section id="loop" className="border-t border-line">
-        <SectionHeader id="loop" eyebrow="The intended loop" title="One loop. Six decisions." />
+        <SectionHeader id="loop" eyebrow="The loop" title="One loop. Six decisions." />
         <LoopTimeline />
         <p className="mt-10 max-w-2xl text-muted">
-          The report communicates evidence. The loop is the product being built.{" "}
+          The report communicates evidence. The loop is the product.{" "}
           <Link href="/platform" className="text-signal underline underline-offset-4">
             How the loop works
           </Link>
@@ -113,7 +113,7 @@ export default function Home() {
         <SectionHeader id="proof" eyebrow="Standard of proof" title="Predictions are hypotheses. Experiments are the verdict.">
           <p>
             A ranking is a reason to run an experiment, not a result. Uncertainty, including the choice to abstain,
-            should be visible. Independent confirmation is a design goal.
+            should be visible. Key findings are re-tested independently before they count.
           </p>
         </SectionHeader>
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-start">
@@ -121,7 +121,7 @@ export default function Home() {
           <DesignPrinciples compact />
         </div>
         <div className="mt-6">
-          <ArrowLink href="/pilot-programme">See the proposed pilot structure</ArrowLink>
+          <ArrowLink href="/pilot-programme">See the pilot structure</ArrowLink>
         </div>
       </Section>
 
@@ -165,7 +165,7 @@ export default function Home() {
               Starting R&amp;D focus. Not intended as a clinical diagnostic.
             </p>
             <div>
-              <ArrowLink href="/pilot-programme">How a pilot would run</ArrowLink>
+              <ArrowLink href="/pilot-programme">How a pilot runs</ArrowLink>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function Home() {
 
       {/* 10. Close */}
       <CtaBand title="Bring us a real resistance question." cta={site.primaryCta}>
-        We are scoping pilot conversations with oncology asset teams and model laboratories.
+        We are ready to start pilots with oncology asset teams and to partner with model laboratories.
       </CtaBand>
     </>
   );

@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata("/data-governance");
 const aims = [
   { title: "Project-level isolation", body: "Each sponsor’s data sits in its own project and is used only for that project, unless every party agrees otherwise." },
   { title: "Permission gates", body: "Data moves into the loop, or out to a partner, only through an explicit, recorded permission." },
-  { title: "Audit lineage", body: "A design goal: every recommendation traceable to the data, model version and decisions behind it." },
+  { title: "Audit lineage", body: "Every recommendation is traceable to the data, model version and decisions behind it." },
   { title: "Research use", body: "Intended as decision support for preclinical and translational research, not for clinical care." },
 ];
 
@@ -25,8 +25,8 @@ export default function DataGovernancePage() {
           <>
             <p>
               Sponsors, laboratories and biobanks will only share data if they trust where it goes. This page describes
-              how we intend to keep each project’s data separate. It is a design, not a certification: we will describe
-              specific systems and assessments here once they exist.
+              how each project’s data is kept separate. It is not a certification: independent assessments will be listed
+              here when they are completed.
             </p>
           </>
         }
@@ -39,7 +39,7 @@ export default function DataGovernancePage() {
       />
 
       <Section id="aims">
-        <SectionHeader id="aims" eyebrow="Intended design" title="Four commitments we are designing for." />
+        <SectionHeader id="aims" eyebrow="Design" title="Four commitments." />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2">
           {aims.map((a) => (
             <li key={a.title} className="glass p-6">

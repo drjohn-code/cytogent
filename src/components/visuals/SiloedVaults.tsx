@@ -1,4 +1,4 @@
-/** Siloed project vaults for /data-governance. Labelled as intended design; the page text carries the meaning. */
+/** Siloed project vaults for /data-governance. The page text carries the meaning. */
 const vaults = ["PROJECT A", "PROJECT B", "PROJECT C"];
 
 export function SiloedVaults() {
@@ -35,7 +35,7 @@ export function SiloedVaults() {
         </text>
       </svg>
       <figcaption className="mt-3 text-sm text-muted">
-        Intended design, not a description of audited systems. Each project reaches the loop only through its own
+        Simplified view, not a description of audited systems. Each project reaches the loop only through its own
         permission gate.
       </figcaption>
     </figure>

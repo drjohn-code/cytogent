@@ -1,4 +1,4 @@
-/** The intended decision-and-learning loop (BRIEF §3). Labels are fixed, including the spelling of PRIORITIZE. */
+/** The decision-and-learning loop (BRIEF §3). Labels are fixed, including the spelling of PRIORITIZE. */
 export const loopSteps = [
   { label: "DEFINE", line: "Frame the resistance question, the constraints and the experimental budget." },
   { label: "CONNECT", line: "Bring molecular state, treatment history and baseline assay context into one structured view." },

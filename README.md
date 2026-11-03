@@ -2,7 +2,7 @@
 
 The website for Cytogent: the Experimental Intelligence Layer for oncology R&D, delivered as Decision-as-a-Service. Next.js App Router, built from the V3.1 build prompt in November 2026.
 
-> **Status (3 November 2026): built and tested locally; not deployed.** `vercel.json` still deploys the legacy static site from `site/` (see [docs/LEGACY_README.md](docs/LEGACY_README.md)). Launch is blocked on owner and legal items listed in [docs/TODO_VERIFY.md](docs/TODO_VERIFY.md#launch-blockers). Nothing has been committed.
+> **Status (3 November 2026): on a Vercel preview, not in production.** Branch `feat/v3-nextjs-site` deploys to a protected preview (branch URL: `cytogent-git-feat-v3-nextjs-site-drjohn-codes-projects.vercel.app`). `main` and `cytogent.com` still serve the legacy static site from `site/` (see [docs/LEGACY_README.md](docs/LEGACY_README.md)). Launch is blocked on owner and legal items listed in [docs/TODO_VERIFY.md](docs/TODO_VERIFY.md#launch-blockers).
 
 ## Quick start
 
@@ -77,6 +77,7 @@ Copy rules: [docs/CONTENT_STYLE_GUIDE.md](docs/CONTENT_STYLE_GUIDE.md). The clai
 | --- | --- | --- | --- |
 | `AI_TRAINING_CRAWLERS` | `allow`, `block` | `allow` (same as the legacy site) | `block` adds a `Disallow: /` group to `robots.txt` for GPTBot, Google-Extended, CCBot, ClaudeBot and Applebot-Extended. Search crawlers are never blocked. Read at **build** time. Names checked against each operator's documentation on 3 Nov 2026; recheck before relying on them |
 | `BASE_URL` | URL | — | Tests only: run the suite against a deployment instead of a local build |
+| `VERCEL_AUTOMATION_BYPASS_SECRET` | secret | — | Tests only: lets the suite through Vercel's preview protection. Set it in your shell or CI secrets; **never commit it** |
 
 No secrets are needed to build or run the site.
 

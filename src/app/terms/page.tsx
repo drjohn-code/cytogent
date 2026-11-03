@@ -17,7 +17,7 @@ export default function TermsPage() {
       <section>
         <h2>Information only</h2>
         <p>
-          This website describes work in development. It is general information, not an offer, and it may change without
+          This website describes Cytogent’s services. It is general information, not an offer, and it may change without
           notice.
         </p>
       </section>
@@ -34,7 +34,7 @@ export default function TermsPage() {
         <h2>Scientific content</h2>
         <p>
           Diagrams and illustrations marked as conceptual do not show real data. Cited sources describe the scientific
-          field, not the performance of anything Cytogent is building.
+          field, not the performance of Cytogent’s platform.
         </p>
       </section>
 

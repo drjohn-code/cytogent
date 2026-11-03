@@ -36,7 +36,7 @@ export function TrackArchitecture() {
         </text>
       </svg>
       <figcaption className="mt-3 text-sm text-muted">
-        Intended structure. It does not show signed partners.
+        How the tracks connect. It does not show signed partners.
       </figcaption>
     </figure>
   );

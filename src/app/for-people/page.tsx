@@ -39,7 +39,7 @@ export default function ForPeoplePage() {
         <SectionHeader id="samples" eyebrow="Donated samples" title="Making each donated sample count.">
           <p>
             Researchers can grow small living models of a tumour from donated tissue and test drugs on them in the lab.
-            There are never enough of these samples. Cytogent is working on ways to choose the experiments that will
+            There are never enough of these samples. Cytogent helps researchers choose the experiments that will
             teach the most, so that each donation is used well.
           </p>
         </SectionHeader>

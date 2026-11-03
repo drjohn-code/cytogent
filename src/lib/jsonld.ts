@@ -100,7 +100,7 @@ export function pageGraph(path: string) {
       name: `${site.model} for oncology R&D`,
       serviceType: "Experiment selection for preclinical and translational oncology research",
       description:
-        "In development. An intended managed service to help drug teams prioritise combination experiments in treatment-resistant cancer, test them with laboratory partners and learn from the results. Not intended as a clinical diagnostic or for selecting treatment for individual patients.",
+        "A managed service that helps drug teams prioritise combination experiments in treatment-resistant cancer, test them with laboratory partners and learn from the results. Not intended as a clinical diagnostic or for selecting treatment for individual patients.",
       provider: { "@id": ORG },
       url: absoluteUrl("/platform"),
     });

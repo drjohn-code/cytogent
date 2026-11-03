@@ -69,7 +69,7 @@ export default function PrivacyPage() {
       <section>
         <h2>Related</h2>
         <p>
-          How project data is meant to be handled is described separately on the{" "}
+          How project data is handled is described separately on the{" "}
           <Link href="/data-governance">data governance</Link> page. See also the <Link href="/terms">website terms</Link>{" "}
           and the <Link href="/accessibility">accessibility statement</Link>.
         </p>
