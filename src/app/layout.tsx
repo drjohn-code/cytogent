@@ -11,7 +11,7 @@ import "./globals.css";
 // Defaults only; every indexable page sets its own via pageMetadata() from the route manifest.
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: `${site.name} | Experimental Intelligence for Oncology R&D`,
+  title: `${site.name} | Experimental Intelligence for Resistant Cancer`,
   description: site.mission,
   openGraph: { siteName: site.name, locale: "en_GB", type: "website" },
   twitter: { card: "summary_large_image" },

@@ -27,7 +27,7 @@ export const routes: RouteEntry[] = [
   {
     path: "/",
     slug: "home",
-    title: "Cytogent | Experimental Intelligence for Oncology R&D",
+    title: "Cytogent | Experimental Intelligence for Resistant Cancer",
     description:
       "Cytogent connects molecular state and lab response so oncology teams can choose the next high-value combination experiment in resistant cancer.",
     heading: "The Experimental Intelligence Layer for Resistant Cancer.",
