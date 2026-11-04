@@ -1,16 +1,16 @@
 import localFont from "next/font/local";
 
-// Self-hosted, Latin subset, variable weight. Licences: src/fonts/*-OFL.txt (SIL OFL 1.1).
-export const spaceGrotesk = localFont({
-  src: "../fonts/SpaceGrotesk-latin-wght.woff2",
-  weight: "300 700",
+// Self-hosted, Latin subset. Licences: src/fonts/*-OFL.txt (SIL OFL 1.1).
+export const geist = localFont({
+  src: "../fonts/Geist-latin-wght.woff2",
+  weight: "100 900",
   display: "swap",
-  variable: "--font-space-grotesk",
+  variable: "--font-geist",
 });
 
-export const jetbrainsMono = localFont({
-  src: "../fonts/JetBrainsMono-latin-wght.woff2",
-  weight: "100 800",
+export const geistMono = localFont({
+  src: "../fonts/GeistMono-latin-wght.woff2",
+  weight: "100 900",
   display: "swap",
-  variable: "--font-jetbrains-mono",
+  variable: "--font-geist-mono",
 });

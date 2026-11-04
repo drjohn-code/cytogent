@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { crumbsFor, route } from "@/content/routes";
+import { ColourLens } from "@/components/hero/ColourLens";
 import { Container } from "./Section";
 
 export interface Crumb {
@@ -37,8 +38,28 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
   );
 }
 
+/** Each inner page's hero image (public/images/gen). Legal pages pass `plain` and have none. */
+const heroImage: Record<string, string> = {
+  "/platform": "lab-automation",
+  "/science": "tem-cancer-cell",
+  "/for-drug-developers": "sem-drug-response",
+  "/pilot-programme": "lab-bench",
+  "/partners": "lab-interior",
+  "/partners/laboratories": "lab-imaging-suite",
+  "/partners/biobanks": "lab-biobank",
+  "/investors": "sem-cell-division",
+  "/for-people": "sem-tcell-attack",
+  "/about": "team-data",
+  "/data-governance": "lab-interior",
+  "/insights": "sem-tumour-tissue",
+  "/faq": "sem-organoid",
+  "/glossary": "tem-cancer-cell",
+  "/contact": "lab-imaging-suite",
+};
+
 /**
- * Inner-page header: breadcrumbs, H1, a visible answer summary, then the page CTA.
+ * Inner-page header: a full-width image hero (greyscale, with a colour lens that follows the pointer),
+ * breadcrumbs, H1, a visible answer summary, then the page CTA. A page's own diagram sits on the right.
  * Breadcrumbs, H1 and the page's JSON-LD all come from the route manifest, so they cannot disagree.
  */
 export function PageHeader({
@@ -47,25 +68,45 @@ export function PageHeader({
   answer,
   actions,
   aside,
+  plain = false,
 }: {
   path: string;
   eyebrow: string;
   answer: ReactNode;
   actions?: ReactNode;
+  /** The page's own diagram, shown on the right over the image. */
   aside?: ReactNode;
+  plain?: boolean;
 }) {
+  const image = plain ? undefined : heroImage[path];
   return (
-    <header className="border-b border-line">
+    <header className="relative isolate overflow-hidden border-b border-line">
       <PageJsonLd path={path} />
-      <Container className="grid gap-12 py-14 sm:py-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center">
-        <div>
+      {image && (
+        <>
+          <ColourLens src={`/images/gen/${image}.webp`} priority lens={200} />
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 ${
+              aside
+                ? "bg-[linear-gradient(90deg,var(--canvas)_12%,color-mix(in_srgb,var(--canvas)_60%,transparent)_50%,color-mix(in_srgb,var(--canvas)_30%,transparent))]"
+                : "bg-[linear-gradient(90deg,var(--canvas)_12%,color-mix(in_srgb,var(--canvas)_70%,transparent)_48%,transparent_80%)]"
+            }`}
+          />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(0deg,var(--canvas),transparent)]" />
+        </>
+      )}
+      <Container
+        className={`relative grid gap-12 py-16 sm:py-24 ${image ? "lg:min-h-[68svh] lg:items-end" : ""} ${aside ? "lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]" : ""}`}
+      >
+        <div className="max-w-3xl">
           <Breadcrumbs items={crumbsFor(path)} />
           <p className="eyebrow mt-8">{eyebrow}</p>
-          <h1 className="mt-4 text-4xl font-semibold sm:text-5xl">{route(path).heading}</h1>
+          <h1 className="mt-4 text-4xl sm:text-6xl">{route(path).heading}</h1>
           <div className="mt-6 max-w-2xl space-y-4 text-lg text-muted">{answer}</div>
           {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
         </div>
-        {aside && <div>{aside}</div>}
+        {aside && <div className="reveal">{aside}</div>}
       </Container>
     </header>
   );

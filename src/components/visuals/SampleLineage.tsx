@@ -26,7 +26,6 @@ export function SampleLineage() {
           );
         })}
       </svg>
-      <figcaption className="mt-3 text-sm text-muted">Conceptual lineage. No real samples or patients.</figcaption>
     </figure>
   );
 }

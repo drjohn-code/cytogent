@@ -1,29 +1,35 @@
 /*
  * Cytogent design tokens: the single source of truth for colour, surface, radius and motion (BRIEF §6).
  * Components use these through Tailwind theme names (bg-canvas, text-muted, border-line …) or var(--…).
- * Contrast checked 3 Nov 2026 (WCAG 2.x relative luminance):
- *   text #EAF4F5 on canvas 17.6:1 · muted #8FA6B4 on canvas 7.8:1, on elevated 7.4:1
- *   signal #42E8C8 on canvas 12.8:1 (also canvas-on-signal for buttons) · shift #8B7CFF on canvas 6.0:1
- *   line-strong #56748A on canvas 4.0:1 (form-control borders, ≥3:1) · line #1B3448 is decorative only (1.5:1)
+ * Contrast (WCAG 2.x relative luminance), checked 4 Nov 2026 on canvas #070C1A / elevated #0E1529:
+ *   text 17.4:1 / 16.2:1 · muted 8.0:1 / 7.4:1 · signal (azure) 8.2:1 · shift 7.2:1 · alert 7.6:1 · dose 12.1:1
+ *   line-strong 3.9:1 (form-control borders, ≥3:1) · line is decorative only
+ *   primary buttons are text-coloured with canvas text: 17.4:1
  */
 :root {
-  --canvas: #050b14;
-  --elevated: #081320;
-  --surface: rgb(13 27 42 / 0.72);
-  --surface-blur: 12px;
-  --line: #1b3448;
-  --line-strong: #56748a;
+  --canvas: #070c1a;
+  --elevated: #0e1529;
+  --surface: rgb(16 24 46 / 0.78);
+  --surface-blur: 16px;
+  --line: #1b2542;
+  --line-strong: #5f6f91;
 
-  --signal: #42e8c8;
-  --shift: #8b7cff;
-  --alert: #ff8a6b;
+  --signal: #7aa7ff;
+  --shift: #a48bff;
+  --alert: #ff7a5c;
+  --dose: #f5c46b; /* second drug in a combination */
 
-  --text: #eaf4f5;
-  --muted: #8fa6b4;
+  /* Fluorescence channels for the microscopy visuals (decorative, never text) */
+  --dapi: #4f8dff;
+  --actin: #3ee69a;
+  --marker: #ff5c8a;
+
+  --text: #eef2fb;
+  --muted: #9aa6c0;
 
   --focus: var(--signal);
 
-  --radius-card: 14px;
+  --radius-card: 10px;
   --radius-control: 10px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

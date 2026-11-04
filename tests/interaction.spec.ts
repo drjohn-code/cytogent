@@ -15,7 +15,7 @@ test.describe("keyboard", () => {
     await page.goto("/");
     for (let i = 0; i < 3; i++) await page.keyboard.press("Tab");
     const outline = await page.evaluate(() => getComputedStyle(document.activeElement!).outline);
-    expect(outline).toContain("rgb(66, 232, 200)");
+    expect(outline).toContain("rgb(122, 167, 255)");
     expect(outline).toContain("2px");
   });
 
@@ -54,44 +54,24 @@ test.describe("keyboard", () => {
 });
 
 test.describe("motion", () => {
-  test("reduced motion: no WebGL canvas, static SVG fallback shown", async ({ browser }) => {
+  test("hero: the micrograph and its colour lens render; reduced motion keeps the lens still", async ({ browser }) => {
     const ctx = await browser.newContext({ reducedMotion: "reduce" });
     const page = await ctx.newPage();
     await page.goto("/");
-    await page.waitForTimeout(1000);
-    await expect(page.locator("canvas")).toHaveCount(0);
-    await expect(page.locator("#main figure svg").first()).toBeVisible();
+    const hero = page.locator("section[aria-labelledby=hero-title]");
+    await expect(hero.locator("img").first()).toBeVisible();
+    const before = await hero.locator(".lens-lean").evaluate((el) => getComputedStyle(el).transform);
+    await page.mouse.move(900, 400);
+    await page.waitForTimeout(300);
+    expect(await hero.locator(".lens-lean").evaluate((el) => getComputedStyle(el).transform)).toBe(before);
     await ctx.close();
   });
 
-  test("motion allowed: the hero mounts one WebGL canvas", async ({ browser }) => {
-    const ctx = await browser.newContext({ reducedMotion: "no-preference" });
-    const page = await ctx.newPage();
+  test("loop story: any step can be chosen", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("canvas")).toHaveCount(1, { timeout: 5000 });
-    await ctx.close();
-  });
-
-  test("hero animation can be paused from the keyboard (WCAG 2.2.2)", async ({ browser }) => {
-    const ctx = await browser.newContext({ reducedMotion: "no-preference" });
-    const page = await ctx.newPage();
-    await page.goto("/");
-    const toggle = page.getByRole("button", { name: "Pause animation" });
-    await expect(toggle).toBeVisible({ timeout: 5000 });
-    await toggle.focus();
-    await page.keyboard.press("Enter");
-    await expect(page.getByRole("button", { name: "Play animation" })).toBeFocused();
-    await ctx.close();
-  });
-
-  test("Save-Data: no WebGL canvas", async ({ browser }) => {
-    const ctx = await browser.newContext({ reducedMotion: "no-preference" });
-    await ctx.addInitScript(() => Object.defineProperty(navigator, "connection", { value: { saveData: true } }));
-    const page = await ctx.newPage();
-    await page.goto("/");
-    await page.waitForTimeout(1000);
-    await expect(page.locator("canvas")).toHaveCount(0);
-    await ctx.close();
+    const step = page.getByRole("button", { name: /Test$/ });
+    await step.click();
+    await expect(step).toHaveAttribute("aria-current", "step");
   });
 
   for (const r of routes) {

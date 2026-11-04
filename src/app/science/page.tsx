@@ -112,8 +112,7 @@ export default function SciencePage() {
             <Cite n={1} />. That makes it a sharp place to test whether better experiment choice changes decisions.
           </p>
           <p>
-            Our inaugural programme blueprint is combination experiment selection in this setting. It is a starting
-            R&amp;D focus, not a treated patient population, and not intended for choosing treatment for any individual.
+            Our inaugural programme blueprint is combination experiment selection in this setting.
           </p>
         </SectionHeader>
       </Section>

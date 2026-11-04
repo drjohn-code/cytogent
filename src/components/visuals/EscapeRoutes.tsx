@@ -39,7 +39,7 @@ export function EscapeRoutes() {
         ))}
       </svg>
       <figcaption className="mt-3 text-sm text-muted">
-        Conceptual: three broad escape routes described in the literature. Real tumours can combine them.
+        Real tumours can combine these routes.
       </figcaption>
     </figure>
   );

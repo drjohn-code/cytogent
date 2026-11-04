@@ -115,8 +115,7 @@ export function UncertaintyMap() {
         </text>
       </svg>
       <figcaption className="mt-3 text-sm text-muted">
-        Conceptual illustration, not data. Where uncertainty is too high, the honest output is “we can’t rank this
-        yet”.
+        Where uncertainty is too high, the honest output is “we can’t rank this yet”.
       </figcaption>
     </figure>
   );

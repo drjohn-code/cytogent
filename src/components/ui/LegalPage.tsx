@@ -16,7 +16,7 @@ export function LegalPage({
 }) {
   return (
     <>
-      <PageHeader path={path} eyebrow={eyebrow} answer={summary} />
+      <PageHeader path={path} eyebrow={eyebrow} answer={summary} plain />
       <Container className="py-16">
         <div className="max-w-[var(--measure)] space-y-10 [&_a]:text-signal [&_a]:underline [&_a]:underline-offset-4 [&_h2]:text-2xl [&_h2]:font-semibold [&_li]:mt-2 [&_p]:mt-3 [&_p]:text-muted [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-muted">
           {children}

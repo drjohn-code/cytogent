@@ -60,7 +60,6 @@ export default function AboutPage() {
             The platform is built. We are ready to start pilots with oncology drug teams and to partner with
             laboratories and biobanks.
           </p>
-          <p>{site.statusNote}</p>
         </SectionHeader>
         <div className="mt-6 flex flex-wrap gap-x-8">
           <ArrowLink href="/platform">How the loop works</ArrowLink>

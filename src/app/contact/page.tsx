@@ -1,27 +1,27 @@
 import type { Metadata } from "next";
-import { pageMetadata } from "@/content/routes";
+import { ContactForm } from "@/components/contact/ContactForm";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Container } from "@/components/ui/Section";
 import { credentials, isPublic } from "@/content/credentials";
+import { contactTopics } from "@/content/contact";
+import { pageMetadata } from "@/content/routes";
 
 /**
- * mailto only (BRIEF §8): no form backend, validation, retention policy or controller is confirmed.
- * The address renders only once `credentials.email` is verified; until then the page says so plainly.
- * `?intent=` links from other pages land here; the page is static and lists every intent.
+ * Form (POST /api/contact → email via Resend) plus direct email and office address.
+ * `?intent=` links from other pages preselect the topic; each topic also has an anchor.
+ * The office card renders once `credentials.address` is verified.
  */
 export const metadata: Metadata = pageMetadata("/contact");
 
-const intents = [
-  { id: "pilot", title: "Discuss a pilot programme", body: "The candidate, the resistance context and the decision you face.", subject: "Pilot programme" },
-  { id: "lab", title: "Qualify as a lab partner", body: "Your models, assays and capacity.", subject: "Laboratory partnership" },
-  { id: "collaboration", title: "Explore a collaboration", body: "Biobanks, model providers and other partners.", subject: "Collaboration" },
-  { id: "investor", title: "Request the investor brief", body: "Who you are and what you would like to know.", subject: "Investor brief" },
-  { id: "general", title: "Ask a question", body: "Anything else, including governance and accessibility.", subject: "Question" },
+const steps = [
+  { title: "You write", body: "The question and the decision behind it." },
+  { title: "We talk", body: "A call to scope what an experiment could answer." },
+  { title: "You get a plan", body: "A bounded pilot: models, batch and readout." },
 ];
 
 export default function ContactPage() {
   const email = credentials.email;
-  const live = isPublic(email);
+  const address = credentials.address;
   return (
     <>
       <PageHeader
@@ -29,49 +29,63 @@ export default function ContactPage() {
         eyebrow="Contact"
         answer={<p>Tell us what you are working on and what decision you need to make. A few sentences is enough to start.</p>}
       />
-      <Container className="py-16">
-        <div
-          role="note"
-          className="max-w-[var(--measure)] rounded-[var(--radius-card)] border border-alert/60 p-5 text-[0.95rem]"
-        >
-          <p className="font-semibold text-alert">Before you write</p>
-          <p className="mt-1 text-muted">
-            Please do not send patient-identifiable health data or confidential chemical structures. If a project goes
-            ahead, we will agree how to share data under a written agreement.
-          </p>
-        </div>
+      <Container className="py-16 sm:py-24">
+        {contactTopics.map((t) => (
+          <span key={t.id} id={t.id} className="sr-only">
+            {t.title}
+          </span>
+        ))}
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+          <section aria-labelledby="form-title" className="glass reveal relative p-6 sm:p-10">
+            <h2 id="form-title" className="text-2xl font-semibold sm:text-3xl">
+              Send us a message
+            </h2>
+            <div className="mt-8">
+              <ContactForm email={email.value} />
+            </div>
+          </section>
 
-        {live ? (
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {intents.map((i) => (
-              <li key={i.id} id={i.id} className="glass flex flex-col p-6">
-                <h2 className="text-xl font-semibold">{i.title}</h2>
-                <p className="mt-2 flex-1 text-muted">{i.body}</p>
-                <a
-                  href={`mailto:${email.value}?subject=${encodeURIComponent(i.subject)}`}
-                  className="btn btn-ghost mt-5 self-start"
-                >
-                  Email {email.value}
+          <div className="space-y-4">
+            {isPublic(email) && (
+              <section aria-labelledby="email-title" className="glass reveal p-6">
+                <p className="eyebrow">Email</p>
+                <h2 id="email-title" className="sr-only">
+                  Email
+                </h2>
+                <a href={`mailto:${email.value}`} className="mt-3 block text-xl font-semibold text-text underline-offset-4 hover:text-signal hover:underline">
+                  {email.value}
                 </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="mt-10 max-w-[var(--measure)]">
-            <h2 className="text-2xl font-semibold">Our contact address is being set up.</h2>
-            <p className="mt-3 text-muted">
-              It will appear on this page shortly. When it does, you will be able to reach us about any of these:
-            </p>
-            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-              {intents.map((i) => (
-                <li key={i.id} id={i.id} className="rounded-[var(--radius-card)] border border-line p-5">
-                  <h3 className="font-semibold">{i.title}</h3>
-                  <p className="mt-1 text-sm text-muted">{i.body}</p>
-                </li>
-              ))}
-            </ul>
+              </section>
+            )}
+            {isPublic(address) && (
+              <section aria-labelledby="office-title" className="glass reveal p-6">
+                <p className="eyebrow">Office</p>
+                <h2 id="office-title" className="sr-only">
+                  Office
+                </h2>
+                <address className="mt-3 text-lg not-italic">{address.value}</address>
+              </section>
+            )}
+            <section aria-labelledby="next-title" className="glass reveal p-6">
+              <p className="eyebrow" id="next-title">
+                What happens next
+              </p>
+              <ol className="mt-5 space-y-5">
+                {steps.map((s, i) => (
+                  <li key={s.title} className="flex gap-4">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full border border-signal/50 font-mono text-xs text-signal">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <h3 className="font-semibold">{s.title}</h3>
+                      <p className="text-sm text-muted">{s.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
           </div>
-        )}
+        </div>
 
         <div className="mt-12 flex flex-col gap-1 sm:flex-row sm:gap-8">
           <ArrowLink href="/faq">Questions and answers</ArrowLink>

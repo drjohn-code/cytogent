@@ -14,7 +14,7 @@ export function generateStaticParams() {
   return routes.map((r) => ({ slug: r.slug }));
 }
 
-const C = { canvas: "#050B14", line: "#1B3448", signal: "#42E8C8", text: "#EAF4F5", muted: "#8FA6B4" };
+const C = { canvas: "#070c1a", line: "#1B2542", signal: "#7AA7FF", text: "#EEF2FB", muted: "#9AA6C0" };
 
 export async function GET(_: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -22,9 +22,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
   if (!r) return new Response("Not found", { status: 404 });
 
   const root = process.cwd();
-  const [medium, bold, logo] = await Promise.all([
-    readFile(join(root, "src/fonts/SpaceGrotesk-latin-500.woff")),
-    readFile(join(root, "src/fonts/SpaceGrotesk-latin-700.woff")),
+  const [light, medium, logo] = await Promise.all([
+    readFile(join(root, "src/fonts/Geist-latin-300.woff")),
+    readFile(join(root, "src/fonts/Geist-latin-500.woff")),
     readFile(join(root, "public/brand/cytogent-logo.svg")),
   ]);
   const logoSrc = `data:image/svg+xml;base64,${logo.toString("base64")}`;
@@ -44,7 +44,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
           background: C.canvas,
           backgroundImage: `linear-gradient(${C.line} 1px, transparent 1px), linear-gradient(90deg, ${C.line} 1px, transparent 1px)`,
           backgroundSize: "60px 60px",
-          fontFamily: "Space Grotesk",
+          fontFamily: "Geist",
           color: C.text,
         }}
       >
@@ -52,7 +52,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
         <img src={logoSrc} alt="" width={234} height={40} />
         <div style={{ display: "flex", flexDirection: "column", background: C.canvas, padding: "8px 0" }}>
           <div style={{ fontSize: 22, letterSpacing: 4, color: C.signal, fontWeight: 500 }}>{kicker}</div>
-          <div style={{ fontSize: size, fontWeight: 700, lineHeight: 1.08, marginTop: 18, maxWidth: 1000 }}>{r.heading}</div>
+          <div style={{ fontSize: size, fontWeight: 300, lineHeight: 1.05, letterSpacing: -2, marginTop: 18, maxWidth: 1000 }}>{r.heading}</div>
           <div style={{ fontSize: 28, color: C.muted, marginTop: 22, maxWidth: 960, lineHeight: 1.35 }}>{r.description}</div>
         </div>
         <div style={{ display: "flex", fontSize: 20, color: C.muted, background: C.canvas }}>
@@ -64,8 +64,8 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
       width: 1200,
       height: 630,
       fonts: [
-        { name: "Space Grotesk", data: medium, weight: 500, style: "normal" },
-        { name: "Space Grotesk", data: bold, weight: 700, style: "normal" },
+        { name: "Geist", data: light, weight: 300, style: "normal" },
+        { name: "Geist", data: medium, weight: 500, style: "normal" },
       ],
     },
   );

@@ -19,6 +19,11 @@ export const credentials = {
     value: "info@cytogent.com",
     note: "Owner confirmed in chat on 3 Nov 2026 that the mailbox works and is monitored.",
   },
+  address: {
+    status: "pending",
+    value: "Office street address, postcode and city, Sweden",
+    note: "Placeholder. Owner to supply the office address for /contact; set to verified once it is real.",
+  },
   linkedin: {
     status: "pending",
     value: "https://www.linkedin.com/company/cytogent/",
@@ -30,9 +35,14 @@ export const credentials = {
     note: "Legacy site says 'operated by' / 'the company behind'. Only 'affiliated with' may be used, after legal confirms.",
   },
   nvidiaInception: {
-    status: "pending",
+    status: "verified",
     value: "Member of the NVIDIA Inception Program.",
-    note: "Needs written confirmation of membership AND badge-use rights. Badge files exist in source/static/brand/ (legacy).",
+    note: "Owner asked in chat on 4 Nov 2026 for the membership badge in the footer. Badge: public/brand/partners/ (derived from NVIDIA's kit file).",
+  },
+  copyright: {
+    status: "verified",
+    value: "WelloWork AB",
+    note: "Owner asked in chat on 4 Nov 2026 for '© 2026 WelloWork AB' in the footer.",
   },
   accelerators: {
     status: "pending",

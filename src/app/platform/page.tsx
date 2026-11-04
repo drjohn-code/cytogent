@@ -3,7 +3,7 @@ import { pageMetadata } from "@/content/routes";
 import Link from "next/link";
 import { DesignPrinciples } from "@/components/content/DesignPrinciples";
 import { NotCards } from "@/components/content/NotCards";
-import { LoopTimeline } from "@/components/loop/LoopTimeline";
+import { ProgrammeStory } from "@/components/loop/ProgrammeStory";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Chips, Section, SectionHeader } from "@/components/ui/Section";
@@ -53,7 +53,7 @@ export default function PlatformPage() {
         <SectionHeader id="loop" eyebrow="The loop" title="Six steps, repeated in waves.">
           <p>Each wave is small on purpose. What one wave learns shapes the next.</p>
         </SectionHeader>
-        <LoopTimeline />
+        <ProgrammeStory />
       </Section>
 
       <Section id="decisions" className="border-t border-line">

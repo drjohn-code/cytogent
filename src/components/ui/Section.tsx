@@ -30,13 +30,13 @@ export function SectionHeader({
 }: {
   id: string;
   eyebrow?: string;
-  title: string;
+  title: ReactNode;
   children?: ReactNode;
 }) {
   return (
     <div className="max-w-3xl">
       {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-      <h2 id={`${id}-title`} className="mt-3 text-3xl font-semibold sm:text-4xl">
+      <h2 id={`${id}-title`} className="mt-3 text-4xl sm:text-5xl lg:text-[3.5rem]">
         {title}
       </h2>
       {children && <div className="mt-5 space-y-4 text-lg text-muted">{children}</div>}
@@ -55,15 +55,6 @@ export function ArrowLink({ href, children }: { href: string; children: ReactNod
         →
       </span>
     </Link>
-  );
-}
-
-/** Small mono tag that marks a visual as illustration, not data (BRIEF §1.3). */
-export function ConceptualTag({ children = "Conceptual illustration" }: { children?: ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-line px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">
-      {children}
-    </span>
   );
 }
 

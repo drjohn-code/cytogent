@@ -32,7 +32,6 @@ const HEX_ALLOWED = [
   "src/app/og/[slug]/route.tsx", // image renderer
   "src/app/layout.tsx", // viewport themeColor
   "src/app/manifest.ts", // web manifest
-  "src/components/hero/OrganoidScene.tsx", // fallbacks if a CSS token cannot be read
 ];
 for (const f of src) {
   if (HEX_ALLOWED.includes(rel(f))) continue;

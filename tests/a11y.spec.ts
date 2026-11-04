@@ -9,6 +9,9 @@ function summary(violations: { id: string; impact?: string | null; nodes: { targ
   return violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.map((n) => JSON.stringify(n.target)).join(", ")}`).join("\n");
 }
 
+// Reduced motion: cards fade in on scroll, and axe would otherwise measure them mid-fade.
+test.use({ reducedMotion: "reduce" });
+
 for (const width of [390, 1440]) {
   for (const r of routes) {
     test(`axe ${r.path} at ${width}px`, async ({ page }) => {

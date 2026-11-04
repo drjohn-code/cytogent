@@ -1,5 +1,5 @@
 /** Cytogent's operating principles (BRIEF §3). Replaces any vendor comparison matrix. */
-const principles = [
+const principles: { title: string; body: string }[] = [
   {
     title: "Bounded experimental batches",
     body: "Each round is a small, feasible batch chosen for what it can teach, not an open-ended screen.",
@@ -18,20 +18,19 @@ const principles = [
   },
 ];
 
-/** `compact` shows titles only (home, where the word budget is tight). */
+/** `compact`: one column of numbered rows (home, beside the ranked batch). */
 export function DesignPrinciples({ compact = false }: { compact?: boolean }) {
   return (
-    <div>
-      <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted">Operating principles</p>
-      <ol className={`mt-4 grid gap-4 ${compact ? "" : "sm:grid-cols-2"}`}>
-        {principles.map((p, i) => (
-          <li key={p.title} className={compact ? "flex items-baseline gap-4 border-b border-line pb-4" : "glass p-6"}>
-            <span className="font-mono text-xs text-signal">{String(i + 1).padStart(2, "0")}</span>
-            <h3 className={`text-lg font-semibold ${compact ? "" : "mt-2"}`}>{p.title}</h3>
-            {!compact && <p className="mt-2 text-muted">{p.body}</p>}
-          </li>
-        ))}
-      </ol>
-    </div>
+    <ol className={compact ? "border-t border-line" : "grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line sm:grid-cols-2"}>
+      {principles.map((p, i) => (
+        <li key={p.title} data-spot className={compact ? "grid grid-cols-[3rem_1fr] border-b border-line py-6" : "bg-canvas p-8"}>
+          <span className="font-mono text-xs text-signal">{String(i + 1).padStart(2, "0")}</span>
+          <div className={compact ? "" : "mt-6"}>
+            <h3 className="text-lg font-normal">{p.title}</h3>
+            <p className="mt-1 text-muted">{p.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }

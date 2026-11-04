@@ -1,0 +1,196 @@
+{
+  "images": [
+    {
+      "name": "confocal-cells",
+      "model": "gemini-3-pro-image",
+      "aspect": "16:9",
+      "prompt": "High-resolution multicolour confocal fluorescence micrograph of human lung adenocarcinoma cells in culture: nuclei stained blue (DAPI), actin cytoskeleton green with fine stress fibres and lamellipodia, mitochondria magenta, a few cells dividing with visible chromosomes. Crisp, real microscope look, natural optical blur at edges.",
+      "kind": "data"
+    },
+    {
+      "name": "tissue-multiplex",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "prompt": "Multiplex immunofluorescence whole-slide image of a circular lung tumour tissue core: tumour cell nests outlined in cyan, a resistant clone region in violet, collagen stroma in amber, cytotoxic T cells as bright magenta points, nuclei blue. Very detailed, real digital-pathology scan quality, circle on black.",
+      "kind": "data"
+    },
+    {
+      "name": "well-control",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "size": "1K",
+      "prompt": "Circular microscope field of view (round, black outside the circle) of a confocal fluorescence image of lung cancer cells growing in a culture well: nuclei blue, actin cytoskeleton green, dying cells marked by a bright magenta apoptosis stain with condensed, fragmented nuclei. Real micrograph look, crisp detail. Dense, healthy, confluent monolayer of spread cells, almost no magenta dying cells.",
+      "kind": "data"
+    },
+    {
+      "name": "well-drug-a",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "size": "1K",
+      "prompt": "Circular microscope field of view (round, black outside the circle) of a confocal fluorescence image of lung cancer cells growing in a culture well: nuclei blue, actin cytoskeleton green, dying cells marked by a bright magenta apoptosis stain with condensed, fragmented nuclei. Real micrograph look, crisp detail. About half the cells dying (bright magenta, rounded, fragmented), the survivors are scattered clusters of healthy spread cells.",
+      "kind": "data"
+    },
+    {
+      "name": "well-drug-b",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "size": "1K",
+      "prompt": "Circular microscope field of view (round, black outside the circle) of a confocal fluorescence image of lung cancer cells growing in a culture well: nuclei blue, actin cytoskeleton green, dying cells marked by a bright magenta apoptosis stain with condensed, fragmented nuclei. Real micrograph look, crisp detail. Mostly healthy cells with some gaps and a few magenta dying cells.",
+      "kind": "data"
+    },
+    {
+      "name": "well-combo",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "size": "1K",
+      "prompt": "Circular microscope field of view (round, black outside the circle) of a confocal fluorescence image of lung cancer cells growing in a culture well: nuclei blue, actin cytoskeleton green, dying cells marked by a bright magenta apoptosis stain with condensed, fragmented nuclei. Real micrograph look, crisp detail. Almost all cells dead: many bright magenta rounded apoptotic bodies and debris, only two or three healthy green cells left, lots of empty dark space.",
+      "kind": "data"
+    },
+    {
+      "name": "tissue-multiplex-resistant",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "prompt": "Multiplex immunofluorescence whole-slide image of a circular lung tumour tissue core after drug resistance has developed: most tumour nests now stained violet (the resistant clone), only a few small cyan-outlined nests remain, collagen stroma in amber, scattered magenta T cells, nuclei blue. Very detailed, real digital-pathology scan quality, circle on black.",
+      "kind": "data"
+    },
+    {
+      "name": "tissue-panorama",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "21:9",
+      "kind": "data",
+      "prompt": "Multiplex immunofluorescence whole-slide scan of a lung adenocarcinoma section, a wide panoramic strip of tissue: tumour cell nests outlined in cyan, a resistant clone region stained violet, collagen-rich stroma in amber, cytotoxic T cells as bright magenta points, nuclei blue, black background. Real digital-pathology scan quality, fine cellular detail, natural stain variation and slight tiling seams."
+    },
+    {
+      "name": "tissue-core-c",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "kind": "data",
+      "prompt": "Multiplex immunofluorescence image of a circular tissue microarray core from a lung tumour with heavy immune infiltration: many bright magenta T cells crowding between cyan-outlined tumour nests, thin amber stroma, nuclei blue. Real digital-pathology scan quality, circle on black."
+    },
+    {
+      "name": "tissue-core-d",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "kind": "data",
+      "prompt": "Multiplex immunofluorescence image of a circular tissue microarray core from a lung tumour that has undergone a change of cell type: sheets of small tightly packed violet-stained cells, a few remaining cyan glandular nests, amber stroma, sparse magenta T cells, nuclei blue. Real digital-pathology scan quality, circle on black."
+    },
+    {
+      "name": "organoid-section",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "kind": "data",
+      "prompt": "Multiplex immunofluorescence image of a thin section through a patient-derived lung cancer organoid embedded in gel: a ring-shaped epithelial structure around a central lumen, cell membranes cyan, nuclei blue, proliferating nuclei bright magenta, a few apoptotic fragments in the lumen. Real confocal microscopy data, flat optical section, natural noise, on black."
+    },
+    {
+      "name": "organoid-brightfield",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "16:9",
+      "kind": "data",
+      "prompt": "Brightfield inverted microscope image of patient-derived cancer organoids growing in a Matrigel dome: dozens of round and budding translucent spheroids of different sizes, phase contrast, grey tones, real microscope vignetting and dust, slight uneven illumination."
+    },
+    {
+      "name": "he-section",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "1:1",
+      "kind": "data",
+      "prompt": "Haematoxylin and eosin stained histology section of lung adenocarcinoma, a circular tissue core: purple nuclei, pink cytoplasm and stroma, acinar tumour glands, real whole-slide scanner image with natural stain variation, on black background outside the circle."
+    },
+    {
+      "name": "hero-cancer-cell",
+      "model": "gemini-3-pro-image",
+      "aspect": "16:9",
+      "kind": "sem",
+      "prompt": "A single lung cancer cell spreading on a flat substrate, seen at a low oblique angle: a domed body covered in microvilli and ruffled membrane, long filopodia reaching out across the surface. The cell sits in the right two-thirds of the frame; the left third is dark, quiet negative space."
+    },
+    {
+      "name": "sem-tcell-attack",
+      "model": "gemini-3-pro-image",
+      "aspect": "16:9",
+      "kind": "sem",
+      "prompt": "Two cytotoxic T cells, coloured warm gold, docking onto and attacking a much larger cancer cell coloured deep blue and violet; contact points show membrane ruffles."
+    },
+    {
+      "name": "sem-cell-division",
+      "model": "gemini-3-pro-image",
+      "aspect": "16:9",
+      "kind": "sem",
+      "prompt": "A cancer cell in the last stage of division: two rounded daughter cells joined by a thin cytoplasmic bridge, surfaces covered in blebs and microvilli."
+    },
+    {
+      "name": "sem-organoid",
+      "model": "gemini-3-pro-image",
+      "aspect": "1:1",
+      "kind": "sem",
+      "prompt": "The surface of a patient-derived tumour organoid: a sphere of tightly packed epithelial cells, each with a domed, textured surface, centred on a dark background."
+    },
+    {
+      "name": "tem-cancer-cell",
+      "model": "gemini-3-pro-image",
+      "aspect": "1:1",
+      "kind": "sem",
+      "prompt": "False-coloured transmission electron micrograph cross-section of a cancer cell: large nucleus with dense chromatin and a nucleolus, mitochondria with visible cristae, endoplasmic reticulum, vesicles; flat section, rich colour coding by organelle."
+    },
+    {
+      "name": "sem-drug-response",
+      "model": "gemini-3-pro-image",
+      "aspect": "16:9",
+      "kind": "sem",
+      "prompt": "Cancer cells after exposure to an effective drug combination: several cells rounding up, blebbing and fragmenting into apoptotic bodies, beside one surviving flattened cell."
+    },
+    {
+      "name": "sem-tumour-tissue",
+      "model": "gemini-3-pro-image",
+      "aspect": "16:9",
+      "kind": "sem",
+      "prompt": "Scanning electron micrograph of a fractured lung tumour tissue sample: alveolar spaces, a dense cluster of tumour cells filling one region, fine connective fibres."
+    },
+    {
+      "name": "lab-automation",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "16:9",
+      "kind": "clean",
+      "prompt": "A robotic liquid-handling system inside a glass enclosure dispensing into rows of microplates, gripper arm in motion, tips racks, clean white deck."
+    },
+    {
+      "name": "lab-bench",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "16:9",
+      "kind": "clean",
+      "prompt": "A scientist seen from behind in a white lab coat and blue gloves pipetting into a microplate at a pristine white bench, glass walls behind, soft daylight."
+    },
+    {
+      "name": "lab-imaging-suite",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "16:9",
+      "kind": "clean",
+      "prompt": "A sleek high-content imaging system beside a large monitor showing a grid of colourful fluorescent cell images, in a calm, darkened modern imaging room with cool blue light."
+    },
+    {
+      "name": "lab-biobank",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "16:9",
+      "kind": "clean",
+      "prompt": "A modern automated cryogenic biobank: rows of sleek white storage units with blue status lights, a robotic sample handler, polished floor."
+    },
+    {
+      "name": "lab-interior",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "16:9",
+      "kind": "clean",
+      "prompt": "An empty, newly built cancer research laboratory: long white benches, glass partitions, organised equipment, ceiling light lines, a view of greenery outside."
+    },
+    {
+      "name": "team-data",
+      "model": "gemini-3.1-flash-image",
+      "aspect": "16:9",
+      "kind": "clean",
+      "prompt": "Two scientists seen from behind standing at a large wall display showing dose-response curves and a heatmap in blue and violet, in a bright modern glass-walled room."
+    }
+  ],
+  "styles": {
+    "data": "Authentic raw scientific image data exactly as the instrument captures it. Not a 3D render, not CGI, no glossy, glassy or plastic surfaces, no bokeh, no cinematic lighting, no lens flare. No text, labels, letters, scale bars or watermarks.",
+    "photo": "Authentic documentary photograph taken on a full-frame camera with a 35mm lens, natural imperfect available light, real textures and materials, slight grain, muted true-to-life colours. Not CGI, not a render, not stock-photo glossy. No identifiable faces, no readable text or logos.",
+    "sem": "False-coloured electron micrograph in the style of award-winning electron microscopy imagery (Wellcome Image Awards, Nikon Small World): genuine electron-microscope surface detail, three-dimensional depth, crisp membrane texture and microvilli, rich but tasteful false colour in midnight blue, indigo, violet and warm gold, deep dark background. Not a cartoon, not a glossy plastic render. No text, labels, scale bar or watermark.",
+    "clean": "Bright, immaculate, modern high-tech laboratory: clean white and glass surfaces, brushed aluminium, soft diffuse daylight with cool blue accent lighting, architectural photography with the polish of Apple product photography, everything tidy and new, generous negative space. No identifiable faces, no readable text or logos."
+  }
+}

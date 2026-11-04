@@ -7,7 +7,6 @@ export const site = {
   mission:
     "Cytogent connects molecular state and experimental response to drive smarter drug-development decisions in resistant cancer.",
   model: "Decision-as-a-Service (DaaS)",
-  brandLine: "One question. One experiment. Evidence for the next decision.",
   beachhead:
     "Combination experiment selection in treatment-resistant EGFR-mutant lung adenocarcinoma following osimertinib resistance.",
   northStar: "Independently confirmed, decision-relevant findings per experimental budget.",

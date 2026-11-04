@@ -5,12 +5,11 @@ import { footerNav } from "@/content/navigation";
 import { site } from "@/content/site";
 
 /**
- * Credentials (email, LinkedIn, affiliation, accelerators) render only when verified (BRIEF §1.1, §5).
- * The NVIDIA badge is not wired in: it needs verified membership AND badge rights first (docs/TODO_VERIFY.md).
+ * Credentials (email, LinkedIn, affiliation, accelerators, NVIDIA Inception) render only when verified (BRIEF §1.1, §5).
  */
 export function Footer() {
   const year = new Date().getFullYear();
-  const { email, linkedin, affiliation, accelerators } = credentials;
+  const { email, linkedin, affiliation, accelerators, nvidiaInception, copyright } = credentials;
 
   return (
     <footer className="mt-24 border-t border-line bg-elevated">
@@ -60,12 +59,24 @@ export function Footer() {
           </nav>
         </div>
 
-        <p className="mt-12 max-w-3xl border-l-2 border-signal pl-4 text-sm text-muted">{site.statusNote}</p>
-
-        <div className="mt-8 flex flex-col gap-2 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:justify-between">
-          <p>© {year} Cytogent</p>
-          {isPublic(affiliation) && <p>{affiliation.value}</p>}
-          {isPublic(accelerators) && <p>{accelerators.value}</p>}
+        <div className="mt-8 flex flex-col gap-6 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <p>
+              © {year} {isPublic(copyright) ? copyright.value : "Cytogent"}
+            </p>
+            {isPublic(affiliation) && <p>{affiliation.value}</p>}
+            {isPublic(accelerators) && <p>{accelerators.value}</p>}
+          </div>
+          {isPublic(nvidiaInception) && (
+            /* eslint-disable-next-line @next/next/no-img-element -- small static SVG badge */
+            <img
+              src="/brand/partners/nvidia-inception-on-dark.svg"
+              alt={nvidiaInception.value}
+              width={185}
+              height={80}
+              className="h-16 w-auto"
+            />
+          )}
         </div>
       </div>
     </footer>

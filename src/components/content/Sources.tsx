@@ -17,7 +17,7 @@ export function Sources({ ids }: { ids: string[] }) {
               <span>
                 {r.citation}{" "}
                 <span className="text-muted">({r.kind})</span>{" "}
-                <a href={r.url} rel="noopener noreferrer" className="break-all text-signal underline underline-offset-4">
+                <a href={r.url} rel="noopener noreferrer" className="inline-block min-h-6 break-all text-signal underline underline-offset-4">
                   {r.url.replace(/^https:\/\//, "")}
                 </a>
               </span>

@@ -43,18 +43,18 @@ function gone() {
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <style>
   :root { color-scheme: dark; }
-  body { margin: 0; min-height: 100svh; display: grid; place-items: center; background: #050b14; color: #eaf4f5;
+  body { margin: 0; min-height: 100svh; display: grid; place-items: center; background: #070c1a; color: #eef2fb;
          font: 17px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
   main { max-width: 34rem; padding: 32px 16px; }
   img { display: block; height: 26px; width: auto; margin-bottom: 40px; }
-  p.code { font: 12px ui-monospace, Menlo, monospace; letter-spacing: .14em; color: #42e8c8; margin: 0; }
+  p.code { font: 12px ui-monospace, Menlo, monospace; letter-spacing: .14em; color: #7aa7ff; margin: 0; }
   h1 { font-size: 2.25rem; line-height: 1.15; margin: 12px 0 16px; }
-  p { color: #8fa6b4; margin: 0 0 28px; }
+  p { color: #9aa6c0; margin: 0 0 28px; }
   nav { display: flex; flex-wrap: wrap; gap: 12px; }
   a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px;
-      border: 1px solid #56748a; color: #eaf4f5; text-decoration: none; font-weight: 600; }
-  a.primary { background: #42e8c8; border-color: #42e8c8; color: #050b14; }
-  a:focus-visible { outline: 2px solid #42e8c8; outline-offset: 3px; }
+      border: 1px solid #5f6f91; color: #eef2fb; text-decoration: none; font-weight: 600; }
+  a.primary { background: #7aa7ff; border-color: #7aa7ff; color: #070c1a; }
+  a:focus-visible { outline: 2px solid #7aa7ff; outline-offset: 3px; }
 </style>
 </head>
 <body>

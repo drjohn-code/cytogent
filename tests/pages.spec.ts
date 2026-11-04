@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 import { absoluteUrl, routes } from "../src/content/routes";
-import { site } from "../src/content/site";
 
 // One test per manifest route (BRIEF §5: generate tests from the route manifest, do not hard-code a count).
 
@@ -31,7 +30,6 @@ for (const r of routes) {
     await expect(page.locator("html")).toHaveAttribute("lang", "en-GB");
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator("h1")).toHaveText(r.heading);
-    await expect(page.locator("footer")).toContainText(site.statusNote);
 
     const ld = await page.locator('script[type="application/ld+json"]').allTextContents();
     expect(ld).toHaveLength(1);

@@ -35,9 +35,9 @@ npm start
 
 ## Stack
 
-Next.js 16.4.5 (App Router, Turbopack) · React 19.3.1 · TypeScript 6.0.3 · Tailwind CSS 4.3.4 · Motion 14.9.0 (`motion/react`) · three 0.187.0 + @react-three/fiber 9.8.2 (home hero only) · Playwright 1.64.1 + axe-core 4.14.0. All versions pinned exactly; why some are not the newest is in [docs/THIRD_PARTY.md](docs/THIRD_PARTY.md).
+Next.js 16.4.5 (App Router, Turbopack) · React 19.3.1 · TypeScript 6.0.3 · Tailwind CSS 4.3.4 · Motion 14.9.0 (`motion/react`) · Playwright 1.64.1 + axe-core 4.14.0. All versions pinned exactly; why some are not the newest is in [docs/THIRD_PARTY.md](docs/THIRD_PARTY.md).
 
-Every page is statically prerendered. The only server code is `src/proxy.ts` (redirects and 410s). There are no API routes, forms, cookies, analytics or third-party requests.
+Every page is statically prerendered. Server code: `src/proxy.ts` (redirects and 410s) and `src/app/api/contact/route.ts` (the contact form, emailed through Resend; needs `RESEND_API_KEY`). No cookies, analytics or third-party requests from the browser.
 
 ## Where things live
 
@@ -48,10 +48,10 @@ Every page is statically prerendered. The only server code is `src/proxy.ts` (re
 | `src/content/` | **All copy-level facts and data.** See "Changing content" below |
 | `src/components/` | `layout/` (header, mobile menu, footer), `ui/` (sections, page header, CTA band, legal layout), `content/` (sources, principles, "what we are not"), `visuals/` and `hero/` (hand-built SVG and the WebGL hero), `loop/`, `seo/`, `motion/`, `brand/` |
 | `src/styles/tokens.css` | Design tokens: the single source for colours, surfaces, radii, motion timing (with measured contrast ratios) |
-| `src/fonts/` | Self-hosted Space Grotesk and JetBrains Mono (Latin subsets) with their OFL licences |
+| `src/fonts/` | Self-hosted Geist, Geist Mono and Instrument Serif italic (Latin subsets) with their OFL licences |
 | `brand/` | Approved logo system (1A "Refined loop"): SVG lockups, mark, wordmark, favicons. Source of what is in `public/brand/` |
 | `tests/` | Playwright suites, generated from the route manifest |
-| `scripts/` | `code-check.mjs`, `copy-brand.mjs` |
+| `scripts/` | `code-check.mjs`, `copy-brand.mjs`, `build-mark.py` (the tumour-and-resistant-clone mark in every logo file and the favicon), `generate-images.py` + `image-prompts.json` (the site's images in `public/images/gen/`, made with Google's Gemini image models; `GEMINI_API_KEY` from the environment, never committed) |
 | `docs/` | Handover documents (index below) |
 | `design-system/cytogent/MASTER.md` | What was taken from, and rejected from, the UI UX Pro Max design-system search |
 | `source/`, `site/`, `api/` | **Legacy site**, still deployed. Remove at cutover (owner approval) |

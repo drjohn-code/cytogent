@@ -1,4 +1,3 @@
-import { ConceptualTag } from "@/components/ui/Section";
 import { COLS, ROWS, batchWells } from "@/lib/plate";
 
 /** "Decision brief → plate plan" HUD for /for-drug-developers. Illustrative fields; no numbers or compounds. */
@@ -55,9 +54,6 @@ export function PlatePlanHud() {
           </span>
         </div>
       </div>
-      <figcaption className="sm:col-span-3">
-        <ConceptualTag>Illustrative layout, not a protocol</ConceptualTag>
-      </figcaption>
     </figure>
   );
 }
