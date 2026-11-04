@@ -12,7 +12,7 @@
     "test:screens": "playwright test --project=screens",
     "seo:check": "playwright test --project=chromium --grep @seo",
     "check:code": "node scripts/code-check.mjs",
-    "brand": "python3 docs/brand/build_final_logo.py && python3 scripts/build-mark.py && node scripts/copy-brand.mjs"
+    "brand": "python3 scripts/build-mark.py && node scripts/build-wordmark.mjs"
   },
   "engines": {
     "node": ">=20.9"
@@ -38,6 +38,7 @@
     "@types/react-dom": "19.3.0",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.5",
+    "opentype.js": "1.3.4",
     "tailwindcss": "4.3.4",
     "typescript": "6.0.3"
   }

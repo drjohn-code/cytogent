@@ -17,7 +17,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
           <div className="max-w-md">
             <Link href="/" className="inline-flex min-h-11 items-center">
-              <Logo height={24} />
+              <Logo height={32} />
             </Link>
             <p className="mt-4 text-muted">{site.category}</p>
 

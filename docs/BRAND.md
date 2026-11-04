@@ -1,34 +1,20 @@
 # Cytogent brand
 
-Status (3 November 2026): **logo approved by the owner: Direction 1A "Refined loop", and in the new site.** Master files are in [`brand/`](../brand/); `npm run brand` rebuilds them and copies them into the app:
+Status (4 November 2026): **new mark and wordmark, chosen by the owner in chat.** The mark is a tumour drawn as a cluster of cells with a resistant clone budding out of it; the wordmark is "CYTOGENT" in Lexend 400 with wide tracking. Master files are in [`brand/`](../brand/) and copied to `public/brand/`.
 
 - `public/brand/*.svg`: header and footer use `cytogent-logo.svg` as `<img alt="Cytogent">` inside the home link; the 410 page uses it too.
 - `src/app/icon.svg`, `favicon.ico`, `apple-icon.png` (Next.js file conventions); `public/icons/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` (web manifest).
 - OG images (`/og/<slug>`) embed `cytogent-logo.svg`.
-- Optional load animation: **not implemented** (the brief allows it; skipped to keep the header static).
 
-Board: [`docs/brand/logo-final.png`](brand/logo-final.png). Regenerate everything with `python3 docs/brand/build_final_logo.py` (needs Playwright with Chromium, and Pillow).
+Rebuild: `python3 scripts/build-mark.py` (mark in every file, plus `src/app/icon.svg`), then `node scripts/build-wordmark.mjs` (wordmark and lockup proportions). The PNG icons were rendered from `cytogent-mark.svg` with sharp. The 1A "Refined loop" files from 3 November are superseded; `docs/brand/build_final_logo.py` still draws them.
 
 ## The mark
 
-Six nodes on an open ring form a "C". The ring is the intended DEFINE → CONNECT → PRIORITIZE → TEST → LEARN → CONFIRM loop. The node at the upper terminal, in signal colour, is the one experiment the loop chooses. The opening on the right is deliberate: the loop feeds the next decision rather than closing on itself.
-
-### Construction (64-unit grid, centre 32, 32)
-
-| Part | Full mark | Small mark (≤32 px) |
-| --- | --- | --- |
-| Ring centre radius | 22 | 22 |
-| Ring thickness | 3.2 | 5.5 |
-| Node radius | 4.4 | 5.5 (nodes merge into the ring) |
-| Lit node radius | 5.8 | 7.6 |
-| Gap around each node | 1.5 | 2.6 (lit node only) |
-| Node angles | 45°, 99°, 153°, 207°, 261°, 315° (54° apart; lit node at 45°, upper right) | same |
-
-The ring is cut around each node by a circle of node radius + gap, so each ring segment has concave ends. In the light variant the lit node has a 1.6-unit ink ring (teal alone is about 1.5:1 against white), and its gap grows by 0.8 to match.
+About two dozen cells packed in a sunflower (phyllotaxis) spiral, so the cluster reads as a round tumour spheroid rather than a grid. A contiguous patch of edge cells, plus one cell budding outward at the upper right, is the resistant clone. It is drawn in the accent colour: azure `#7AA7FF` on dark, `#3F6FE0` on light. In one-colour files the clone cells are rings (an even-odd path, since logo files carry no strokes). The small mark (32 px and below) uses about ten larger cells.
 
 ### The wordmark
 
-Custom lowercase monoline geometry, drawn in code: 20-unit x-height, 3.4 stroke, circles of radius 10 for c, o, g, e, n; t ascends to 28; y and g descend to about 12. All strokes are outlined to filled paths. **No font file is used, so no font licence applies.**
+"CYTOGENT" in capitals, Lexend Regular (400), tracking 0.22 em, cap height 28 units, converted to outlines with opentype.js. Font file and licence: `docs/brand/fonts/Lexend-400.woff` and `Lexend-OFL.txt` (SIL Open Font License 1.1). In the horizontal lockup the caps sit at 0.78 scale, centred on the mark.
 
 ## Files
 
@@ -36,11 +22,11 @@ All in [`brand/`](../brand/). Each family has four variants: no suffix = full co
 
 | File | viewBox (trimmed to the ink) | Use |
 | --- | --- | --- |
-| `cytogent-logo*.svg` | 302.9 × 51.6 | Horizontal lockup. Header. |
-| `cytogent-logo-stacked*.svg` | 212.6 × 140.1 | Stacked lockup. Square-ish spaces, OG images. |
+| `cytogent-logo*.svg` | 277.84 × 51.6 | Horizontal lockup. Header. |
+| `cytogent-logo-stacked*.svg` | 252.8 × 114.2 | Stacked lockup. Square-ish spaces. |
 | `cytogent-mark*.svg` | 45.5 × 52.4 | Mark alone, 33 px and up. |
 | `cytogent-mark-small*.svg` | 48.4 × 54.6 | Mark alone, 32 px and below. |
-| `cytogent-wordmark*.svg` | 212.6 × 39.8 | Wordmark alone. |
+| `cytogent-wordmark*.svg` | 279.6 × 29 | Wordmark alone. |
 | `favicon/icon.svg` | square | SVG favicon. Dark ink on light browser tabs, light ink on dark tabs (`prefers-color-scheme` inside the SVG). |
 | `favicon/favicon.ico` | 16, 32, 48 | Light mark on a `#050B14` rounded tile. 16 and 32 use the small mark. |
 | `favicon/apple-icon.png` | 180 | Full-bleed `#050B14`, mark at 60%. |

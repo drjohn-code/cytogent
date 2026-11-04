@@ -31,7 +31,7 @@ npm start
 | `npm run seo:check` | The `@seo` subset: page metadata, redirects, 410s, sitemap, robots, `llms.txt`, OG images |
 | `npm run check:code` | Static checks: no `framer-motion`, no hard-coded colours outside the tokens, no remote fonts/images/scripts, no 21st API key, logo SVG hygiene |
 | `npm run test:screens` | Screenshot matrix (every route × 390/834/1440 px × with/without reduced motion) into `screenshots/` (gitignored) |
-| `npm run brand` | Rebuilds the logo system from `docs/brand/build_final_logo.py` (needs Python, Playwright, Pillow) and copies it into `public/` and `src/app/` |
+| `npm run brand` | Rebuilds the mark (`scripts/build-mark.py`) and the Lexend wordmark (`scripts/build-wordmark.mjs`) in every logo file under `brand/` and `public/brand/`, and `src/app/icon.svg` |
 
 ## Stack
 

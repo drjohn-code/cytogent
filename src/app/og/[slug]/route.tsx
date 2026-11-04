@@ -49,7 +49,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- next/og renders <img>, not next/image */}
-        <img src={logoSrc} alt="" width={234} height={40} />
+        <img src={logoSrc} alt="" width={215} height={40} />
         <div style={{ display: "flex", flexDirection: "column", background: C.canvas, padding: "8px 0" }}>
           <div style={{ fontSize: 22, letterSpacing: 4, color: C.signal, fontWeight: 500 }}>{kicker}</div>
           <div style={{ fontSize: size, fontWeight: 300, lineHeight: 1.05, letterSpacing: -2, marginTop: 18, maxWidth: 1000 }}>{r.heading}</div>

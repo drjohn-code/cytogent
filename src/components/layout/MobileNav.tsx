@@ -52,7 +52,7 @@ export function MobileNav() {
         <div className="flex h-full flex-col">
           <div className="flex h-[var(--header-h)] shrink-0 items-center justify-between border-b border-line px-4">
             <Link href="/" onClick={close} className="inline-flex min-h-11 items-center">
-              <Logo height={22} />
+              <Logo height={30} />
             </Link>
             <button
               type="button"

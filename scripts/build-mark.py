@@ -92,6 +92,8 @@ def rewrite(path: Path):
         s = head + mark_svg(body, accent, small) + "</svg>"
     else:
         return
+    if "on-light" in path.name:  # the azure accent is too pale on white; use the deeper blue
+        s = s.replace("#7AA7FF", "#3F6FE0")
     path.write_text(s)
     print("mark ->", path.relative_to(ROOT), "accent" if accent else "mono")
 
