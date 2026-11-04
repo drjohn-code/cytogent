@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Section, SectionHeader } from "@/components/ui/Section";
 import { credentials, isPublic } from "@/content/credentials";
 import { site } from "@/content/site";
+import { toneStyle } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/about");
 
@@ -43,14 +44,21 @@ export default function AboutPage() {
       {shown.length > 0 && (
         <Section id="credentials" className="border-t border-line">
           <SectionHeader id="credentials" eyebrow="Facts" title="Programmes and affiliation." />
-          <ul className="mt-6 space-y-2">
-            {shown.map((c) => (
-              <li key={c.value}>{c.value}</li>
-            ))}
+          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {shown.map((c) =>
+              c === credentials.nvidiaInception ? (
+                <li key={c.value} data-spot className="card flex flex-col gap-6 p-6 sm:col-span-2 sm:flex-row sm:items-center sm:gap-8 sm:p-8" style={toneStyle("actin")}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- static SVG badge, no optimisation needed */}
+                  <img src="/brand/partners/nvidia-inception-on-dark.svg" alt="NVIDIA Inception Program" width={185} height={80} className="h-20 w-auto self-start sm:self-center" />
+                  <p className="text-lg sm:border-l sm:border-line sm:pl-8">{c.value}</p>
+                </li>
+              ) : (
+                <li key={c.value} data-spot className="card p-6 sm:p-7">
+                  <p>{c.value}</p>
+                </li>
+              ),
+            )}
           </ul>
-          <p className="mt-4 text-sm text-muted">
-            Membership or selection does not mean clinical validation or commercial endorsement.
-          </p>
         </Section>
       )}
 

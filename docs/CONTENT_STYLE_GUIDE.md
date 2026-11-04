@@ -67,7 +67,7 @@ Clinical and endorsement: clinically validated, FDA-approved (about Cytogent), b
 
 ## Company facts
 
-Only facts marked `verified` in `src/content/credentials.ts` may appear. Never publish `pending` ones, and never show the verification notes. If a programme membership is shown, add: "Membership or selection does not mean clinical validation or commercial endorsement."
+Only facts marked `verified` in `src/content/credentials.ts` may appear. Never publish `pending` ones, and never show the verification notes. Programme memberships are stated as plain facts ("Member of the NVIDIA Inception Program."), with no partnership or endorsement wording.
 
 ## Calls to action
 
