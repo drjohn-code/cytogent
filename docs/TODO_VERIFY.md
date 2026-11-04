@@ -37,7 +37,7 @@ NVIDIA Inception membership **and** badge rights · WelloWork AB affiliation wor
 
 ## Not built (by design or deferred)
 
-Contact form and `/thank-you` (no confirmed backend/controller) · article drafts (0 of 16; topics await approval) · MDX tooling and `/insights/[slug]` · RSS · IndexNow · `llms-full.txt` · NVIDIA badge component · logo load animation · cookie banner (no cookies exist).
+Contact form and `/thank-you` (no confirmed backend/controller) · article drafts (0 of 16; topics await approval) · MDX tooling and `/insights/[slug]` · RSS · `llms-full.txt` · NVIDIA badge component · logo load animation · cookie banner (no cookies exist).
 
 ---
 
@@ -105,7 +105,7 @@ Contact form and `/thank-you` (no confirmed backend/controller) · article draft
 | AI training crawler default | `allow` (continuity with the legacy `robots.txt`). **Owner decision**: keep, or set `AI_TRAINING_CRAWLERS=block` in Vercel. |
 | Rich Results Test / Schema validator | Not run (needs deployed URLs). |
 | Sitemap `<lastmod>` | Omitted on purpose. Add per-page dates only with a real change-tracking source. |
-| IndexNow, RSS, `llms-full.txt` | Not built (all optional; RSS waits for published posts). |
+| RSS, `llms-full.txt` | Not built (all optional; RSS waits for published posts). IndexNow is set up: `npm run indexnow`. |
 | Search Console / Bing Webmaster | Not set up here. Legacy `SITE['google_site_verification']` was empty. |
 
 ## Phase 7: checks (3 November 2026)

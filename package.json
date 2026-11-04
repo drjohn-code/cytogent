@@ -12,7 +12,8 @@
     "test:screens": "playwright test --project=screens",
     "seo:check": "playwright test --project=chromium --grep @seo",
     "check:code": "node scripts/code-check.mjs",
-    "brand": "python3 scripts/build-mark.py && node scripts/build-wordmark.mjs"
+    "brand": "python3 scripts/build-mark.py && node scripts/build-wordmark.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "engines": {
     "node": ">=20.9"

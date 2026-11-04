@@ -45,6 +45,6 @@ Single source: `src/content/routes.ts` (titles, descriptions, H1s, breadcrumb pa
 - [x] OG images: `/og/<slug>`, 1200×630 PNG, prerendered from each page's real H1 and description; `og:image:alt` is the H1. `twitter:card` = `summary_large_image`; no `twitter:site` (there is no X account).
 - [x] `llms.txt`: built from verified facts, manifest pages and published posts only. Optional; no ranking effect claimed. `llms-full.txt` not generated.
 - [ ] **Not run:** Google Rich Results Test and Schema.org validator on the deployed URLs. The FAQ rich result may not appear even with valid markup; that is expected.
-- [ ] IndexNow: not set up (optional, Bing/Yandex only; needs a key file and host). Never claimed for Google.
+- [x] IndexNow: key file in `public/` (served at `https://cytogent.com/<key>.txt`). After a deploy is live, run `npm run indexnow` (whole sitemap) or `npm run indexnow -- /about /platform` (changed pages). Bing, Yandex, Seznam, Naver and Yep only; never claimed for Google.
 - [ ] RSS: not shipped (no published posts).
 - [ ] After launch: submit `https://cytogent.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
