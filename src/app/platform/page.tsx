@@ -8,14 +8,16 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Chips, Section, SectionHeader } from "@/components/ui/Section";
 import { UncertaintyMap } from "@/components/visuals/UncertaintyMap";
+import { FeatureCard } from "@/components/ui/FeatureCard";
+import type { IconName, Tone } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/platform");
 
-const decisions = [
-  { q: "What to test next", a: "A ranked, feasible batch of combination experiments, each with its reason." },
-  { q: "What reproduced", a: "Which signals held up when tested again, out of batch or with another readout." },
-  { q: "What to stop", a: "Which lines of work the evidence no longer supports, so budget moves elsewhere." },
-  { q: "Where to commit capital", a: "A plain-language summary a programme team can take to its decision meeting." },
+const decisions: { q: string; a: string; icon: IconName; tone: Tone }[] = [
+  { q: "What to test next", icon: "ranked", tone: "signal", a: "A ranked, feasible batch of combination experiments, each with its reason." },
+  { q: "What reproduced", icon: "checkCircle", tone: "actin", a: "Which signals held up when tested again, out of batch or with another readout." },
+  { q: "What to stop", icon: "stop", tone: "alert", a: "Which lines of work the evidence no longer supports, so budget moves elsewhere." },
+  { q: "Where to commit capital", icon: "flag", tone: "dose", a: "A plain-language summary a programme team can take to its decision meeting." },
 ];
 
 export default function PlatformPage() {
@@ -58,12 +60,11 @@ export default function PlatformPage() {
 
       <Section id="decisions" className="border-t border-line">
         <SectionHeader id="decisions" eyebrow="Outputs" title="Four decisions it informs." />
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
           {decisions.map((d) => (
-            <li key={d.q} className="glass p-6">
-              <h3 className="text-xl font-semibold">{d.q}</h3>
+            <FeatureCard key={d.q} icon={d.icon} tone={d.tone} title={d.q} titleClassName="text-xl font-semibold">
               <p className="mt-2 text-muted">{d.a}</p>
-            </li>
+            </FeatureCard>
           ))}
         </ul>
       </Section>

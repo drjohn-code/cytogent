@@ -6,19 +6,21 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Chips, Section, SectionHeader } from "@/components/ui/Section";
 import { PlatePlanHud } from "@/components/visuals/PlatePlanHud";
+import { FeatureCard, toneAt } from "@/components/ui/FeatureCard";
+import type { IconName } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/for-drug-developers");
 
-const roles = [
-  { role: "Asset team lead", need: "A defensible go, adjust or stop on a combination strategy, with the evidence behind it." },
-  { role: "Translational scientist", need: "Experiments that test a biological hypothesis about resistance, not a screen for its own sake." },
-  { role: "Portfolio and business development", need: "To know which signals reproduced before committing capital or a partnership." },
+const roles: { role: string; need: string; icon: IconName }[] = [
+  { role: "Asset team lead", icon: "compass", need: "A defensible go, adjust or stop on a combination strategy, with the evidence behind it." },
+  { role: "Translational scientist", icon: "microscope", need: "Experiments that test a biological hypothesis about resistance, not a screen for its own sake." },
+  { role: "Portfolio and business development", icon: "pie", need: "To know which signals reproduced before committing capital or a partnership." },
 ];
 
-const path = [
-  { step: "Share the question", body: "The candidate, the resistance context and the decision you face. No confidential structures or patient data at this stage." },
-  { step: "Scope it together", body: "Which models, which readouts, what budget, and what result would change the decision." },
-  { step: "Agree the pilot shape", body: "A bounded first wave with agreed deliverables and go/no-go criteria." },
+const path: { step: string; body: string; icon: IconName }[] = [
+  { step: "Share the question", icon: "chat", body: "The candidate, the resistance context and the decision you face. No confidential structures or patient data at this stage." },
+  { step: "Scope it together", icon: "scope", body: "Which models, which readouts, what budget, and what result would change the decision." },
+  { step: "Agree the pilot shape", icon: "contract", body: "A bounded first wave with agreed deliverables and go/no-go criteria." },
 ];
 
 export default function ForDrugDevelopersPage() {
@@ -78,12 +80,11 @@ export default function ForDrugDevelopersPage() {
 
       <Section id="roles">
         <SectionHeader id="roles" eyebrow="Who it is for" title="Built around the people who make the call." />
-        <ul className="mt-10 grid gap-4 md:grid-cols-3">
-          {roles.map((r) => (
-            <li key={r.role} className="glass p-6">
-              <h3 className="text-xl font-semibold">{r.role}</h3>
+        <ul className="mt-10 grid gap-5 md:grid-cols-3">
+          {roles.map((r, i) => (
+            <FeatureCard key={r.role} icon={r.icon} tone={toneAt(i)} title={r.role} titleClassName="text-xl font-semibold">
               <p className="mt-2 text-muted">{r.need}</p>
-            </li>
+            </FeatureCard>
           ))}
         </ul>
       </Section>
@@ -97,13 +98,11 @@ export default function ForDrugDevelopersPage() {
 
       <Section id="path">
         <SectionHeader id="path" eyebrow="Path to a pilot" title="Three conversations to a first wave." />
-        <ol className="mt-10 grid gap-4 md:grid-cols-3">
+        <ol className="mt-10 grid gap-5 md:grid-cols-3">
           {path.map((p, i) => (
-            <li key={p.step} className="rounded-[var(--radius-card)] border border-line p-6">
-              <span className="font-mono text-xs text-signal">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-2 text-xl font-semibold">{p.step}</h3>
+            <FeatureCard key={p.step} icon={p.icon} tone={toneAt(i)} kicker={String(i + 1).padStart(2, "0")} title={p.step} titleClassName="text-xl font-semibold">
               <p className="mt-2 text-muted">{p.body}</p>
-            </li>
+            </FeatureCard>
           ))}
         </ol>
         <div className="mt-6 flex flex-wrap gap-x-8">

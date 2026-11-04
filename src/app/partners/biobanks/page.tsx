@@ -5,13 +5,15 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Section, SectionHeader } from "@/components/ui/Section";
 import { SampleLineage } from "@/components/visuals/SampleLineage";
+import { FeatureCard, toneAt } from "@/components/ui/FeatureCard";
+import type { IconName } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/partners/biobanks");
 
-const commitments = [
-  { title: "Ethics and consent first", body: "Work only within the consent, ethics approval and usage rights attached to each sample." },
-  { title: "No patient-identifiable data here", body: "Nothing on this website collects or shows patient-identifiable data, and we ask you not to send any through it." },
-  { title: "No automatic pooling", body: "Our policy: data from one collaboration is not pooled with another client’s data unless all parties agree." },
+const commitments: { title: string; body: string; icon: IconName }[] = [
+  { title: "Ethics and consent first", icon: "consent", body: "Work only within the consent, ethics approval and usage rights attached to each sample." },
+  { title: "No patient-identifiable data here", icon: "userOff", body: "Nothing on this website collects or shows patient-identifiable data, and we ask you not to send any through it." },
+  { title: "No automatic pooling", icon: "separate", body: "Our policy: data from one collaboration is not pooled with another client’s data unless all parties agree." },
 ];
 
 export default function BiobanksPage() {
@@ -46,12 +48,11 @@ export default function BiobanksPage() {
 
       <Section id="commitments" className="border-t border-line">
         <SectionHeader id="commitments" eyebrow="How we work" title="Governance before data." />
-        <ul className="mt-10 grid gap-4 md:grid-cols-3">
-          {commitments.map((c) => (
-            <li key={c.title} className="glass p-6">
-              <h3 className="text-lg font-semibold">{c.title}</h3>
+        <ul className="mt-10 grid gap-5 md:grid-cols-3">
+          {commitments.map((c, i) => (
+            <FeatureCard key={c.title} icon={c.icon} tone={toneAt(i)} title={c.title} titleClassName="text-lg font-semibold">
               <p className="mt-2 text-muted">{c.body}</p>
-            </li>
+            </FeatureCard>
           ))}
         </ul>
         <div className="mt-6 flex flex-wrap gap-x-8">

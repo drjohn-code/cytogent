@@ -4,16 +4,18 @@ import Link from "next/link";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Section, SectionHeader } from "@/components/ui/Section";
+import { FeatureCard, toneAt } from "@/components/ui/FeatureCard";
+import type { IconName } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/investors");
 
-const gates = [
-  { gate: "Buyer pull", aim: "Drug teams commit time and budget to a pilot question." },
-  { gate: "Model access", aim: "Reliable access to suitable resistant and matched parental models." },
-  { gate: "Matched benchmark", aim: "Loop-selected batches compared fairly with how the team would otherwise choose." },
-  { gate: "Prospective economic proof", aim: "Evidence, measured going forward, that better selection saves experiments or time." },
-  { gate: "Cross-lab reproducibility", aim: "Key signals confirmed in an independent laboratory." },
-  { gate: "Paid multi-wave", aim: "A sponsor pays for repeated waves because the first was worth it." },
+const gates: { gate: string; aim: string; icon: IconName }[] = [
+  { gate: "Buyer pull", icon: "magnet", aim: "Drug teams commit time and budget to a pilot question." },
+  { gate: "Model access", icon: "cells", aim: "Reliable access to suitable resistant and matched parental models." },
+  { gate: "Matched benchmark", icon: "compare", aim: "Loop-selected batches compared fairly with how the team would otherwise choose." },
+  { gate: "Prospective economic proof", icon: "trend", aim: "Evidence, measured going forward, that better selection saves experiments or time." },
+  { gate: "Cross-lab reproducibility", icon: "network", aim: "Key signals confirmed in an independent laboratory." },
+  { gate: "Paid multi-wave", icon: "waves", aim: "A sponsor pays for repeated waves because the first was worth it." },
 ];
 
 export default function InvestorsPage() {
@@ -60,16 +62,23 @@ export default function InvestorsPage() {
         <SectionHeader id="gates" eyebrow="Validation aims" title="Six gates.">
           <p>These are aims we will be measured against. None is presented here as achieved.</p>
         </SectionHeader>
-        <ol className="mt-10 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {gates.map((g, i) => (
-            <li key={g.gate} className="bg-canvas p-6">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-signal">GATE {i + 1}</span>
-                <span className="rounded-full border border-line-strong px-2 py-0.5 font-mono text-[0.7rem] text-muted">AIM</span>
-              </div>
-              <h3 className="mt-3 text-lg font-semibold">{g.gate}</h3>
+            <FeatureCard
+              key={g.gate}
+              icon={g.icon}
+              tone={toneAt(i)}
+              title={g.gate}
+              titleClassName="text-lg font-semibold"
+              kicker={
+                <span className="flex items-center gap-2">
+                  <span className="text-signal">GATE {i + 1}</span>
+                  <span className="rounded-full border border-line-strong px-2 py-0.5 text-[0.7rem]">AIM</span>
+                </span>
+              }
+            >
               <p className="mt-2 text-muted">{g.aim}</p>
-            </li>
+            </FeatureCard>
           ))}
         </ol>
         <div className="mt-6 flex flex-wrap gap-x-8">

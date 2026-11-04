@@ -5,14 +5,16 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Section, SectionHeader } from "@/components/ui/Section";
 import { SiloedVaults } from "@/components/visuals/SiloedVaults";
+import { FeatureCard, toneAt } from "@/components/ui/FeatureCard";
+import type { IconName } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/data-governance");
 
-const aims = [
-  { title: "Project-level isolation", body: "Each sponsor’s data sits in its own project and is used only for that project, unless every party agrees otherwise." },
-  { title: "Permission gates", body: "Data moves into the loop, or out to a partner, only through an explicit, recorded permission." },
-  { title: "Audit lineage", body: "Every recommendation is traceable to the data, model version and decisions behind it." },
-  { title: "Research use", body: "Intended as decision support for preclinical and translational research, not for clinical care." },
+const aims: { title: string; body: string; icon: IconName }[] = [
+  { title: "Project-level isolation", icon: "vault", body: "Each sponsor’s data sits in its own project and is used only for that project, unless every party agrees otherwise." },
+  { title: "Permission gates", icon: "key", body: "Data moves into the loop, or out to a partner, only through an explicit, recorded permission." },
+  { title: "Audit lineage", icon: "lineage", body: "Every recommendation is traceable to the data, model version and decisions behind it." },
+  { title: "Research use", icon: "microscope", body: "Intended as decision support for preclinical and translational research, not for clinical care." },
 ];
 
 export default function DataGovernancePage() {
@@ -40,12 +42,11 @@ export default function DataGovernancePage() {
 
       <Section id="aims">
         <SectionHeader id="aims" eyebrow="Design" title="Four commitments." />
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-          {aims.map((a) => (
-            <li key={a.title} className="glass p-6">
-              <h3 className="text-lg font-semibold">{a.title}</h3>
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
+          {aims.map((a, i) => (
+            <FeatureCard key={a.title} icon={a.icon} tone={toneAt(i)} title={a.title} titleClassName="text-lg font-semibold">
               <p className="mt-2 text-muted">{a.body}</p>
-            </li>
+            </FeatureCard>
           ))}
         </ul>
       </Section>

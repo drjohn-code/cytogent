@@ -282,6 +282,81 @@
     }
   }
 
+  /*
+   * Raised card: a lit surface that sits above the canvas instead of a hairline cell in a grid.
+   * Inner top highlight + layered shadow give depth; --tone colours the top accent, hover glow and spotlight.
+   */
+  .card {
+    --tone: var(--signal);
+    position: relative;
+    border-radius: var(--radius-card);
+    border: 1px solid color-mix(in srgb, var(--line-strong) 26%, var(--line));
+    background:
+      radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--tone) 7%, transparent), transparent 55%),
+      linear-gradient(180deg, var(--elevated), color-mix(in srgb, var(--elevated) 45%, var(--canvas)));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 1px 2px rgb(0 0 0 / 0.35),
+      0 20px 40px -24px rgb(0 0 0 / 0.9);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tone) 80%, transparent), transparent);
+    opacity: 0.55;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--tone) 38%, var(--line));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 1px 2px rgb(0 0 0 / 0.35),
+      0 28px 50px -24px color-mix(in srgb, var(--tone) 34%, transparent),
+      0 20px 40px -24px rgb(0 0 0 / 0.9);
+  }
+  .card:hover::after {
+    opacity: 1;
+  }
+
+  /* Icon tile: tinted glass square with a soft glow in the card's tone. */
+  .icon-badge {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 14px;
+    color: var(--tone, var(--signal));
+    border: 1px solid color-mix(in srgb, var(--tone, var(--signal)) 34%, transparent);
+    background: radial-gradient(130% 130% at 30% 0%, color-mix(in srgb, var(--tone, var(--signal)) 26%, transparent), color-mix(in srgb, var(--tone, var(--signal)) 5%, transparent) 70%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 0 22px -6px color-mix(in srgb, var(--tone, var(--signal)) 50%, transparent);
+  }
+  .icon-badge svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .icon-badge-sm {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 10px;
+  }
+  .icon-badge-sm svg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
   /* Pointer spotlight on panels (positions come from components/motion/Spotlight.tsx). */
   [data-spot] {
     position: relative;
@@ -296,7 +371,7 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity var(--dur-base) var(--ease-out);
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--signal) 14%, transparent), transparent 60%);
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--tone, var(--signal)) 14%, transparent), transparent 60%);
   }
   [data-spot]:hover::before {
     opacity: 1;
@@ -390,6 +465,9 @@
   .story-in,
   .marquee-track {
     animation: none !important;
+  }
+  .card:hover {
+    transform: none;
   }
   .draw {
     animation: none !important;

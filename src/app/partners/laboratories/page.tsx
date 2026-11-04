@@ -4,27 +4,31 @@ import Link from "next/link";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Section, SectionHeader } from "@/components/ui/Section";
+import { FeatureCard, toneAt } from "@/components/ui/FeatureCard";
+import type { IconName } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/partners/laboratories");
 
-const roles = [
+const roles: { role: string; does: string; why: string; icon: IconName }[] = [
   {
     role: "Execution",
+    icon: "flask",
     does: "Runs the chosen batch on authenticated models, to an agreed assay plan, and returns quality-checked readouts, negatives included.",
     why: "Each batch is small and has a stated purpose, so lab time goes to experiments with a reason.",
   },
   {
     role: "Independent validation",
+    icon: "flaskCheck",
     does: "Re-tests the most decision-relevant signals, out of batch or with an orthogonal readout, without seeing the expected answer.",
     why: "A finding is stronger once a second lab has seen it.",
   },
 ];
 
-const steps = [
-  "An introductory conversation about your models, assays and capacity.",
-  "A look at model authentication, assay quality control and data handling.",
-  "A small test batch to check fit on both sides.",
-  "An agreement covering scope, data use and publication before project work starts.",
+const steps: { text: string; icon: IconName }[] = [
+  { icon: "chat", text: "An introductory conversation about your models, assays and capacity." },
+  { icon: "inspect", text: "A look at model authentication, assay quality control and data handling." },
+  { icon: "flask", text: "A small test batch to check fit on both sides." },
+  { icon: "contract", text: "An agreement covering scope, data use and publication before project work starts." },
 ];
 
 export default function LaboratoriesPage() {
@@ -49,22 +53,20 @@ export default function LaboratoriesPage() {
       <Section id="exchange">
         <SectionHeader id="exchange" eyebrow="The exchange" title="What we ask, and what we bring." />
         <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <div className="glass p-6">
-            <h3 className="text-xl font-semibold">We ask for</h3>
+          <FeatureCard as="div" icon="inbox" tone="signal" title="We ask for" titleClassName="text-xl font-semibold">
             <ul className="mt-4 list-disc space-y-2 pl-5 text-muted marker:text-signal">
               <li>Authenticated, documented models, ideally with resistant and matched parental pairs.</li>
               <li>Assays with quality control you can describe.</li>
               <li>Readouts returned in full, including results that did not work.</li>
             </ul>
-          </div>
-          <div className="glass p-6">
-            <h3 className="text-xl font-semibold">We bring</h3>
+          </FeatureCard>
+          <FeatureCard as="div" icon="send" tone="actin" title="We bring" titleClassName="text-xl font-semibold">
             <ul className="mt-4 list-disc space-y-2 pl-5 text-muted marker:text-signal">
               <li>Questions with a purpose, not open-ended screens.</li>
               <li>Work scoped in advance, on agreed terms.</li>
               <li>Clear terms on data, credit and publication.</li>
             </ul>
-          </div>
+          </FeatureCard>
         </div>
       </Section>
 
@@ -72,13 +74,12 @@ export default function LaboratoriesPage() {
         <SectionHeader id="roles" eyebrow="Two roles" title="Execution and validation stay separate.">
           <p>The lab that runs a batch is not the lab that confirms it. That separation is part of the design.</p>
         </SectionHeader>
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          {roles.map((r) => (
-            <div key={r.role} className="glass p-6">
-              <h3 className="text-xl font-semibold">{r.role}</h3>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {roles.map((r, i) => (
+            <FeatureCard as="div" key={r.role} icon={r.icon} tone={i ? "actin" : "shift"} title={r.role} titleClassName="text-xl font-semibold">
               <p className="mt-3">{r.does}</p>
               <p className="mt-3 text-muted">{r.why}</p>
-            </div>
+            </FeatureCard>
           ))}
         </div>
       </Section>
@@ -87,12 +88,11 @@ export default function LaboratoriesPage() {
         <SectionHeader id="qualify" eyebrow="Qualification" title="Four steps before project work.">
           <p>How we qualify laboratory partners.</p>
         </SectionHeader>
-        <ol className="mt-10 grid gap-4 md:grid-cols-4">
+        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (
-            <li key={s} className="rounded-[var(--radius-card)] border border-line p-5">
-              <span className="font-mono text-xs text-signal">{String(i + 1).padStart(2, "0")}</span>
-              <p className="mt-2">{s}</p>
-            </li>
+            <FeatureCard key={s.text} icon={s.icon} tone={toneAt(i)} kicker={String(i + 1).padStart(2, "0")}>
+              <p className="mt-5">{s.text}</p>
+            </FeatureCard>
           ))}
         </ol>
         <div className="mt-6 flex flex-wrap gap-x-8">

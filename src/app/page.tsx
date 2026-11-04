@@ -98,9 +98,9 @@ export default function Home() {
         <div className="mt-16 mb-20">
           <TissueCores />
         </div>
-        <ul className="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line md:grid-cols-3">
+        <ul className="grid gap-5 md:grid-cols-3">
           {bottleneck.map((b) => (
-            <li key={b.title} data-spot className="flex flex-col bg-canvas p-8">
+            <li key={b.title} data-spot className="card flex flex-col p-8">
               <div className="flex h-36 items-center">
                 <BottleneckData kind={b.data} />
               </div>
@@ -118,8 +118,8 @@ export default function Home() {
         <SectionHeader id="building" eyebrow="What we have built" title="From hypothesis noise to a ranked batch.">
           <p>Each batch is chosen for what it can teach, from the mutation to the living response.</p>
         </SectionHeader>
-        <ol className="mt-14 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line lg:grid-cols-3">
-          <li data-spot className="flex flex-col bg-canvas">
+        <ol className="mt-14 grid gap-5 lg:grid-cols-3">
+          <li data-spot className="card flex flex-col overflow-hidden">
             <div className="h-64 border-b border-line px-6 pt-6 pb-2">
               <VariantTrack />
             </div>
@@ -129,7 +129,7 @@ export default function Home() {
               <p className="mt-2 text-muted">A mutation in the drug&rsquo;s target, read from the tumour&rsquo;s DNA.</p>
             </div>
           </li>
-          <li data-spot className="flex flex-col bg-canvas">
+          <li data-spot className="card flex flex-col overflow-hidden">
             <div className="relative h-64 overflow-hidden border-b border-line">
               <Image src="/images/gen/tem-cancer-cell.webp" alt="" fill sizes="(min-width: 1024px) 33vw, 100vw" className="drift object-cover" />
             </div>
@@ -139,7 +139,7 @@ export default function Home() {
               <p className="mt-2 text-muted">Inside the cancer cell, where the drug meets its target and signals reroute.</p>
             </div>
           </li>
-          <li data-spot className="flex flex-col bg-canvas">
+          <li data-spot className="card flex flex-col overflow-hidden">
             <div className="relative h-64 overflow-hidden border-b border-line">
               <Image src="/images/gen/sem-organoid.webp" alt="" fill sizes="(min-width: 1024px) 33vw, 100vw" className="drift object-cover" />
             </div>

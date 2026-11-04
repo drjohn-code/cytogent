@@ -6,23 +6,31 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Container, Section, SectionHeader } from "@/components/ui/Section";
 import { EscapeRoutes } from "@/components/visuals/EscapeRoutes";
+import { FeatureCard } from "@/components/ui/FeatureCard";
+import type { IconName, Tone } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/science");
 
 // Citation numbers follow this order.
 const SOURCES = ["REF-01", "REF-02", "REF-03", "REF-05", "REF-06", "REF-08", "REF-09"];
 
-const routes = [
+const routes: { title: string; body: string; icon: IconName; tone: Tone }[] = [
   {
     title: "On-target",
+    icon: "dna",
+    tone: "alert",
     body: "The drug’s target changes. New mutations in EGFR itself, such as C797S, can stop osimertinib from binding.",
   },
   {
     title: "Bypass",
+    icon: "bypass",
+    tone: "dose",
     body: "Another growth signal takes over, for example through MET or HER2 amplification, so blocking EGFR is no longer enough.",
   },
   {
     title: "Histologic or cell-state shift",
+    icon: "shift",
+    tone: "shift",
     body: "The tumour changes its type, for example towards small-cell histology, and no longer depends on EGFR.",
   },
 ];
@@ -72,16 +80,14 @@ export default function SciencePage() {
             <Cite n={1} />.
           </p>
         </SectionHeader>
-        <ol className="mt-10 grid gap-4 md:grid-cols-3">
+        <ol className="mt-10 grid gap-5 md:grid-cols-3">
           {routes.map((r, i) => (
-            <li key={r.title} className="glass p-6">
-              <span className="font-mono text-xs text-signal">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-2 text-xl font-semibold">{r.title}</h3>
+            <FeatureCard key={r.title} icon={r.icon} tone={r.tone} kicker={String(i + 1).padStart(2, "0")} title={r.title} titleClassName="text-xl font-semibold">
               <p className="mt-2 text-muted">
                 {r.body}
                 <Cite n={1} />
               </p>
-            </li>
+            </FeatureCard>
           ))}
         </ol>
       </Section>

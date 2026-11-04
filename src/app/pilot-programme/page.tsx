@@ -6,14 +6,16 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Section, SectionHeader } from "@/components/ui/Section";
 import { DeliverableRail } from "@/components/visuals/DeliverableRail";
 import { site } from "@/content/site";
+import { FeatureCard, toneAt } from "@/components/ui/FeatureCard";
+import type { IconName } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/pilot-programme");
 
-const horizons = [
-  { name: "One decision", body: "A single pilot wave on one candidate and one resistance question." },
-  { name: "Repeated waves", body: "Further waves on the same programme, each shaped by what the last one learned." },
-  { name: "More resistance contexts", body: "The same approach applied to other candidates or settings." },
-  { name: "A learning layer", body: "Lessons carried across a sponsor’s own programmes, within that sponsor’s governance terms." },
+const horizons: { name: string; body: string; icon: IconName }[] = [
+  { name: "One decision", icon: "target", body: "A single pilot wave on one candidate and one resistance question." },
+  { name: "Repeated waves", icon: "repeat", body: "Further waves on the same programme, each shaped by what the last one learned." },
+  { name: "More resistance contexts", icon: "branch", body: "The same approach applied to other candidates or settings." },
+  { name: "A learning layer", icon: "layers", body: "Lessons carried across a sponsor’s own programmes, within that sponsor’s governance terms." },
 ];
 
 export default function PilotProgrammePage() {
@@ -58,13 +60,11 @@ export default function PilotProgrammePage() {
         <SectionHeader id="horizons" eyebrow="If it works" title="Four possible horizons.">
           <p>An earned path, not a promise. Each step only makes sense if the one before it was worth it.</p>
         </SectionHeader>
-        <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {horizons.map((h, i) => (
-            <li key={h.name} className="glass p-6">
-              <span className="font-mono text-xs text-signal">H{i + 1}</span>
-              <h3 className="mt-2 text-lg font-semibold">{h.name}</h3>
+            <FeatureCard key={h.name} icon={h.icon} tone={toneAt(i)} kicker={`H${i + 1}`} title={h.name} titleClassName="text-lg font-semibold">
               <p className="mt-2 text-muted">{h.body}</p>
-            </li>
+            </FeatureCard>
           ))}
         </ol>
         <p className="mt-8 max-w-2xl text-muted">

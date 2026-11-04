@@ -5,14 +5,16 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ArrowLink, Section, SectionHeader } from "@/components/ui/Section";
 import { TrackArchitecture } from "@/components/visuals/TrackArchitecture";
+import { FeatureCard, toneAt } from "@/components/ui/FeatureCard";
+import type { IconName } from "@/components/ui/Icon";
 
 export const metadata: Metadata = pageMetadata("/partners");
 
-const tracks = [
-  { name: "Sponsors", body: "Drug teams who bring a resistance question, a candidate and a decision to make.", href: "/for-drug-developers" },
-  { name: "Execution laboratories", body: "Labs with authenticated models that run the chosen assays.", href: "/partners/laboratories" },
-  { name: "Validation laboratories", body: "Independent labs that re-test the signals that matter most.", href: "/partners/laboratories" },
-  { name: "Biobanks and model providers", body: "Holders of consented samples and patient-derived models with treatment context.", href: "/partners/biobanks" },
+const tracks: { name: string; body: string; href: string; icon: IconName }[] = [
+  { name: "Sponsors", icon: "briefcase", body: "Drug teams who bring a resistance question, a candidate and a decision to make.", href: "/for-drug-developers" },
+  { name: "Execution laboratories", icon: "flask", body: "Labs with authenticated models that run the chosen assays.", href: "/partners/laboratories" },
+  { name: "Validation laboratories", icon: "flaskCheck", body: "Independent labs that re-test the signals that matter most.", href: "/partners/laboratories" },
+  { name: "Biobanks and model providers", icon: "vials", body: "Holders of consented samples and patient-derived models with treatment context.", href: "/partners/biobanks" },
 ];
 
 export default function PartnersPage() {
@@ -38,15 +40,14 @@ export default function PartnersPage() {
 
       <Section id="tracks">
         <SectionHeader id="tracks" eyebrow="Four tracks" title="Who does what." />
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-          {tracks.map((t) => (
-            <li key={t.name} className="glass flex flex-col p-6">
-              <h3 className="text-xl font-semibold">{t.name}</h3>
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
+          {tracks.map((t, i) => (
+            <FeatureCard key={t.name} icon={t.icon} tone={toneAt(i)} title={t.name} titleClassName="text-xl font-semibold">
               <p className="mt-2 flex-1 text-muted">{t.body}</p>
               <div className="mt-3">
                 <ArrowLink href={t.href}>Read more</ArrowLink>
               </div>
-            </li>
+            </FeatureCard>
           ))}
         </ul>
       </Section>
