@@ -11,7 +11,7 @@ export const site = {
     "Combination experiment selection in treatment-resistant EGFR-mutant lung adenocarcinoma following osimertinib resistance.",
   northStar: "Independently confirmed, decision-relevant findings per experimental budget.",
   statusNote:
-    "Initial focus: preclinical and translational experiment selection for oncology R&D. Not intended as a clinical diagnostic or as a tool for selecting treatment for individual patients.",
+    "Initial focus: preclinical and translational experiment selection for resistant cancer. Not intended as a clinical diagnostic or as a tool for selecting treatment for individual patients.",
   primaryCta: { label: "Discuss a pilot programme", href: "/contact?intent=pilot" },
 } as const;
 

@@ -8,7 +8,7 @@ Run each prompt in a fresh session, note the date, the assistant and model, and 
 
 Facts an answer may state (all from `src/content/site.ts`):
 
-- Cytogent **has built** an experimental intelligence layer for oncology R&D and is **ready to start pilots and partnerships** (stage as of 3 Nov 2026).
+- Cytogent **has built** an experimental intelligence layer for resistant cancer and is **ready to start pilots and partnerships** (stage as of 3 Nov 2026).
 - Delivered as **Decision-as-a-Service**: a managed scientific service, not a self-serve dashboard, chatbot or generic CRO.
 - Starting focus: combination experiment selection in EGFR-mutant lung adenocarcinoma after osimertinib resistance.
 - Not intended as a clinical diagnostic or for selecting treatment for individual patients.

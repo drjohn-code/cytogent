@@ -4,7 +4,7 @@ For anyone writing or editing copy on cytogent.com. The rules come from the V3.1
 
 ## The story, in one breath
 
-Cytogent **has built** the Experimental Intelligence Layer for oncology R&D: a closed-loop way to choose, run and learn from combination experiments in treatment-resistant cancer, delivered as **Decision-as-a-Service**, and is **ready to start pilots and partnerships**. The starting focus is a programme blueprint in EGFR-mutant lung adenocarcinoma after osimertinib resistance. It is **not intended** as a clinical diagnostic or for choosing anyone's treatment.
+Cytogent **has built** the Experimental Intelligence Layer for resistant cancer: a closed-loop way for oncology drug teams to choose, run and learn from combination experiments, delivered as **Decision-as-a-Service**, and is **ready to start pilots and partnerships**. The starting focus is a programme blueprint in EGFR-mutant lung adenocarcinoma after osimertinib resistance. It is **not intended** as a clinical diagnostic or for choosing anyone's treatment.
 
 > Stage changed on 3 November 2026 at the owner's instruction: the platform is developed and Cytogent is ready for partnerships. Development-stage wording ("in development", "we are building", "intended", "proposed") was removed. What stays: the intended-use statement, "conceptual" labels on illustrations, and honesty about evidence that does not exist yet (no completed pilots or published client results, no signed partners, calibration still to validate, investor gates as aims).
 
@@ -85,7 +85,7 @@ Do not link to unpublished articles.
 
 - Loop labels, exactly: `DEFINE → CONNECT → PRIORITIZE → TEST → LEARN → CONFIRM`.
 - Brand line: "One question. One experiment. Evidence for the next decision."
-- Status note (every footer, from `site.ts`): "Initial focus: preclinical and translational experiment selection for oncology R&D. Not intended as a clinical diagnostic or as a tool for selecting treatment for individual patients."
+- Status note (every footer, from `site.ts`): "Initial focus: preclinical and translational experiment selection for resistant cancer. Not intended as a clinical diagnostic or as a tool for selecting treatment for individual patients."
 
 ## Contact and data
 

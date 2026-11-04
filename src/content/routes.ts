@@ -138,9 +138,9 @@ export const routes: RouteEntry[] = [
   {
     path: "/about",
     slug: "about",
-    title: "About Cytogent | Experimental Intelligence for Oncology",
+    title: "About Cytogent | Experimental Intelligence for Resistant Cancer",
     description:
-      "Cytogent has built an experimental intelligence layer for oncology R&D and is starting pilots in combination experiment selection for resistant lung cancer.",
+      "Cytogent has built an experimental intelligence layer for resistant cancer and is starting pilots in combination experiment selection, beginning with resistant lung cancer.",
     heading: "Built around one hard question.",
     label: "About",
     parent: "/",
@@ -162,7 +162,7 @@ export const routes: RouteEntry[] = [
     slug: "insights",
     title: "Insights | Cytogent",
     description:
-      "Notes from Cytogent on drug resistance, experiment selection and evidence in oncology R&D. The first notes are in review and will appear here.",
+      "Notes from Cytogent on resistant cancer, experiment selection and the evidence behind each decision. The first notes are in review and will appear here.",
     heading: "Notes forthcoming.",
     label: "Insights",
     parent: "/",

@@ -11,7 +11,7 @@ export const faqGroups: { heading: string; items: Faq[] }[] = [
     items: [
       {
         q: "What does Cytogent do?",
-        a: "Cytogent has built an experimental intelligence layer for oncology R&D. It helps drug teams choose which combination experiments to run next in treatment-resistant cancer, run them with laboratory partners, and update the plan from the results. It is delivered as a managed service: Decision-as-a-Service.",
+        a: "Cytogent has built an experimental intelligence layer for resistant cancer. It helps oncology drug teams choose which combination experiments to run next, run them with laboratory partners, and update the plan from the results. It is delivered as a managed service: Decision-as-a-Service.",
         link: { label: "How the loop works", href: "/platform" },
       },
       {

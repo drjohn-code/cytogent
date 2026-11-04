@@ -97,7 +97,7 @@ export function pageGraph(path: string) {
     nodes.push({
       "@type": "Service",
       "@id": `${site.url}/#service`,
-      name: `${site.model} for oncology R&D`,
+      name: `${site.model} for resistant cancer`,
       serviceType: "Experiment selection for preclinical and translational oncology research",
       description:
         "A managed service that helps drug teams prioritise combination experiments in treatment-resistant cancer, test them with laboratory partners and learn from the results. Not intended as a clinical diagnostic or for selecting treatment for individual patients.",
