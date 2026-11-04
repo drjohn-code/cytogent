@@ -3,7 +3,7 @@ export const site = {
   name: "Cytogent",
   url: "https://cytogent.com",
   locale: "en-GB",
-  category: "The Experimental Intelligence Layer for Oncology R&D",
+  category: "The Experimental Intelligence Layer for Resistant Cancer",
   mission:
     "Cytogent connects molecular state and experimental response to drive smarter drug-development decisions in resistant cancer.",
   model: "Decision-as-a-Service (DaaS)",
